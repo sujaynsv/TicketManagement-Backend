@@ -1,9 +1,9 @@
 package com.ticket.dto;
 
-public record LoginResponse(
-    String token,
+public record RegisterResponse(
+    String userId,
     String username,
     String email,
     String role,
-    String userId
+    String message
 ) {}

@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import com.ticket.enums.UserRole;
+
 @Entity
 @Table(name = "users")
 @Data
@@ -34,9 +36,9 @@ public class User {
     @Column(name = "last_name", length = 100)
     private String lastName;
     
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "role_id", nullable = false)
-    private Role role;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role", nullable = false, length = 50)
+    private UserRole role;
     
     @Column(name = "is_active")
     private Boolean isActive = true;

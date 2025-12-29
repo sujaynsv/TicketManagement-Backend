@@ -32,6 +32,7 @@
         <module>ticket-common</module>
         <module>eureka-server</module>
         <module>auth-service</module>
+        <module>ticket-service</module>
     </modules>
 
     <dependencyManagement>
