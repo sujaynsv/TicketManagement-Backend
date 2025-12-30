@@ -8,12 +8,17 @@ import com.ticket.enums.TicketPriority;
 import com.ticket.enums.TicketStatus;
 import com.ticket.event.TicketCreatedEvent;
 import com.ticket.event.TicketStatusChangedEvent;
+import com.ticket.repository.CommentRepository;
 import com.ticket.repository.TicketActivityRepository;
 import com.ticket.repository.TicketRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import org.yaml.snakeyaml.events.CommentEvent;
+
+import com.ticket.entity.Comment;
+import com.ticket.event.CommentAddedEvent;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -32,6 +37,9 @@ public class TicketService {
     
     @Autowired
     private EventPublisherService eventPublisher;
+
+    @Autowired
+    private CommentRepository commentRepository;
     
     /**
      * Create a new ticket
@@ -168,6 +176,35 @@ public class TicketService {
         }
         
         Ticket updatedTicket = ticketRepository.save(ticket);
+
+        if(request.comment()!=null && !request.comment().trim().isEmpty()){
+            Comment comment=new Comment();
+            comment.setTicketId(ticketId);
+            comment.setCommentText(request.comment());
+            comment.setUserId(userId);
+            comment.setUsername(username);
+            comment.setIsInternal(false);
+            comment.setCreatedAt(LocalDateTime.now());
+            comment.setUpdatedAt(LocalDateTime.now());
+
+            Comment savedComment= commentRepository.save(comment);
+
+            updatedTicket.setCommentCount(ticket.getCommentCount()+1);
+            ticketRepository.save(updatedTicket);
+
+            CommentAddedEvent commentEvent= new CommentAddedEvent(
+                savedComment.getCommentId(),
+                ticketId,
+                ticket.getTicketNumber(),
+                userId,
+                username,
+                request.comment(),
+                false,
+                LocalDateTime.now()
+            );
+            eventPublisher.publishCommentAdded(commentEvent);
+
+        }
         
         // Log activity
         TicketActivity activity = new TicketActivity(
