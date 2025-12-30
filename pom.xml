@@ -33,6 +33,7 @@
         <module>eureka-server</module>
         <module>auth-service</module>
         <module>ticket-service</module>
+        <module>assignment-service</module>
     </modules>
 
     <dependencyManagement>
