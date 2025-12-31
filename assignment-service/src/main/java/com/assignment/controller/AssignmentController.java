@@ -3,6 +3,7 @@ package com.assignment.controller;
 import com.assignment.dto.AgentWorkloadDTO;
 import com.assignment.dto.AssignmentDTO;
 import com.assignment.dto.ManualAssignmentRequest;
+import com.assignment.dto.ReassignmentRequest;
 import com.assignment.dto.UnassignedTicketDTO;
 import com.assignment.entity.TicketCache;
 import com.assignment.service.AssignmentService;
@@ -67,14 +68,14 @@ public class AssignmentController {
     
     @PutMapping("/reassign")
     public ResponseEntity<?> reassignTickets(
-        @Valid @RequestBody ManualAssignmentRequest request,
+        @Valid @RequestBody ReassignmentRequest request,
         @RequestHeader("X-User-Id") String managerId,
         @RequestHeader("X-Username") String managerUsername
     ){
         try{
             assignmentService.reassignTicket(
                 request.getTicketId(),
-                request.getAgentId(),
+                request.getNewAgentId(),
                 managerId,
                 managerUsername
             );

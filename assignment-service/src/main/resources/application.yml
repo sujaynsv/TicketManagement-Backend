@@ -70,3 +70,10 @@ logging:
   level:
     com.assignment: DEBUG
     org.springframework.amqp: DEBUG
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    prefer-ip-address: true

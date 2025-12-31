@@ -28,4 +28,8 @@ public interface SlaTrackingRepository extends JpaRepository<SlaTracking, String
     
     // Find breached SLAs
     List<SlaTracking> findBySlaStatus(SlaStatus status);
+
+    List<SlaTracking> findByResponseBreachedTrue();
+
+    List<SlaTracking> findByResolutionBreachedTrue();
 }
