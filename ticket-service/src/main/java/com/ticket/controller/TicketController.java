@@ -41,19 +41,23 @@ public class TicketController {
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<TicketDTO> createTicket(
-            @RequestParam("title") String title,
-            @RequestParam("description") String description,
-            @RequestParam("category") String category,
-            @RequestParam("priority") String priority,
-            @RequestParam(value = "tags", required = false) List<String> tags,
-            @RequestParam(value = "files", required = false) List<MultipartFile> files,
-            @RequestHeader("X-User-Id") String userId,
-            @RequestHeader("X-Username") String username) throws IOException {
-        
-        // Build request object
-        CreateTicketRequest request = new CreateTicketRequest(
-            title, description, category, priority, tags
-        );
+        @RequestParam("title") String title,
+        @RequestParam("description") String description,
+        @RequestParam("category") String category,
+        @RequestParam("priority") String priority,
+        @RequestParam(value = "tags", required = false) List<String> tags,
+        @RequestParam(value = "files", required = false) List<MultipartFile> files,
+        @RequestHeader("X-User-Id") String userId,
+        @RequestHeader("X-Username") String username) throws IOException {
+    
+    try {
+        // Build request object manually (avoid Spring converter)
+        CreateTicketRequest request = new CreateTicketRequest();
+        request.setTitle(title);
+        request.setDescription(description);
+        request.setCategory(category);
+        request.setPriority(priority);
+        request.setTags(tags);
         
         // Step 1: Create ticket (without attachments)
         TicketDTO ticket = ticketService.createTicket(request, userId, username);
@@ -97,7 +101,14 @@ public class TicketController {
         }
         
         return ResponseEntity.status(HttpStatus.CREATED).body(ticket);
+        
+    } catch (Exception e) {
+        // Log the actual error
+        System.err.println("Error creating ticket: " + e.getMessage());
+        e.printStackTrace();
+        throw e;
     }
+}
 
 
 

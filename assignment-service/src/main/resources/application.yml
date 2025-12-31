@@ -9,6 +9,9 @@ spring:
     password: postgres
     driver-class-name: org.postgresql.Driver
   
+auth-service:
+  url: http://localhost:8081
+
   # JPA Configuration
   jpa:
     hibernate:

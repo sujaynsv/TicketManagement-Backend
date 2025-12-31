@@ -1,5 +1,6 @@
 package com.assignment.service;
 
+import com.assignment.client.AuthServiceClient;
 import com.assignment.dto.AgentWorkloadDTO;
 import com.assignment.dto.AssignmentDTO;
 import com.assignment.dto.ManualAssignmentRequest;
@@ -28,6 +29,10 @@ public class AssignmentService {
     
     @Autowired
     private TicketCacheRepository ticketCacheRepository;
+
+    @Autowired
+    private AuthServiceClient authServiceClient;
+
     
     @Autowired
     private AssignmentRepository assignmentRepository;
@@ -183,6 +188,8 @@ public class AssignmentService {
             log.info("Ticket {} already assigned, skipping auto-assignment", ticket.getTicketNumber());
             return;
         }
+
+        syncAgentsFromAuthService();
         
         // Select best agent based on strategy
         AgentWorkload agent = selectBestAgent();
@@ -355,5 +362,27 @@ public class AssignmentService {
         dto.setAssignedAt(assignment.getAssignedAt());
         dto.setCompletedAt(assignment.getCompletedAt());
         return dto;
+    }
+
+    @Transactional
+    public void syncAgentsFromAuthService(){
+        log.info("Getting Agents from auth service");
+        List<AuthServiceClient.AgentDTO> agents= authServiceClient.getAllAgents();
+
+        for(AuthServiceClient.AgentDTO agentDTO: agents){
+            Optional<AgentWorkload> existingAgent=agentWorkloadRepository.findById(agentDTO.getUserId());
+
+            if(existingAgent.isEmpty()){
+                AgentWorkload newAgent=new AgentWorkload(
+                    agentDTO.getUserId(),
+                    agentDTO.getUsername()
+                );
+                newAgent.setStatus(AgentStatus.AVAILABLE);
+                agentWorkloadRepository.save(newAgent);
+
+                log.info("Got new Agent: {} ({})", agentDTO.getUsername(),agentDTO.getUserId());
+            }
+        }
+        log.info("Toatal Agents {} and they are: {}", agents.size(), agents);
     }
 }

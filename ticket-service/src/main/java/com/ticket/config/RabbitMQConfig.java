@@ -1,5 +1,7 @@
 package com.ticket.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -59,7 +61,6 @@ public class RabbitMQConfig {
     
     /**
      * Bind ticket queue to exchange for ticket.assigned events
-     * Added THIS BINDING
      */
     @Bean
     public Binding ticketAssignedBinding(Queue ticketQueue, TopicExchange exchange) {
@@ -100,11 +101,13 @@ public class RabbitMQConfig {
     }
     
     /**
-     * JSON message converter
+     * JSON message converter with JSR310 support for LocalDateTime
      */
     @Bean
     public MessageConverter messageConverter() {
-        return new Jackson2JsonMessageConverter();
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());  // ✅ Add this!
+        return new Jackson2JsonMessageConverter(objectMapper);
     }
     
     /**

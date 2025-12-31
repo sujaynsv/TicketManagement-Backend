@@ -3,6 +3,8 @@ package com.assignment.controller;
 import com.assignment.entity.AgentStatus;
 import com.assignment.entity.AgentWorkload;
 import com.assignment.repository.AgentWorkloadRepository;
+import com.assignment.service.AssignmentService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,25 +19,20 @@ public class AgentController {
     
     @Autowired
     private AgentWorkloadRepository agentWorkloadRepository;
+
+    @Autowired
+    private AssignmentService assignmentService;
     
     /**
-     * Register a new agent (or get if exists)
+     * Getting agents from the auth service
      */
-    @PostMapping("/register")
-    public ResponseEntity<AgentWorkload> registerAgent(
-            @RequestParam String agentId,
-            @RequestParam String agentUsername) {
-        
-        // Check if agent already exists
-        AgentWorkload agent = agentWorkloadRepository.findById(agentId)
-                .orElseGet(() -> {
-                    AgentWorkload newAgent = new AgentWorkload(agentId, agentUsername);
-                    return agentWorkloadRepository.save(newAgent);
-                });
-        
-        return ResponseEntity.status(HttpStatus.CREATED).body(agent);
+
+    @PostMapping("/sync")
+    public ResponseEntity<String> syncAgents(){
+        assignmentService.syncAgentsFromAuthService();
+        return ResponseEntity.ok("Agents Successfully fetched from auth service.");
     }
-    
+
     /**
      * Update agent status (AVAILABLE, BUSY, OFFLINE)
      */
