@@ -385,4 +385,103 @@ public class AssignmentService {
         }
         log.info("Toatal Agents {} and they are: {}", agents.size(), agents);
     }
+        /**
+     * Reassign ticket to different agent
+     */
+    @Transactional
+    public void reassignTicket(String ticketId, String newAgentId, 
+                            String managerId, String managerUsername) {
+        log.info("Reassigning ticket {} to new agent {} by Manager {}", 
+                ticketId, newAgentId, managerUsername);
+        
+        // Get ticket
+        TicketCache ticket = ticketCacheRepository.findById(ticketId)
+                .orElseThrow(() -> new RuntimeException("Ticket not found in cache"));
+        
+        String oldAgentId = ticket.getAssignedAgentId();
+        
+        if (oldAgentId == null) {
+            throw new RuntimeException("Ticket is not assigned. Use manual assignment instead.");
+        }
+        
+        if (oldAgentId.equals(newAgentId)) {
+            throw new RuntimeException("Ticket is already assigned to this agent");
+        }
+        
+        // Get old agent and decrement workload
+        agentWorkloadRepository.findById(oldAgentId).ifPresent(oldAgent -> {
+            oldAgent.setActiveTickets(Math.max(0, oldAgent.getActiveTickets() - 1));
+            oldAgent.setUpdatedAt(LocalDateTime.now());
+            
+            // Update status
+            if (oldAgent.getActiveTickets() < maxTicketsPerAgent * 0.8) {
+                oldAgent.setStatus(AgentStatus.AVAILABLE);
+            }
+            
+            agentWorkloadRepository.save(oldAgent);
+        });
+        
+        // Get new agent
+        AgentWorkload newAgent = agentWorkloadRepository.findById(newAgentId)
+                .orElseThrow(() -> new RuntimeException("New agent not found"));
+        
+        // Update ticket
+        ticket.setAssignedAgentId(newAgentId);
+        ticket.setAssignedAgentUsername(newAgent.getAgentUsername());
+        ticket.setUpdatedAt(LocalDateTime.now());
+        ticketCacheRepository.save(ticket);
+        
+        // Update new agent workload
+        newAgent.setActiveTickets(newAgent.getActiveTickets() + 1);
+        newAgent.setTotalAssignedTickets(newAgent.getTotalAssignedTickets() + 1);
+        newAgent.setLastAssignedAt(LocalDateTime.now());
+        newAgent.setUpdatedAt(LocalDateTime.now());
+        
+        // Update status based on workload
+        if (newAgent.getActiveTickets() >= maxTicketsPerAgent * 0.8) {
+            newAgent.setStatus(AgentStatus.BUSY);
+        }
+        
+        agentWorkloadRepository.save(newAgent);
+        
+        // Mark old assignment as completed
+        assignmentRepository.findByTicketIdAndStatus(ticketId, AssignmentStatus.ACTIVE)
+                .ifPresent(oldAssignment -> {
+                    oldAssignment.setStatus(AssignmentStatus.COMPLETED);
+                    oldAssignment.setCompletedAt(LocalDateTime.now());
+                    assignmentRepository.save(oldAssignment);
+                });
+        
+        // Create new assignment record
+        Assignment newAssignment = new Assignment(
+                ticketId,
+                ticket.getTicketNumber(),
+                newAgentId,
+                newAgent.getAgentUsername(),
+                managerId,
+                managerUsername,
+                AssignmentType.MANUAL
+        );
+        newAssignment.setAssignmentStrategy("MANUAL_REASSIGN");
+        assignmentRepository.save(newAssignment);
+        
+        // Publish TicketAssignedEvent
+        TicketAssignedEvent event = new TicketAssignedEvent(
+                ticketId,
+                ticket.getTicketNumber(),
+                newAgentId,
+                newAgent.getAgentUsername(),
+                managerId,
+                managerUsername,
+                "MANUAL_REASSIGN",
+                LocalDateTime.now()
+        );
+        eventPublisher.publishTicketAssigned(event);
+        
+        log.info("Ticket {} reassigned from {} to {} by {}", 
+                ticket.getTicketNumber(), oldAgentId, newAgent.getAgentUsername(), managerUsername);
+    }
+
+
+    
 }

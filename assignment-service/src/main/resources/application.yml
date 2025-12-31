@@ -35,7 +35,7 @@ server:
 # Assignment Configuration
 assignment:
   auto-assign:
-    enabled: true
+    enabled: false
     strategy: LEAST_LOADED  # ROUND_ROBIN, LEAST_LOADED, CATEGORY_BASED
   max-tickets-per-agent: 10
   

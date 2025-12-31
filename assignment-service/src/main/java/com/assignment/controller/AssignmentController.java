@@ -4,6 +4,7 @@ import com.assignment.dto.AgentWorkloadDTO;
 import com.assignment.dto.AssignmentDTO;
 import com.assignment.dto.ManualAssignmentRequest;
 import com.assignment.dto.UnassignedTicketDTO;
+import com.assignment.entity.TicketCache;
 import com.assignment.service.AssignmentService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,4 +64,26 @@ public class AssignmentController {
         List<AssignmentDTO> tickets = assignmentService.getAgentTickets(agentId);
         return ResponseEntity.ok(tickets);
     }
+    
+    @PutMapping("/reassign")
+    public ResponseEntity<?> reassignTickets(
+        @Valid @RequestBody ManualAssignmentRequest request,
+        @RequestHeader("X-User-Id") String managerId,
+        @RequestHeader("X-Username") String managerUsername
+    ){
+        try{
+            assignmentService.reassignTicket(
+                request.getTicketId(),
+                request.getAgentId(),
+                managerId,
+                managerUsername
+            );
+            return ResponseEntity.ok("Ticket Reassigned successfully");
+        } catch(Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body("Reassignment Failed: "+e.getMessage());
+        }
+    }
+
+
 }
