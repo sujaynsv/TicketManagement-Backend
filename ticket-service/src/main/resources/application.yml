@@ -46,12 +46,15 @@ eureka:
 # RabbitMQ Exchanges and Queues
 rabbitmq:
   exchange:
-    ticket: ticket.exchange
+    name: ticket.exchange
   queue:
-    ticket-created: ticket.created.queue
-    ticket-events: ticket.events.queue
-    comment-events: comment.events.queue
+    ticket:
+      name: ticket.queue
+    notification:
+      name: notification.queue
   routing-key:
     ticket-created: ticket.created
+    ticket-assigned: ticket.assigned
+    ticket-status-changed: ticket.status.changed
     ticket-updated: ticket.updated
     comment-added: comment.added

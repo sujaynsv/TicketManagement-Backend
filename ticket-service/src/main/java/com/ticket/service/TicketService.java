@@ -385,6 +385,7 @@ public class TicketService {
                 savedTicket.getTicketId(),
                 savedTicket.getTicketNumber(),
                 savedTicket.getTitle(),
+                savedTicket.getDescription(),
                 userId,
                 username,
                 category.name(),

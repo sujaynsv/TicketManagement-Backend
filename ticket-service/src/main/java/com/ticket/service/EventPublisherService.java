@@ -14,7 +14,7 @@ public class EventPublisherService {
     @Autowired
     private RabbitTemplate rabbitTemplate;
     
-    @Value("${rabbitmq.exchange.ticket}")
+    @Value("${rabbitmq.exchange.name}")
     private String ticketExchange;
     
     @Value("${rabbitmq.routing-key.ticket-created}")

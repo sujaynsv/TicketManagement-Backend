@@ -10,6 +10,7 @@ public class TicketCreatedEvent implements Serializable {
     private String ticketId;
     private String ticketNumber;
     private String title;
+    private String description;
     private String createdByUserId;
     private String createdByUsername;
     private String category;
@@ -21,7 +22,7 @@ public class TicketCreatedEvent implements Serializable {
     // Constructors
     public TicketCreatedEvent() {}
     
-    public TicketCreatedEvent(String ticketId, String ticketNumber, String title,
+    public TicketCreatedEvent(String ticketId, String ticketNumber, String title, String description,
                              String createdByUserId, String createdByUsername,
                              String category, String priority, LocalDateTime createdAt) {
         this.ticketId = ticketId;
@@ -31,6 +32,7 @@ public class TicketCreatedEvent implements Serializable {
         this.createdByUsername = createdByUsername;
         this.category = category;
         this.priority = priority;
+        this.description=description;
         this.createdAt = createdAt;
     }
     
@@ -41,6 +43,14 @@ public class TicketCreatedEvent implements Serializable {
     
     public void setTicketId(String ticketId) {
         this.ticketId = ticketId;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+    
+    public void setDescription(String description) {
+        this.description = description;
     }
     
     public String getTicketNumber() {

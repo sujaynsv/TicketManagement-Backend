@@ -1,8 +1,5 @@
 package com.ticket.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -15,88 +12,108 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitMQConfig {
     
-    @Value("${rabbitmq.exchange.ticket}")
-    private String ticketExchange;
+    @Value("${rabbitmq.exchange.name}")
+    private String exchange;
     
-    @Value("${rabbitmq.queue.ticket-created}")
-    private String ticketCreatedQueue;
+    @Value("${rabbitmq.queue.ticket.name}")
+    private String ticketQueueName;
     
-    @Value("${rabbitmq.queue.ticket-events}")
-    private String ticketEventsQueue;
-    
-    @Value("${rabbitmq.queue.comment-events}")
-    private String commentEventsQueue;
+    @Value("${rabbitmq.queue.notification.name}")
+    private String notificationQueueName;
     
     @Value("${rabbitmq.routing-key.ticket-created}")
-    private String ticketCreatedRoutingKey;
+    private String ticketCreatedKey;
     
-    @Value("${rabbitmq.routing-key.ticket-updated}")
-    private String ticketUpdatedRoutingKey;
+    @Value("${rabbitmq.routing-key.ticket-assigned}")
+    private String ticketAssignedKey;
+    
+    @Value("${rabbitmq.routing-key.ticket-status-changed}")
+    private String ticketStatusChangedKey;
     
     @Value("${rabbitmq.routing-key.comment-added}")
-    private String commentAddedRoutingKey;
+    private String commentAddedKey;
     
-    // Exchange
+    /**
+     * Create exchange
+     */
     @Bean
-    public TopicExchange ticketExchange() {
-        return new TopicExchange(ticketExchange);
+    public TopicExchange exchange() {
+        return new TopicExchange(exchange);
     }
     
-    // Queues
+    /**
+     * Create ticket queue
+     */
     @Bean
-    public Queue ticketCreatedQueue() {
-        return new Queue(ticketCreatedQueue, true);
+    public Queue ticketQueue() {
+        return new Queue(ticketQueueName, true);
+    }
+    
+    /**
+     * Create notification queue
+     */
+    @Bean
+    public Queue notificationQueue() {
+        return new Queue(notificationQueueName, true);
+    }
+    
+    /**
+     * Bind ticket queue to exchange for ticket.assigned events
+     * Added THIS BINDING
+     */
+    @Bean
+    public Binding ticketAssignedBinding(Queue ticketQueue, TopicExchange exchange) {
+        return BindingBuilder.bind(ticketQueue)
+                .to(exchange)
+                .with(ticketAssignedKey);
+    }
+    
+    /**
+     * Bind notification queue to various events
+     */
+    @Bean
+    public Binding ticketCreatedBinding(Queue notificationQueue, TopicExchange exchange) {
+        return BindingBuilder.bind(notificationQueue)
+                .to(exchange)
+                .with(ticketCreatedKey);
     }
     
     @Bean
-    public Queue ticketEventsQueue() {
-        return new Queue(ticketEventsQueue, true);
+    public Binding ticketAssignedNotificationBinding(Queue notificationQueue, TopicExchange exchange) {
+        return BindingBuilder.bind(notificationQueue)
+                .to(exchange)
+                .with(ticketAssignedKey);
     }
     
     @Bean
-    public Queue commentEventsQueue() {
-        return new Queue(commentEventsQueue, true);
-    }
-    
-    // Bindings
-    @Bean
-    public Binding ticketCreatedBinding() {
-        return BindingBuilder
-                .bind(ticketCreatedQueue())
-                .to(ticketExchange())
-                .with(ticketCreatedRoutingKey);
+    public Binding ticketStatusChangedBinding(Queue notificationQueue, TopicExchange exchange) {
+        return BindingBuilder.bind(notificationQueue)
+                .to(exchange)
+                .with(ticketStatusChangedKey);
     }
     
     @Bean
-    public Binding ticketUpdatedBinding() {
-        return BindingBuilder
-                .bind(ticketEventsQueue())
-                .to(ticketExchange())
-                .with(ticketUpdatedRoutingKey);
+    public Binding commentAddedBinding(Queue notificationQueue, TopicExchange exchange) {
+        return BindingBuilder.bind(notificationQueue)
+                .to(exchange)
+                .with(commentAddedKey);
     }
     
+    /**
+     * JSON message converter
+     */
     @Bean
-    public Binding commentAddedBinding() {
-        return BindingBuilder
-                .bind(commentEventsQueue())
-                .to(ticketExchange())
-                .with(commentAddedRoutingKey);
+    public MessageConverter messageConverter() {
+        return new Jackson2JsonMessageConverter();
     }
     
-    // Message Converter with Java 8 Time support
-    @Bean
-    public MessageConverter jsonMessageConverter() {
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-        return new Jackson2JsonMessageConverter(objectMapper);
-    }
-    
-    // RabbitTemplate
+    /**
+     * RabbitTemplate with JSON converter
+     */
     @Bean
     public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
-        RabbitTemplate template = new RabbitTemplate(connectionFactory);
-        template.setMessageConverter(jsonMessageConverter());
-        return template;
+        RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
+        rabbitTemplate.setMessageConverter(messageConverter());
+        return rabbitTemplate;
     }
 }
