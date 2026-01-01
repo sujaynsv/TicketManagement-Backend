@@ -39,6 +39,10 @@ public class Assignment {
     
     @Column(name = "previous_agent_id", length = 50)
     private String previousAgentId;
+
+    @Column(name = "assignment_notes", length = 500)
+    private String assignmentNotes;
+
     
     @Column(name = "previous_agent_username", length = 100)
     private String previousAgentUsername;
@@ -111,6 +115,14 @@ public class Assignment {
     
     public String getAgentUsername() {
         return agentUsername;
+    }
+
+    public String getAssignmentNotes() {
+        return assignmentNotes;
+    }
+    
+    public void setAssignmentNotes(String assignmentNotes) {
+        this.assignmentNotes = assignmentNotes;
     }
     
     public void setAgentUsername(String agentUsername) {

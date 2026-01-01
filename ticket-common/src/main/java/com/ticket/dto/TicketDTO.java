@@ -23,4 +23,8 @@ public record TicketDTO(
     LocalDateTime assignedAt,
     LocalDateTime resolvedAt,
     LocalDateTime closedAt
-) {}
+) {
+    public boolean hasPriority(){
+        return priority!=null && !priority.isEmpty();
+    }
+}

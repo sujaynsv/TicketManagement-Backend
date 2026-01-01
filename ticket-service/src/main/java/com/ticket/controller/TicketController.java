@@ -44,7 +44,7 @@ public class TicketController {
         @RequestParam("title") String title,
         @RequestParam("description") String description,
         @RequestParam("category") String category,
-        @RequestParam("priority") String priority,
+        // @RequestParam("priority") String priority,
         @RequestParam(value = "tags", required = false) List<String> tags,
         @RequestParam(value = "files", required = false) List<MultipartFile> files,
         @RequestHeader("X-User-Id") String userId,
@@ -56,7 +56,7 @@ public class TicketController {
         request.setTitle(title);
         request.setDescription(description);
         request.setCategory(category);
-        request.setPriority(priority);
+        // request.setPriority(priority);
         request.setTags(tags);
         
         // Step 1: Create ticket (without attachments)
@@ -202,5 +202,23 @@ public class TicketController {
     public ResponseEntity<String> deleteTicket(@PathVariable String ticketId) {
         ticketService.deleteTicket(ticketId);
         return ResponseEntity.ok("Ticket deleted successfully");
+    }
+
+        @PatchMapping("/{ticketId}/priority")
+    public ResponseEntity<TicketDTO> updateTicketPriority(
+        @PathVariable String ticketId,
+        @Valid @RequestBody UpdatePriorityRequest request,
+        @RequestHeader("X-User-Id") String managerId,
+        @RequestHeader("X-Username") String managerUsername) {
+        
+        TicketDTO ticket = ticketService.updateTicketPriority(
+            ticketId, 
+            request.getPriority(),
+            request.getReason(),
+            managerId, 
+            managerUsername
+        );
+        
+        return ResponseEntity.ok(ticket);
     }
 }

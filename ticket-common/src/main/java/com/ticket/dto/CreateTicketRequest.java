@@ -18,8 +18,8 @@ public class CreateTicketRequest {
     @NotBlank(message = "Category is required")
     private String category;
     
-    @NotBlank(message = "Priority is required")
-    private String priority;
+    // @NotBlank(message = "Priority is required")
+    // private String priority;
     
     private List<String> tags;
     
@@ -27,11 +27,11 @@ public class CreateTicketRequest {
     public CreateTicketRequest() {}
     
     public CreateTicketRequest(String title, String description, String category, 
-                              String priority, List<String> tags) {
+                               List<String> tags) {
         this.title = title;
         this.description = description;
         this.category = category;
-        this.priority = priority;
+        // this.priority = priority;
         this.tags = tags;
     }
     
@@ -60,13 +60,13 @@ public class CreateTicketRequest {
         this.category = category;
     }
     
-    public String getPriority() {
-        return priority;
-    }
+    // public String getPriority() {
+    //     return priority;
+    // }
     
-    public void setPriority(String priority) {
-        this.priority = priority;
-    }
+    // public void setPriority(String priority) {
+    //     this.priority = priority;
+    // }
     
     public List<String> getTags() {
         return tags;

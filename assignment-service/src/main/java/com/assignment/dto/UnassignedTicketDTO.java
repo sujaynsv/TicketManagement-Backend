@@ -15,9 +15,27 @@ public class UnassignedTicketDTO {
     private LocalDateTime createdAt;
     private String slaStatus;
     private String timeRemaining;
+
+    private Boolean prioritySet;
     
     // Constructors
     public UnassignedTicketDTO() {}
+
+        public UnassignedTicketDTO(String ticketId, String ticketNumber, String title, 
+                              String description, String category, String priority, 
+                              String status, LocalDateTime createdAt, String createdByUsername) {
+        this.ticketId = ticketId;
+        this.ticketNumber = ticketNumber;
+        this.title = title;
+        this.description = description;
+        this.category = category;
+        this.priority = priority;
+        this.status = status;
+        this.createdAt = createdAt;
+        this.createdByUsername = createdByUsername;
+        this.prioritySet = (priority != null && !priority.isEmpty());
+    }
+
     
     // Getters and Setters
     public String getTicketId() {

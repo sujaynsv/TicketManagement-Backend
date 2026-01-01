@@ -9,18 +9,28 @@ public class ManualAssignmentRequest {
     
     @NotBlank(message = "Agent ID is required")
     private String agentId;
+
+    @NotBlank(message = "Priority is required")
+    private String priority; 
     
     private String assignmentNote;
     
     // Constructors
     public ManualAssignmentRequest() {}
     
-    public ManualAssignmentRequest(String ticketId, String agentId, String assignmentNote) {
+    public ManualAssignmentRequest(String ticketId, String agentId, String assignmentNote, String priority) {
         this.ticketId = ticketId;
         this.agentId = agentId;
         this.assignmentNote = assignmentNote;
+        this.priority=priority;
     }
     
+    public void setPriority(String priority){
+        this.priority=priority;
+    }
+    public String getPriority(){
+        return priority;
+    }
     // Getters and Setters
     public String getTicketId() {
         return ticketId;

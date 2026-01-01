@@ -90,13 +90,29 @@ public class AssignmentService {
      */
     @Transactional
     public AssignmentDTO manualAssignment(ManualAssignmentRequest request, 
-                                         String managerId, String managerUsername) {
-        // Validate ticket exists and is unassigned
+                                        String managerId, String managerUsername) {
+        log.info("Processing manual assignment for ticket {} to agent {} with priority {} by manager {}", 
+                request.getTicketId(), request.getAgentId(), request.getPriority(), managerUsername);
+        
+        // Validate ticket exists
         TicketCache ticket = ticketCacheRepository.findById(request.getTicketId())
                 .orElseThrow(() -> new RuntimeException("Ticket not found"));
         
+        // Check if already assigned
         if (ticket.getAssignedAgentId() != null) {
             throw new RuntimeException("Ticket already assigned to " + ticket.getAssignedAgentUsername());
+        }
+        
+        // ✅ NEW: Update priority (manager sets it during assignment)
+        String oldPriority = ticket.getPriority();
+        ticket.setPriority(request.getPriority());
+        
+        if (oldPriority == null) {
+            log.info("Manager set priority to {} for ticket {} during assignment", 
+                    request.getPriority(), ticket.getTicketNumber());
+        } else {
+            log.info("Manager changed priority from {} to {} for ticket {}", 
+                    oldPriority, request.getPriority(), ticket.getTicketNumber());
         }
         
         // Validate agent exists
@@ -111,7 +127,7 @@ public class AssignmentService {
             throw new RuntimeException("Agent has reached maximum ticket capacity");
         }
         
-        // Create assignment
+        // Create assignment record
         Assignment assignment = new Assignment(
                 ticket.getTicketId(),
                 ticket.getTicketNumber(),
@@ -122,10 +138,10 @@ public class AssignmentService {
                 AssignmentType.MANUAL
         );
         assignment.setAssignmentStrategy("MANUAL");
-        
+        assignment.setAssignmentNotes(request.getAssignmentNote());
         Assignment savedAssignment = assignmentRepository.save(assignment);
         
-        // Update ticket cache
+        // Update ticket cache with assignment and priority
         ticket.setAssignedAgentId(agent.getAgentId());
         ticket.setAssignedAgentUsername(agent.getAgentUsername());
         ticket.setStatus("ASSIGNED");
@@ -145,6 +161,14 @@ public class AssignmentService {
         
         agentWorkloadRepository.save(agent);
         
+        // ✅ Create SLA tracking with the priority manager set
+        slaService.createSlaTracking(
+                ticket.getTicketId(),
+                ticket.getTicketNumber(),
+                request.getPriority(),  // ✅ Use priority from request
+                ticket.getCategory()
+        );
+        
         // Publish TicketAssignedEvent to RabbitMQ
         TicketAssignedEvent event = new TicketAssignedEvent(
                 ticket.getTicketId(),
@@ -158,11 +182,13 @@ public class AssignmentService {
         );
         eventPublisher.publishTicketAssigned(event);
         
-        log.info("Ticket {} manually assigned to {} by {}", 
-                 ticket.getTicketNumber(), agent.getAgentUsername(), managerUsername);
+        log.info("Ticket {} manually assigned to {} with priority {} by {}", 
+                ticket.getTicketNumber(), agent.getAgentUsername(), 
+                request.getPriority(), managerUsername);
         
         return convertToAssignmentDTO(savedAssignment);
     }
+
     
     /**
      * Auto-assign ticket to best available agent

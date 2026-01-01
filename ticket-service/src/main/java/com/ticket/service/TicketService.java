@@ -2,6 +2,8 @@ package com.ticket.service;
 
 import com.ticket.dto.*;
 import com.ticket.entity.Ticket;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.ticket.entity.TicketActivity;
 import com.ticket.enums.TicketCategory;
 import com.ticket.enums.TicketPriority;
@@ -11,6 +13,7 @@ import com.ticket.event.TicketStatusChangedEvent;
 import com.ticket.repository.CommentRepository;
 import com.ticket.repository.TicketActivityRepository;
 import com.ticket.repository.TicketRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +27,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+
 import java.util.stream.Collectors;
 
 @Service
@@ -40,6 +44,10 @@ public class TicketService {
 
     @Autowired
     private CommentRepository commentRepository;
+
+    private static final Logger log = LoggerFactory.getLogger(TicketService.class);
+
+
     
     /**
      * Create a new ticket
@@ -327,7 +335,7 @@ public class TicketService {
                 ticket.getDescription(),
                 ticket.getStatus().name(),
                 ticket.getCategory().name(),
-                ticket.getPriority().name(),
+                ticket.getPriority()!=null ? ticket.getPriority().name():null,
                 ticket.getCreatedByUserId(),
                 ticket.getCreatedByUsername(),
                 ticket.getAssignedToUserId(),
@@ -355,7 +363,7 @@ public class TicketService {
     public TicketDTO createTicket(CreateTicketRequest request, String userId, String username) {
         // Parse enums
         TicketCategory category = TicketCategory.fromString(request.getCategory());
-        TicketPriority priority = TicketPriority.fromString(request.getPriority());
+        // TicketPriority priority = TicketPriority.fromString(request.getPriority());
         
         // Create ticket
         Ticket ticket = new Ticket();
@@ -364,7 +372,7 @@ public class TicketService {
         ticket.setDescription(request.getDescription());
         ticket.setStatus(TicketStatus.OPEN);
         ticket.setCategory(category);
-        ticket.setPriority(priority);
+        ticket.setPriority(null);
         ticket.setCreatedByUserId(userId);
         ticket.setCreatedByUsername(username);
         ticket.setTags(request.getTags() != null ? request.getTags() : List.of());
@@ -380,19 +388,19 @@ public class TicketService {
         logActivity(savedTicket.getTicketId(), "TICKET_CREATED", 
                 "Ticket created", userId, username);
         
-        // Publish event to RabbitMQ
-        TicketCreatedEvent event = new TicketCreatedEvent(
-                savedTicket.getTicketId(),
-                savedTicket.getTicketNumber(),
-                savedTicket.getTitle(),
-                savedTicket.getDescription(),
-                userId,
-                username,
-                category.name(),
-                priority.name(),
-                savedTicket.getCreatedAt()
-        );
-        eventPublisher.publishTicketCreated(event);
+        // // Publish event to RabbitMQ
+        // TicketCreatedEvent event = new TicketCreatedEvent(
+        //         savedTicket.getTicketId(),
+        //         savedTicket.getTicketNumber(),
+        //         savedTicket.getTitle(),
+        //         savedTicket.getDescription(),
+        //         userId,
+        //         username,
+        //         category.name(),
+        //         priority.name(),
+        //         savedTicket.getCreatedAt()
+        // );
+        // eventPublisher.publishTicketCreated(event);
         
         return convertToDTO(savedTicket);
     }
@@ -407,6 +415,67 @@ public class TicketService {
         ticket.setAttachmentCount(count);
         ticketRepository.save(ticket);
     }
+
+    @Transactional
+    public TicketDTO updateTicketPriority(String ticketId, String priorityStr, 
+                                      String reason, String managerId, String managerUsername) {
+    // Find ticket
+    Ticket ticket = ticketRepository.findById(ticketId)
+            .orElseThrow(() -> new RuntimeException("Ticket not found"));
+    
+    // Parse priority
+    TicketPriority newPriority = TicketPriority.fromString(priorityStr);
+    TicketPriority oldPriority = ticket.getPriority();
+    
+    // Update priority
+    ticket.setPriority(newPriority);
+    ticket.setUpdatedAt(LocalDateTime.now());
+    
+    Ticket updatedTicket = ticketRepository.save(ticket);
+    
+    // Log activity
+    String activityMessage;
+    if (oldPriority == null) {
+        activityMessage = String.format(
+            "Priority set to %s by %s. Reason: %s",
+            newPriority.name(),
+            managerUsername,
+            reason != null ? reason : "Not specified"
+        );
+    } else {
+        activityMessage = String.format(
+            "Priority changed from %s to %s by %s. Reason: %s",
+            oldPriority.name(),
+            newPriority.name(),
+            managerUsername,
+            reason != null ? reason : "Not specified"
+        );
+    }
+    
+    logActivity(ticketId, "PRIORITY_SET", activityMessage, managerId, managerUsername);
+    
+    // ✅ NOW publish TicketCreatedEvent (if this is first time setting priority)
+    if (oldPriority == null) {
+        TicketCreatedEvent event = new TicketCreatedEvent(
+                updatedTicket.getTicketId(),
+                updatedTicket.getTicketNumber(),
+                updatedTicket.getTitle(),
+                updatedTicket.getDescription(),
+                updatedTicket.getCreatedByUserId(),
+                updatedTicket.getCreatedByUsername(),
+                updatedTicket.getCategory().name(),
+                newPriority.name(),
+                updatedTicket.getCreatedAt()
+        );
+        eventPublisher.publishTicketCreated(event);
+        
+        log.info("Published TicketCreatedEvent after priority was set for ticket {}", 
+                 updatedTicket.getTicketNumber());
+    }
+    
+    return convertToDTO(updatedTicket);
+}
+
 
 
 
