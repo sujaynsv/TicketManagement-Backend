@@ -43,6 +43,26 @@ eureka:
   instance:
     prefer-ip-address: true
 
+# Service URLs
+services:
+  assignment-service:
+    url: http://localhost:8083
+  auth-service:
+    url: http://localhost:8081
+
+# Feign Client Configuration
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 5000
+        readTimeout: 5000
+        loggerLevel: basic
+      assignment-service:
+        connectTimeout: 5000
+        readTimeout: 10000
+        loggerLevel: full
+
 # RabbitMQ Exchanges and Queues
 rabbitmq:
   exchange:
@@ -63,8 +83,11 @@ logging:
   level:
     com.ticket: DEBUG
     com.ticket.service.EventPublisherService: DEBUG
+    com.ticket.client: DEBUG
     org.springframework.amqp: DEBUG
+    org.springframework.cloud.openfeign: DEBUG
     org.springframework.data.mongodb: INFO
+    feign: DEBUG
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
   file:

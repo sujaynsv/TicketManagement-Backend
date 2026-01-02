@@ -5,6 +5,7 @@ import com.assignment.repository.TicketCacheRepository;
 import com.assignment.service.SlaService;
 import com.ticket.event.TicketAssignedEvent;
 import com.ticket.event.TicketCreatedEvent;
+import com.ticket.event.TicketEscalatedEvent;
 import com.ticket.event.TicketStatusChangedEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -146,4 +147,41 @@ public class TicketEventListener {
                      event.getTicketNumber(), e.getMessage(), e);
         }
     }
+
+    @RabbitListener(queues = "assignment.ticket.escalated")
+    @Transactional
+    public void handleTicketEscalated(TicketEscalatedEvent event) {
+        log.info("Received TicketEscalatedEvent: {} escalated to {}", 
+                event.getTicketNumber(), event.getEscalatedToUsername());
+        
+        try {
+            if (event.getTicketNumber() == null) {
+                log.error("Invalid event: ticketNumber is null");
+                return;
+            }
+            
+            TicketCache ticketCache = ticketCacheRepository.findByTicketNumber(event.getTicketNumber())
+                    .orElse(null);
+            
+            if (ticketCache == null) {
+                log.warn("Ticket not found in cache: {} - skipping escalation update", 
+                        event.getTicketNumber());
+                return;
+            }
+            
+            ticketCache.setAssignedAgentId(event.getEscalatedToUserId());
+            ticketCache.setAssignedAgentUsername(event.getEscalatedToUsername());
+            ticketCache.setStatus("ESCALATED");
+            ticketCache.setUpdatedAt(LocalDateTime.now());
+            
+            ticketCacheRepository.save(ticketCache);
+            log.info("Ticket escalated in cache: {} to manager {}", 
+                    event.getTicketNumber(), event.getEscalatedToUsername());
+            
+        } catch (Exception e) {
+            log.error("Error handling TicketEscalatedEvent for ticket {}: {}", 
+                    event.getTicketNumber(), e.getMessage(), e);
+        }
+    }
+
 }

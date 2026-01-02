@@ -10,6 +10,7 @@ import com.ticket.event.SlaBreachEvent;
 import com.ticket.event.SlaWarningEvent;
 import com.ticket.event.TicketAssignedEvent;
 import com.ticket.event.TicketCreatedEvent;
+import com.ticket.event.TicketEscalatedEvent;
 import com.ticket.event.TicketStatusChangedEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -643,6 +644,139 @@ public void handleSlaWarning(SlaWarningEvent event) {
             
         } catch (Exception e) {
             log.error("Error handling CommentAddedEvent for {}: {}", 
+                    event.getTicketNumber(), e.getMessage(), e);
+        }
+    }
+
+    @RabbitHandler
+    public void handleTicketEscalated(TicketEscalatedEvent event) {
+        try {
+            log.info("Received TicketEscalatedEvent: {} escalated to {}", 
+                    event.getTicketNumber(), event.getEscalatedToUsername());
+            
+            String escalationType = "MANUAL".equals(event.getEscalationType()) ? "Manual Escalation" : "Auto-Escalation (SLA Breach)";
+            
+            String managerSubject = String.format("Ticket Escalated to You: %s", event.getTicketNumber());
+            String managerMessage = String.format(
+                "Hello %s,\n\n" +
+                "A ticket has been escalated to you.\n\n" +
+                "Escalation Details:\n" +
+                "----------------\n" +
+                "Ticket Number: %s\n" +
+                "Title: %s\n" +
+                "Category: %s\n" +
+                "Priority: %s\n" +
+                "Escalation Type: %s\n" +
+                "Escalated By: %s\n" +
+                "Escalation Reason: %s\n" +
+                "Previous Agent: %s\n" +
+                "Escalated At: %s\n\n" +
+                "Action Required:\n" +
+                "This ticket requires your immediate attention. Please review and take appropriate action.\n" +
+                "You can now resolve or close this ticket as needed.\n\n" +
+                "Thank you,\n" +
+                "Ticket Management System",
+                event.getEscalatedToUsername(),
+                event.getTicketNumber(),
+                event.getTitle(),
+                event.getCategory(),
+                event.getPriority(),
+                escalationType,
+                event.getEscalatedByUsername(),
+                event.getEscalationReason(),
+                event.getPreviousAgentUsername(),
+                event.getEscalatedAt()
+            );
+            
+            notificationService.createNotification(
+                event.getEscalatedToUserId(),
+                event.getEscalatedToUsername(),
+                NotificationType.TICKET_ESCALATED,
+                "TICKET_ESCALATED",
+                event.getTicketId(),
+                event.getTicketNumber(),
+                managerSubject,
+                managerMessage,
+                DeliveryChannel.EMAIL
+            );
+            
+            String managerInAppMessage = String.format(
+                "Ticket %s has been escalated to you by %s",
+                event.getTicketNumber(),
+                event.getEscalatedByUsername()
+            );
+            
+            notificationService.createNotification(
+                event.getEscalatedToUserId(),
+                event.getEscalatedToUsername(),
+                NotificationType.TICKET_ESCALATED,
+                "TICKET_ESCALATED",
+                event.getTicketId(),
+                event.getTicketNumber(),
+                "Ticket Escalated",
+                managerInAppMessage,
+                DeliveryChannel.IN_APP
+            );
+            
+            if (event.getPreviousAgentId() != null) {
+                String agentSubject = String.format("Ticket Escalated: %s", event.getTicketNumber());
+                String agentMessage = String.format(
+                    "Hello %s,\n\n" +
+                    "The ticket assigned to you has been escalated to management.\n\n" +
+                    "Escalation Details:\n" +
+                    "----------------\n" +
+                    "Ticket Number: %s\n" +
+                    "Title: %s\n" +
+                    "Escalated To: %s\n" +
+                    "Escalation Type: %s\n" +
+                    "Reason: %s\n\n" +
+                    "This ticket is now being handled by %s.\n\n" +
+                    "Thank you,\n" +
+                    "Ticket Management System",
+                    event.getPreviousAgentUsername(),
+                    event.getTicketNumber(),
+                    event.getTitle(),
+                    event.getEscalatedToUsername(),
+                    escalationType,
+                    event.getEscalationReason(),
+                    event.getEscalatedToUsername()
+                );
+                
+                notificationService.createNotification(
+                    event.getPreviousAgentId(),
+                    event.getPreviousAgentUsername(),
+                    NotificationType.TICKET_ESCALATED,
+                    "TICKET_ESCALATED",
+                    event.getTicketId(),
+                    event.getTicketNumber(),
+                    agentSubject,
+                    agentMessage,
+                    DeliveryChannel.EMAIL
+                );
+                
+                String agentInAppMessage = String.format(
+                    "Your ticket %s has been escalated to %s",
+                    event.getTicketNumber(),
+                    event.getEscalatedToUsername()
+                );
+                
+                notificationService.createNotification(
+                    event.getPreviousAgentId(),
+                    event.getPreviousAgentUsername(),
+                    NotificationType.TICKET_ESCALATED,
+                    "TICKET_ESCALATED",
+                    event.getTicketId(),
+                    event.getTicketNumber(),
+                    "Ticket Escalated",
+                    agentInAppMessage,
+                    DeliveryChannel.IN_APP
+                );
+            }
+            
+            log.info("Escalation notifications sent for ticket: {}", event.getTicketNumber());
+            
+        } catch (Exception e) {
+            log.error("Error handling TicketEscalatedEvent for {}: {}", 
                     event.getTicketNumber(), e.getMessage(), e);
         }
     }

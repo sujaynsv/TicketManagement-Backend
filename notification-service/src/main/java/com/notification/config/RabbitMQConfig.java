@@ -22,6 +22,8 @@ public class RabbitMQConfig {
     public static final String COMMENT_ADDED_KEY = "comment.added";
     public static final String SLA_WARNING_KEY = "sla.warning";
     public static final String SLA_BREACH_KEY = "sla.breach";
+
+    public static final String TICKET_ESCALATED_KEY="ticket.escalated";
     
     @Bean
     public TopicExchange exchange() {
@@ -87,5 +89,12 @@ public class RabbitMQConfig {
         RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
         rabbitTemplate.setMessageConverter(messageConverter());
         return rabbitTemplate;
+    }
+
+    @Bean
+    public Binding ticketEscalatedBinding(Queue notificationQueue, TopicExchange exchange) {
+        return BindingBuilder.bind(notificationQueue)
+                .to(exchange)
+                .with(TICKET_ESCALATED_KEY);
     }
 }

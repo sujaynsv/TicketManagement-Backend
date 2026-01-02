@@ -2,7 +2,12 @@ package com.ticket.service;
 
 import com.ticket.event.CommentAddedEvent;
 import com.ticket.event.TicketCreatedEvent;
+import com.ticket.event.TicketEscalatedEvent;
 import com.ticket.event.TicketStatusChangedEvent;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -11,6 +16,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
+@Slf4j
 public class EventPublisherService {
     
     private static final Logger log = LoggerFactory.getLogger(EventPublisherService.class);
@@ -20,6 +27,8 @@ public class EventPublisherService {
     
     @Value("${rabbitmq.exchange.name}")
     private String ticketExchange;
+
+    private static final String EXCHANGE="ticket.exchange";
     
     @Value("${rabbitmq.routing-key.ticket-created}")
     private String ticketCreatedRoutingKey;
@@ -72,4 +81,14 @@ public class EventPublisherService {
         
         log.info("  CommentAddedEvent published for ticket: {}", event.getTicketNumber());
     }
+
+    public void publishTicketEscalated(TicketEscalatedEvent event) {
+        try {
+            rabbitTemplate.convertAndSend(EXCHANGE, "ticket.escalated", event);
+            log.info("TicketEscalatedEvent published successfully for: {}", event.getTicketNumber());
+        } catch (Exception e) {
+            log.error("Failed to publish TicketEscalatedEvent: {}", e.getMessage(), e);
+        }
+    }
+
 }

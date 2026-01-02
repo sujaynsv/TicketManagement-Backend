@@ -22,4 +22,5 @@ public interface AssignmentRepository extends JpaRepository<Assignment, String> 
     
     // Count active assignments for agent
     Long countByAgentIdAndStatus(String agentId, AssignmentStatus status);
+
 }

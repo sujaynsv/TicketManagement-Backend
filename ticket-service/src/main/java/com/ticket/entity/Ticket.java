@@ -1,5 +1,6 @@
 package com.ticket.entity;
 
+import com.ticket.enums.EscalationType;
 import com.ticket.enums.TicketCategory;
 import com.ticket.enums.TicketPriority;
 import com.ticket.enums.TicketStatus;
@@ -51,7 +52,81 @@ public class Ticket {
     private Integer commentCount;
     
     private Integer attachmentCount;
+
+
+    // Escalated fields
+
+    private String escalatedToUserId;
+
+    private String escalatedToUsername;
     
+    private String escalatedBy;
+
+    private String escalatedByUsername;
+
+    private EscalationType escalationType;
+
+    private LocalDateTime escalatedAt;
+
+    private String escalationReason;
+    
+    public String getEscalatedToUserId() {
+    return escalatedToUserId;
+}
+
+public void setEscalatedToUserId(String escalatedToUserId) {
+    this.escalatedToUserId = escalatedToUserId;
+}
+
+public String getEscalatedToUsername() {
+    return escalatedToUsername;
+}
+
+public void setEscalatedToUsername(String escalatedToUsername) {
+    this.escalatedToUsername = escalatedToUsername;
+}
+
+public String getEscalatedBy() {
+    return escalatedBy;
+}
+
+public void setEscalatedBy(String escalatedBy) {
+    this.escalatedBy = escalatedBy;
+}
+
+public String getEscalatedByUsername() {
+    return escalatedByUsername;
+}
+
+public void setEscalatedByUsername(String escalatedByUsername) {
+    this.escalatedByUsername = escalatedByUsername;
+}
+
+public com.ticket.enums.EscalationType getEscalationType() {
+    return escalationType;
+}
+
+public void setEscalationType(com.ticket.enums.EscalationType escalationType) {
+    this.escalationType = escalationType;
+}
+
+public String getEscalationReason() {
+    return escalationReason;
+}
+
+public void setEscalationReason(String escalationReason) {
+    this.escalationReason = escalationReason;
+}
+
+public LocalDateTime getEscalatedAt() {
+    return escalatedAt;
+}
+
+public void setEscalatedAt(LocalDateTime escalatedAt) {
+    this.escalatedAt = escalatedAt;
+}
+
+
     // Constructors
     public Ticket() {
         this.tags = new ArrayList<>();

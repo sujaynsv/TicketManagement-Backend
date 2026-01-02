@@ -21,6 +21,9 @@ public class RabbitMQConfig {
     public static final String TICKET_CREATED_QUEUE = "assignment.ticket.created";
     public static final String TICKET_ASSIGNED_QUEUE = "assignment.ticket.assigned";
     public static final String TICKET_STATUS_QUEUE = "assignment.ticket.status";
+
+    public static final String TICKET_ESCALATED_QUEUE="assignment.ticket.escalated";
+    public static final String TICKET_ESCALATED_KEY="ticket.escalated";
     
     // Routing Keys
     public static final String TICKET_CREATED_KEY = "ticket.created";
@@ -92,5 +95,17 @@ public class RabbitMQConfig {
         factory.setConcurrentConsumers(3);
         factory.setMaxConcurrentConsumers(10);
         return factory;
+    }
+
+    @Bean
+    public Queue ticketEscalatedQueue() {
+        return QueueBuilder.durable(TICKET_ESCALATED_QUEUE).build();
+    }
+
+    @Bean
+    public Binding ticketEscalatedBinding(Queue ticketEscalatedQueue, TopicExchange exchange) {
+        return BindingBuilder.bind(ticketEscalatedQueue)
+                .to(exchange)
+                .with(TICKET_ESCALATED_KEY);
     }
 }

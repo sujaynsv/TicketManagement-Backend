@@ -12037,3 +12037,545 @@ CRITICAL: SLA BREACH for ticket TKT-20260102-00062..., SLA_BREACH, null, 0, null
 2026-01-02T14:18:13.661+05:30  INFO 45730 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.notification.listener.EventListener    : Comment notification sent to ticket creator: sujay-1
 2026-01-02T14:18:13.661+05:30  INFO 45730 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.notification.listener.EventListener    : Comment notifications processed for ticket: TKT-20260102-00062
 2026-01-02T14:18:17.978+05:30  INFO 45730 --- [notification-service] [task-1] com.notification.service.EmailService    : Email sent to nsvsujay04@gmail.com: New Comment on Ticket: TKT-20260102-00062
+2026-01-02T14:22:26.444+05:30  INFO 45730 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-02T14:27:26.453+05:30  INFO 45730 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-02T14:32:26.462+05:30  INFO 45730 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-02T14:37:26.472+05:30  INFO 45730 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-02T14:42:26.477+05:30  INFO 45730 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-02T14:47:26.484+05:30  INFO 45730 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-02T14:52:26.422+05:30  INFO 45730 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-02T14:57:26.429+05:30  INFO 45730 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-02T15:02:26.435+05:30  INFO 45730 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-02T15:07:26.466+05:30  INFO 45730 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-02T15:12:26.479+05:30  INFO 45730 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-02T15:17:26.486+05:30  INFO 45730 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-02T15:22:26.495+05:30  INFO 45730 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-02T15:24:24.492+05:30  INFO 45730 --- [notification-service] [SpringApplicationShutdownHook] o.s.c.n.e.s.EurekaServiceRegistry        : Unregistering application NOTIFICATION-SERVICE with eureka with status DOWN
+2026-01-02T15:24:24.494+05:30  INFO 45730 --- [notification-service] [SpringApplicationShutdownHook] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1767347664494, current=DOWN, previous=UP]
+2026-01-02T15:24:24.495+05:30  INFO 45730 --- [notification-service] [DiscoveryClient-InstanceInfoReplicator-0] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_NOTIFICATION-SERVICE/10.100.28.50:notification-service:8084: registering service...
+2026-01-02T15:24:24.504+05:30 DEBUG 45730 --- [notification-service] [SpringApplicationShutdownHook] o.s.a.r.l.SimpleMessageListenerContainer : Shutting down Rabbit listener container
+2026-01-02T15:24:24.507+05:30 DEBUG 45730 --- [notification-service] [pool-2-thread-5] o.s.a.r.listener.BlockingQueueConsumer   : Received cancelOk for tag amq.ctag-9WnYcIq4LUvdA7mHSq-iwQ (notification.queue); Consumer@8b24111: tags=[[amq.ctag-9WnYcIq4LUvdA7mHSq-iwQ]], channel=Cached Rabbit Channel: AMQChannel(amqp://guest@127.0.0.1:5672/,1), conn: Proxy@4d5399f4 Shared Rabbit Connection: SimpleConnection@db62b5f [delegate=amqp://guest@127.0.0.1:5672/, localPort=53880], acknowledgeMode=AUTO local queue size=0
+2026-01-02T15:24:24.507+05:30  INFO 45730 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-2] o.s.a.r.l.SimpleMessageListenerContainer : Waiting for workers to finish.
+2026-01-02T15:24:24.508+05:30  INFO 45730 --- [notification-service] [DiscoveryClient-InstanceInfoReplicator-0] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_NOTIFICATION-SERVICE/10.100.28.50:notification-service:8084 - registration status: 204
+2026-01-02T15:24:25.255+05:30 DEBUG 45730 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] o.s.a.r.l.SimpleMessageListenerContainer : Cancelling Consumer@8b24111: tags=[[amq.ctag-9WnYcIq4LUvdA7mHSq-iwQ]], channel=Cached Rabbit Channel: AMQChannel(amqp://guest@127.0.0.1:5672/,1), conn: Proxy@4d5399f4 Shared Rabbit Connection: SimpleConnection@db62b5f [delegate=amqp://guest@127.0.0.1:5672/, localPort=53880], acknowledgeMode=AUTO local queue size=0
+2026-01-02T15:24:25.256+05:30 DEBUG 45730 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] o.s.a.r.listener.BlockingQueueConsumer   : Closing Rabbit Channel: Cached Rabbit Channel: AMQChannel(amqp://guest@127.0.0.1:5672/,1), conn: Proxy@4d5399f4 Shared Rabbit Connection: SimpleConnection@db62b5f [delegate=amqp://guest@127.0.0.1:5672/, localPort=53880]
+2026-01-02T15:24:25.256+05:30 DEBUG 45730 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] o.s.a.r.c.CachingConnectionFactory       : Closing cached Channel: AMQChannel(amqp://guest@127.0.0.1:5672/,1)
+2026-01-02T15:24:25.262+05:30  INFO 45730 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-2] o.s.a.r.l.SimpleMessageListenerContainer : Successfully waited for workers to finish.
+2026-01-02T15:24:25.287+05:30 DEBUG 45730 --- [notification-service] [SpringApplicationShutdownHook] o.s.a.r.l.SimpleMessageListenerContainer : Shutdown ignored - container is not active already
+2026-01-02T15:24:25.304+05:30  INFO 45730 --- [notification-service] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-01-02T15:24:25.307+05:30  INFO 45730 --- [notification-service] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-01-02T15:24:25.308+05:30  INFO 45730 --- [notification-service] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2026-01-02T15:24:25.309+05:30  INFO 45730 --- [notification-service] [SpringApplicationShutdownHook] com.netflix.discovery.DiscoveryClient    : Shutting down DiscoveryClient ...
+2026-01-02T15:24:28.315+05:30  WARN 45730 --- [notification-service] [DiscoveryClient-1] c.netflix.discovery.TimedSupervisorTask  : task supervisor shutting down, can't accept the task
+2026-01-02T15:24:28.316+05:30  INFO 45730 --- [notification-service] [SpringApplicationShutdownHook] com.netflix.discovery.DiscoveryClient    : Unregistering ...
+2026-01-02T15:24:28.319+05:30  INFO 45730 --- [notification-service] [SpringApplicationShutdownHook] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_NOTIFICATION-SERVICE/10.100.28.50:notification-service:8084 - deregister  status: 200
+2026-01-02T15:24:28.322+05:30  INFO 45730 --- [notification-service] [SpringApplicationShutdownHook] com.netflix.discovery.DiscoveryClient    : Completed shut down of DiscoveryClient
+2026-01-02T15:25:16.938+05:30  INFO 63850 --- [notification-service] [main] c.n.NotificationServiceApplication       : Starting NotificationServiceApplication using Java 17.0.17 with PID 63850 (/Users/sujaynimmagadda/Documents/workspace-spring-tools-for-eclipse-4.32.2 2.RELEASE/ticket-management-system/notification-service/target/classes started by sujaynimmagadda in /Users/sujaynimmagadda/Documents/workspace-spring-tools-for-eclipse-4.32.2 2.RELEASE/ticket-management-system/notification-service)
+2026-01-02T15:25:16.939+05:30 DEBUG 63850 --- [notification-service] [main] c.n.NotificationServiceApplication       : Running with Spring Boot v3.2.0, Spring v6.1.1
+2026-01-02T15:25:16.939+05:30  INFO 63850 --- [notification-service] [main] c.n.NotificationServiceApplication       : No active profile set, falling back to 1 default profile: "default"
+2026-01-02T15:25:17.212+05:30 DEBUG 63850 --- [notification-service] [main] o.s.c.openfeign.FeignClientsRegistrar$1  : Identified candidate component class: file [/Users/sujaynimmagadda/Documents/workspace-spring-tools-for-eclipse-4.32.2 2.RELEASE/ticket-management-system/notification-service/target/classes/com/notification/client/TicketServiceClient.class]
+2026-01-02T15:25:17.316+05:30  INFO 63850 --- [notification-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-01-02T15:25:17.410+05:30  INFO 63850 --- [notification-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 90 ms. Found 1 JPA repository interface.
+2026-01-02T15:25:17.585+05:30  INFO 63850 --- [notification-service] [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=791a82be-99d2-3919-8929-e549c9995989
+2026-01-02T15:25:17.682+05:30  WARN 63850 --- [notification-service] [main] trationDelegate$BeanPostProcessorChecker : Bean 'org.springframework.cloud.client.loadbalancer.LoadBalancerAutoConfiguration$RetryInterceptorAutoConfiguration' of type [org.springframework.cloud.client.loadbalancer.LoadBalancerAutoConfiguration$RetryInterceptorAutoConfiguration] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). The currently created BeanPostProcessor [lbRestClientPostProcessor] is declared through a non-static factory method on that class; consider declaring it as static instead.
+2026-01-02T15:25:17.684+05:30  WARN 63850 --- [notification-service] [main] trationDelegate$BeanPostProcessorChecker : Bean 'org.springframework.cloud.loadbalancer.config.BlockingLoadBalancerClientAutoConfiguration' of type [org.springframework.cloud.loadbalancer.config.BlockingLoadBalancerClientAutoConfiguration] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). Is this bean getting eagerly injected into a currently created BeanPostProcessor [lbRestClientPostProcessor]? Check the corresponding BeanPostProcessor declaration and its dependencies.
+2026-01-02T15:25:17.685+05:30  WARN 63850 --- [notification-service] [main] trationDelegate$BeanPostProcessorChecker : Bean 'org.springframework.cloud.loadbalancer.config.LoadBalancerAutoConfiguration' of type [org.springframework.cloud.loadbalancer.config.LoadBalancerAutoConfiguration] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). Is this bean getting eagerly injected into a currently created BeanPostProcessor [lbRestClientPostProcessor]? Check the corresponding BeanPostProcessor declaration and its dependencies.
+2026-01-02T15:25:17.689+05:30  WARN 63850 --- [notification-service] [main] trationDelegate$BeanPostProcessorChecker : Bean 'org.springframework.cloud.commons.config.CommonsConfigAutoConfiguration' of type [org.springframework.cloud.commons.config.CommonsConfigAutoConfiguration] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). Is this bean getting eagerly injected into a currently created BeanPostProcessor [lbRestClientPostProcessor]? Check the corresponding BeanPostProcessor declaration and its dependencies.
+2026-01-02T15:25:17.691+05:30  WARN 63850 --- [notification-service] [main] trationDelegate$BeanPostProcessorChecker : Bean 'org.springframework.cloud.client.loadbalancer.LoadBalancerDefaultMappingsProviderAutoConfiguration' of type [org.springframework.cloud.client.loadbalancer.LoadBalancerDefaultMappingsProviderAutoConfiguration] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). Is this bean getting eagerly injected into a currently created BeanPostProcessor [lbRestClientPostProcessor]? Check the corresponding BeanPostProcessor declaration and its dependencies.
+2026-01-02T15:25:17.691+05:30  WARN 63850 --- [notification-service] [main] trationDelegate$BeanPostProcessorChecker : Bean 'loadBalancerClientsDefaultsMappingsProvider' of type [org.springframework.cloud.client.loadbalancer.LoadBalancerDefaultMappingsProviderAutoConfiguration$$Lambda$622/0x0000000301446ec0] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). Is this bean getting eagerly injected into a currently created BeanPostProcessor [lbRestClientPostProcessor]? Check the corresponding BeanPostProcessor declaration and its dependencies.
+2026-01-02T15:25:17.692+05:30  WARN 63850 --- [notification-service] [main] trationDelegate$BeanPostProcessorChecker : Bean 'defaultsBindHandlerAdvisor' of type [org.springframework.cloud.commons.config.DefaultsBindHandlerAdvisor] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). Is this bean getting eagerly injected into a currently created BeanPostProcessor [lbRestClientPostProcessor]? Check the corresponding BeanPostProcessor declaration and its dependencies.
+2026-01-02T15:25:17.697+05:30  WARN 63850 --- [notification-service] [main] trationDelegate$BeanPostProcessorChecker : Bean 'spring.cloud.loadbalancer-org.springframework.cloud.client.loadbalancer.LoadBalancerClientsProperties' of type [org.springframework.cloud.client.loadbalancer.LoadBalancerClientsProperties] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). Is this bean getting eagerly injected into a currently created BeanPostProcessor [lbRestClientPostProcessor]? Check the corresponding BeanPostProcessor declaration and its dependencies.
+2026-01-02T15:25:17.701+05:30  WARN 63850 --- [notification-service] [main] trationDelegate$BeanPostProcessorChecker : Bean 'default.org.springframework.cloud.loadbalancer.config.LoadBalancerAutoConfiguration.LoadBalancerClientSpecification' of type [org.springframework.cloud.loadbalancer.annotation.LoadBalancerClientSpecification] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). Is this bean getting eagerly injected into a currently created BeanPostProcessor [lbRestClientPostProcessor]? Check the corresponding BeanPostProcessor declaration and its dependencies.
+2026-01-02T15:25:17.702+05:30  WARN 63850 --- [notification-service] [main] trationDelegate$BeanPostProcessorChecker : Bean 'default.org.springframework.cloud.loadbalancer.config.BlockingLoadBalancerClientAutoConfiguration.LoadBalancerClientSpecification' of type [org.springframework.cloud.loadbalancer.annotation.LoadBalancerClientSpecification] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). Is this bean getting eagerly injected into a currently created BeanPostProcessor [lbRestClientPostProcessor]? Check the corresponding BeanPostProcessor declaration and its dependencies.
+2026-01-02T15:25:17.702+05:30  WARN 63850 --- [notification-service] [main] trationDelegate$BeanPostProcessorChecker : Bean 'default.org.springframework.cloud.netflix.eureka.loadbalancer.LoadBalancerEurekaAutoConfiguration.LoadBalancerClientSpecification' of type [org.springframework.cloud.loadbalancer.annotation.LoadBalancerClientSpecification] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). Is this bean getting eagerly injected into a currently created BeanPostProcessor [lbRestClientPostProcessor]? Check the corresponding BeanPostProcessor declaration and its dependencies.
+2026-01-02T15:25:17.703+05:30  WARN 63850 --- [notification-service] [main] trationDelegate$BeanPostProcessorChecker : Bean 'loadBalancerClientFactory' of type [org.springframework.cloud.loadbalancer.support.LoadBalancerClientFactory] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). Is this bean getting eagerly injected into a currently created BeanPostProcessor [lbRestClientPostProcessor]? Check the corresponding BeanPostProcessor declaration and its dependencies.
+2026-01-02T15:25:17.705+05:30  WARN 63850 --- [notification-service] [main] trationDelegate$BeanPostProcessorChecker : Bean 'blockingLoadBalancerClient' of type [org.springframework.cloud.loadbalancer.blocking.client.BlockingLoadBalancerClient] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). Is this bean getting eagerly injected into a currently created BeanPostProcessor [lbRestClientPostProcessor]? Check the corresponding BeanPostProcessor declaration and its dependencies.
+2026-01-02T15:25:17.709+05:30  WARN 63850 --- [notification-service] [main] trationDelegate$BeanPostProcessorChecker : Bean 'loadBalancerServiceInstanceCookieTransformer' of type [org.springframework.cloud.loadbalancer.core.LoadBalancerServiceInstanceCookieTransformer] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). Is this bean getting eagerly injected into a currently created BeanPostProcessor [lbRestClientPostProcessor]? Check the corresponding BeanPostProcessor declaration and its dependencies.
+2026-01-02T15:25:17.710+05:30  WARN 63850 --- [notification-service] [main] trationDelegate$BeanPostProcessorChecker : Bean 'xForwarderHeadersTransformer' of type [org.springframework.cloud.loadbalancer.blocking.XForwardedHeadersTransformer] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). Is this bean getting eagerly injected into a currently created BeanPostProcessor [lbRestClientPostProcessor]? Check the corresponding BeanPostProcessor declaration and its dependencies.
+2026-01-02T15:25:17.711+05:30  WARN 63850 --- [notification-service] [main] trationDelegate$BeanPostProcessorChecker : Bean 'org.springframework.cloud.client.loadbalancer.LoadBalancerAutoConfiguration' of type [org.springframework.cloud.client.loadbalancer.LoadBalancerAutoConfiguration] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). Is this bean getting eagerly injected into a currently created BeanPostProcessor [lbRestClientPostProcessor]? Check the corresponding BeanPostProcessor declaration and its dependencies.
+2026-01-02T15:25:17.711+05:30  WARN 63850 --- [notification-service] [main] trationDelegate$BeanPostProcessorChecker : Bean 'loadBalancerRequestFactory' of type [org.springframework.cloud.client.loadbalancer.LoadBalancerRequestFactory] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). Is this bean getting eagerly injected into a currently created BeanPostProcessor [lbRestClientPostProcessor]? Check the corresponding BeanPostProcessor declaration and its dependencies.
+2026-01-02T15:25:17.712+05:30  WARN 63850 --- [notification-service] [main] trationDelegate$BeanPostProcessorChecker : Bean 'org.springframework.cloud.loadbalancer.config.BlockingLoadBalancerClientAutoConfiguration$BlockingLoadBalancerRetryConfig' of type [org.springframework.cloud.loadbalancer.config.BlockingLoadBalancerClientAutoConfiguration$BlockingLoadBalancerRetryConfig$$SpringCGLIB$$0] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). Is this bean getting eagerly injected into a currently created BeanPostProcessor [lbRestClientPostProcessor]? Check the corresponding BeanPostProcessor declaration and its dependencies.
+2026-01-02T15:25:17.715+05:30  WARN 63850 --- [notification-service] [main] trationDelegate$BeanPostProcessorChecker : Bean 'loadBalancedRetryFactory' of type [org.springframework.cloud.loadbalancer.blocking.retry.BlockingLoadBalancedRetryFactory] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). Is this bean getting eagerly injected into a currently created BeanPostProcessor [lbRestClientPostProcessor]? Check the corresponding BeanPostProcessor declaration and its dependencies.
+2026-01-02T15:25:17.717+05:30  WARN 63850 --- [notification-service] [main] trationDelegate$BeanPostProcessorChecker : Bean 'loadBalancerInterceptor' of type [org.springframework.cloud.client.loadbalancer.RetryLoadBalancerInterceptor] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). Is this bean getting eagerly injected into a currently created BeanPostProcessor [lbRestClientPostProcessor]? Check the corresponding BeanPostProcessor declaration and its dependencies.
+2026-01-02T15:25:17.836+05:30  INFO 63850 --- [notification-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8084 (http)
+2026-01-02T15:25:17.841+05:30  INFO 63850 --- [notification-service] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-01-02T15:25:17.841+05:30  INFO 63850 --- [notification-service] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.16]
+2026-01-02T15:25:17.880+05:30  INFO 63850 --- [notification-service] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-01-02T15:25:17.880+05:30  INFO 63850 --- [notification-service] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 916 ms
+2026-01-02T15:25:17.976+05:30  INFO 63850 --- [notification-service] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-01-02T15:25:18.006+05:30  INFO 63850 --- [notification-service] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.3.1.Final
+2026-01-02T15:25:18.026+05:30  INFO 63850 --- [notification-service] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-01-02T15:25:18.156+05:30  INFO 63850 --- [notification-service] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-01-02T15:25:18.169+05:30  INFO 63850 --- [notification-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-01-02T15:25:18.232+05:30  INFO 63850 --- [notification-service] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@69069866
+2026-01-02T15:25:18.233+05:30  INFO 63850 --- [notification-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-01-02T15:25:18.257+05:30  WARN 63850 --- [notification-service] [main] org.hibernate.orm.deprecation            : HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-01-02T15:25:18.794+05:30  INFO 63850 --- [notification-service] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-01-02T15:25:18.829+05:30  INFO 63850 --- [notification-service] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-01-02T15:25:19.024+05:30  INFO 63850 --- [notification-service] [main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-01-02T15:25:19.285+05:30 DEBUG 63850 --- [notification-service] [main] o.s.c.openfeign.FeignClientFactoryBean   : Creating a FeignClientFactoryBean.
+2026-01-02T15:25:19.331+05:30  WARN 63850 --- [notification-service] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-01-02T15:25:19.843+05:30  INFO 63850 --- [notification-service] [main] DiscoveryClientOptionalArgsConfiguration : Eureka HTTP Client uses RestTemplate.
+2026-01-02T15:25:19.868+05:30  WARN 63850 --- [notification-service] [main] iguration$LoadBalancerCaffeineWarnLogger : Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
+2026-01-02T15:25:19.892+05:30 DEBUG 63850 --- [notification-service] [main] o.s.a.r.l.SimpleMessageListenerContainer : No global properties bean
+2026-01-02T15:25:19.899+05:30  INFO 63850 --- [notification-service] [main] o.s.c.n.eureka.InstanceInfoFactory       : Setting initial instance status as: STARTING
+2026-01-02T15:25:19.943+05:30  INFO 63850 --- [notification-service] [main] com.netflix.discovery.DiscoveryClient    : Initializing Eureka in region us-east-1
+2026-01-02T15:25:19.946+05:30  INFO 63850 --- [notification-service] [main] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-02T15:25:19.959+05:30  INFO 63850 --- [notification-service] [main] com.netflix.discovery.DiscoveryClient    : Disable delta property : false
+2026-01-02T15:25:19.959+05:30  INFO 63850 --- [notification-service] [main] com.netflix.discovery.DiscoveryClient    : Single vip registry refresh property : null
+2026-01-02T15:25:19.959+05:30  INFO 63850 --- [notification-service] [main] com.netflix.discovery.DiscoveryClient    : Force full registry fetch : false
+2026-01-02T15:25:19.959+05:30  INFO 63850 --- [notification-service] [main] com.netflix.discovery.DiscoveryClient    : Application is null : false
+2026-01-02T15:25:19.959+05:30  INFO 63850 --- [notification-service] [main] com.netflix.discovery.DiscoveryClient    : Registered Applications size is zero : true
+2026-01-02T15:25:19.959+05:30  INFO 63850 --- [notification-service] [main] com.netflix.discovery.DiscoveryClient    : Application version is -1: true
+2026-01-02T15:25:19.959+05:30  INFO 63850 --- [notification-service] [main] com.netflix.discovery.DiscoveryClient    : Getting all instance registry info from the eureka server
+2026-01-02T15:25:20.125+05:30  INFO 63850 --- [notification-service] [main] com.netflix.discovery.DiscoveryClient    : The response status is 200
+2026-01-02T15:25:20.126+05:30  INFO 63850 --- [notification-service] [main] com.netflix.discovery.DiscoveryClient    : Starting heartbeat executor: renew interval is: 30
+2026-01-02T15:25:20.127+05:30  INFO 63850 --- [notification-service] [main] c.n.discovery.InstanceInfoReplicator     : InstanceInfoReplicator onDemand update allowed rate per min is 4
+2026-01-02T15:25:20.130+05:30  INFO 63850 --- [notification-service] [main] com.netflix.discovery.DiscoveryClient    : Discovery Client initialized at timestamp 1767347720130 with initial instances count: 0
+2026-01-02T15:25:20.133+05:30  INFO 63850 --- [notification-service] [main] o.s.c.n.e.s.EurekaServiceRegistry        : Registering application NOTIFICATION-SERVICE with eureka with status UP
+2026-01-02T15:25:20.133+05:30  INFO 63850 --- [notification-service] [main] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1767347720133, current=UP, previous=STARTING]
+2026-01-02T15:25:20.134+05:30  INFO 63850 --- [notification-service] [DiscoveryClient-InstanceInfoReplicator-0] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_NOTIFICATION-SERVICE/10.100.28.50:notification-service:8084: registering service...
+2026-01-02T15:25:20.145+05:30  INFO 63850 --- [notification-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8084 (http) with context path ''
+2026-01-02T15:25:20.145+05:30  INFO 63850 --- [notification-service] [main] .s.c.n.e.s.EurekaAutoServiceRegistration : Updating port to 8084
+2026-01-02T15:25:20.148+05:30 DEBUG 63850 --- [notification-service] [main] o.s.a.r.l.SimpleMessageListenerContainer : Starting Rabbit listener container.
+2026-01-02T15:25:20.150+05:30  INFO 63850 --- [notification-service] [main] o.s.a.r.c.CachingConnectionFactory       : Attempting to connect to: [localhost:5672]
+2026-01-02T15:25:20.164+05:30  INFO 63850 --- [notification-service] [DiscoveryClient-InstanceInfoReplicator-0] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_NOTIFICATION-SERVICE/10.100.28.50:notification-service:8084 - registration status: 204
+2026-01-02T15:25:20.182+05:30  INFO 63850 --- [notification-service] [main] o.s.a.r.c.CachingConnectionFactory       : Created new connection: rabbitConnectionFactory#3dab9366:0/SimpleConnection@46110b82 [delegate=amqp://guest@127.0.0.1:5672/, localPort=57230]
+2026-01-02T15:25:20.186+05:30 DEBUG 63850 --- [notification-service] [main] o.s.amqp.rabbit.core.RabbitAdmin         : Initializing declarations
+2026-01-02T15:25:20.193+05:30 DEBUG 63850 --- [notification-service] [main] o.s.a.r.c.CachingConnectionFactory       : Creating cached Rabbit Channel from AMQChannel(amqp://guest@127.0.0.1:5672/,1)
+2026-01-02T15:25:20.199+05:30 DEBUG 63850 --- [notification-service] [main] o.s.amqp.rabbit.core.RabbitTemplate      : Executing callback RabbitAdmin$$Lambda$1711/0x0000000301bab360 on RabbitMQ Channel: Cached Rabbit Channel: AMQChannel(amqp://guest@127.0.0.1:5672/,1), conn: Proxy@4f3f8115 Shared Rabbit Connection: SimpleConnection@46110b82 [delegate=amqp://guest@127.0.0.1:5672/, localPort=57230]
+2026-01-02T15:25:20.199+05:30 DEBUG 63850 --- [notification-service] [main] o.s.amqp.rabbit.core.RabbitAdmin         : declaring Exchange 'ticket.exchange'
+2026-01-02T15:25:20.200+05:30 DEBUG 63850 --- [notification-service] [main] o.s.amqp.rabbit.core.RabbitAdmin         : declaring Queue 'notification.queue'
+2026-01-02T15:25:20.201+05:30 DEBUG 63850 --- [notification-service] [main] o.s.amqp.rabbit.core.RabbitAdmin         : Binding destination [notification.queue (QUEUE)] to exchange [ticket.exchange] with routing key [ticket.created]
+2026-01-02T15:25:20.204+05:30 DEBUG 63850 --- [notification-service] [main] o.s.amqp.rabbit.core.RabbitAdmin         : Binding destination [notification.queue (QUEUE)] to exchange [ticket.exchange] with routing key [ticket.assigned]
+2026-01-02T15:25:20.205+05:30 DEBUG 63850 --- [notification-service] [main] o.s.amqp.rabbit.core.RabbitAdmin         : Binding destination [notification.queue (QUEUE)] to exchange [ticket.exchange] with routing key [ticket.status.changed]
+2026-01-02T15:25:20.207+05:30 DEBUG 63850 --- [notification-service] [main] o.s.amqp.rabbit.core.RabbitAdmin         : Binding destination [notification.queue (QUEUE)] to exchange [ticket.exchange] with routing key [comment.added]
+2026-01-02T15:25:20.208+05:30 DEBUG 63850 --- [notification-service] [main] o.s.amqp.rabbit.core.RabbitAdmin         : Binding destination [notification.queue (QUEUE)] to exchange [ticket.exchange] with routing key [sla.warning]
+2026-01-02T15:25:20.209+05:30 DEBUG 63850 --- [notification-service] [main] o.s.amqp.rabbit.core.RabbitAdmin         : Binding destination [notification.queue (QUEUE)] to exchange [ticket.exchange] with routing key [sla.breach]
+2026-01-02T15:25:20.209+05:30 DEBUG 63850 --- [notification-service] [main] o.s.amqp.rabbit.core.RabbitAdmin         : Binding destination [notification.queue (QUEUE)] to exchange [ticket.exchange] with routing key [ticket.escalated]
+2026-01-02T15:25:20.212+05:30 DEBUG 63850 --- [notification-service] [main] o.s.amqp.rabbit.core.RabbitAdmin         : Declarations finished
+2026-01-02T15:25:20.216+05:30 DEBUG 63850 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] o.s.amqp.rabbit.core.RabbitTemplate      : Executing callback RabbitAdmin$$Lambda$1719/0x0000000301bb18b8 on RabbitMQ Channel: Cached Rabbit Channel: AMQChannel(amqp://guest@127.0.0.1:5672/,1), conn: Proxy@4f3f8115 Shared Rabbit Connection: SimpleConnection@46110b82 [delegate=amqp://guest@127.0.0.1:5672/, localPort=57230]
+2026-01-02T15:25:20.219+05:30 DEBUG 63850 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] o.s.a.r.listener.BlockingQueueConsumer   : Starting consumer Consumer@7f2a5d5f: tags=[[]], channel=null, acknowledgeMode=AUTO local queue size=0
+2026-01-02T15:25:20.224+05:30 DEBUG 63850 --- [notification-service] [pool-2-thread-3] o.s.a.r.listener.BlockingQueueConsumer   : ConsumeOK: Consumer@7f2a5d5f: tags=[[amq.ctag-nE7vSFG-50ZNqBD78n6HXg]], channel=Cached Rabbit Channel: AMQChannel(amqp://guest@127.0.0.1:5672/,1), conn: Proxy@4f3f8115 Shared Rabbit Connection: SimpleConnection@46110b82 [delegate=amqp://guest@127.0.0.1:5672/, localPort=57230], acknowledgeMode=AUTO local queue size=0
+2026-01-02T15:25:20.224+05:30 DEBUG 63850 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] o.s.a.r.listener.BlockingQueueConsumer   : Started on queue 'notification.queue' with tag amq.ctag-nE7vSFG-50ZNqBD78n6HXg: Consumer@7f2a5d5f: tags=[[amq.ctag-nE7vSFG-50ZNqBD78n6HXg]], channel=Cached Rabbit Channel: AMQChannel(amqp://guest@127.0.0.1:5672/,1), conn: Proxy@4f3f8115 Shared Rabbit Connection: SimpleConnection@46110b82 [delegate=amqp://guest@127.0.0.1:5672/, localPort=57230], acknowledgeMode=AUTO local queue size=0
+2026-01-02T15:25:20.233+05:30  INFO 63850 --- [notification-service] [main] c.n.NotificationServiceApplication       : Started NotificationServiceApplication in 3.556 seconds (process running for 3.757)
+2026-01-02T15:25:50.134+05:30  INFO 63850 --- [notification-service] [DiscoveryClient-CacheRefreshExecutor-0] com.netflix.discovery.DiscoveryClient    : Disable delta property : false
+2026-01-02T15:25:50.152+05:30  INFO 63850 --- [notification-service] [DiscoveryClient-CacheRefreshExecutor-0] com.netflix.discovery.DiscoveryClient    : Single vip registry refresh property : null
+2026-01-02T15:25:50.152+05:30  INFO 63850 --- [notification-service] [DiscoveryClient-CacheRefreshExecutor-0] com.netflix.discovery.DiscoveryClient    : Force full registry fetch : false
+2026-01-02T15:25:50.152+05:30  INFO 63850 --- [notification-service] [DiscoveryClient-CacheRefreshExecutor-0] com.netflix.discovery.DiscoveryClient    : Application is null : false
+2026-01-02T15:25:50.152+05:30  INFO 63850 --- [notification-service] [DiscoveryClient-CacheRefreshExecutor-0] com.netflix.discovery.DiscoveryClient    : Registered Applications size is zero : true
+2026-01-02T15:25:50.152+05:30  INFO 63850 --- [notification-service] [DiscoveryClient-CacheRefreshExecutor-0] com.netflix.discovery.DiscoveryClient    : Application version is -1: false
+2026-01-02T15:25:50.152+05:30  INFO 63850 --- [notification-service] [DiscoveryClient-CacheRefreshExecutor-0] com.netflix.discovery.DiscoveryClient    : Getting all instance registry info from the eureka server
+2026-01-02T15:25:50.175+05:30  INFO 63850 --- [notification-service] [DiscoveryClient-CacheRefreshExecutor-0] com.netflix.discovery.DiscoveryClient    : The response status is 200
+2026-01-02T15:28:12.995+05:30 DEBUG 63850 --- [notification-service] [pool-2-thread-4] o.s.a.r.listener.BlockingQueueConsumer   : Storing delivery for consumerTag: 'amq.ctag-nE7vSFG-50ZNqBD78n6HXg' with deliveryTag: '1' in Consumer@7f2a5d5f: tags=[[amq.ctag-nE7vSFG-50ZNqBD78n6HXg]], channel=Cached Rabbit Channel: AMQChannel(amqp://guest@127.0.0.1:5672/,1), conn: Proxy@4f3f8115 Shared Rabbit Connection: SimpleConnection@46110b82 [delegate=amqp://guest@127.0.0.1:5672/, localPort=57230], acknowledgeMode=AUTO local queue size=0
+2026-01-02T15:28:13.014+05:30 DEBUG 63850 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] o.s.a.r.listener.BlockingQueueConsumer   : Received message: (Body:'[B@6526910b(byte[303])' MessageProperties [headers={__TypeId__=com.ticket.event.TicketCreatedEvent}, contentType=application/json, contentEncoding=UTF-8, contentLength=0, receivedDeliveryMode=PERSISTENT, priority=0, redelivered=false, receivedExchange=ticket.exchange, receivedRoutingKey=ticket.created, deliveryTag=1, consumerTag=amq.ctag-nE7vSFG-50ZNqBD78n6HXg, consumerQueue=notification.queue])
+2026-01-02T15:28:13.146+05:30 DEBUG 63850 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] .a.r.l.a.MessagingMessageListenerAdapter : Processing [GenericMessage [payload=com.ticket.event.TicketCreatedEvent@5449d18, headers={amqp_receivedDeliveryMode=PERSISTENT, amqp_receivedExchange=ticket.exchange, amqp_deliveryTag=1, amqp_consumerQueue=notification.queue, amqp_redelivered=false, amqp_receivedRoutingKey=ticket.created, amqp_contentEncoding=UTF-8, id=5f746bf3-8b17-3e55-1fbb-ca7a6345258a, amqp_consumerTag=amq.ctag-nE7vSFG-50ZNqBD78n6HXg, amqp_lastInBatch=false, contentType=application/json, __TypeId__=com.ticket.event.TicketCreatedEvent, timestamp=1767347893144}]]
+2026-01-02T15:28:13.152+05:30  INFO 63850 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.notification.listener.EventListener    : Received TicketCreatedEvent: TKT-20260102-00063
+2026-01-02T15:28:13.208+05:30  INFO 63850 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.n.service.NotificationService          : Creating notification for user sujay: TICKET_CREATED
+2026-01-02T15:28:13.335+05:30  INFO 63850 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.n.service.NotificationService          : Email notification sent to nsvsujay04@gmail.com
+2026-01-02T15:28:13.368+05:30 DEBUG 63850 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] org.hibernate.SQL                        : 
+    insert 
+    into
+        notifications
+        (created_at, delivery_channel, error_message, event_type, is_read, message, notification_type, read_at, retry_count, sent_at, status, subject, ticket_id, ticket_number, updated_at, user_email, user_id, username, notification_id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-01-02T15:28:13.382+05:30 DEBUG 63850 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] org.hibernate.SQL                        : 
+    update
+        notifications 
+    set
+        created_at=?,
+        delivery_channel=?,
+        error_message=?,
+        event_type=?,
+        is_read=?,
+        message=?,
+        notification_type=?,
+        read_at=?,
+        retry_count=?,
+        sent_at=?,
+        status=?,
+        subject=?,
+        ticket_id=?,
+        ticket_number=?,
+        updated_at=?,
+        user_email=?,
+        user_id=?,
+        username=? 
+    where
+        notification_id=?
+2026-01-02T15:28:13.391+05:30  INFO 63850 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.n.service.NotificationService          : Creating notification for user sujay: TICKET_CREATED
+2026-01-02T15:28:13.397+05:30 DEBUG 63850 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] org.hibernate.SQL                        : 
+    insert 
+    into
+        notifications
+        (created_at, delivery_channel, error_message, event_type, is_read, message, notification_type, read_at, retry_count, sent_at, status, subject, ticket_id, ticket_number, updated_at, user_email, user_id, username, notification_id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-01-02T15:28:13.399+05:30 DEBUG 63850 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] org.hibernate.SQL                        : 
+    update
+        notifications 
+    set
+        created_at=?,
+        delivery_channel=?,
+        error_message=?,
+        event_type=?,
+        is_read=?,
+        message=?,
+        notification_type=?,
+        read_at=?,
+        retry_count=?,
+        sent_at=?,
+        status=?,
+        subject=?,
+        ticket_id=?,
+        ticket_number=?,
+        updated_at=?,
+        user_email=?,
+        user_id=?,
+        username=? 
+    where
+        notification_id=?
+2026-01-02T15:28:13.400+05:30  INFO 63850 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.notification.listener.EventListener    : Notifications sent for ticket creation: TKT-20260102-00063
+2026-01-02T15:28:14.747+05:30 ERROR 63850 --- [notification-service] [task-1] com.notification.service.EmailService    : Failed to send email to nsvsujay04@gmail.com: Authentication failed
+2026-01-02T15:28:14.748+05:30 ERROR 63850 --- [notification-service] [task-1] .a.i.SimpleAsyncUncaughtExceptionHandler : Unexpected exception occurred invoking async method: public void com.notification.service.EmailService.sendEmail(java.lang.String,java.lang.String,java.lang.String)
+
+java.lang.RuntimeException: Failed to send email
+	at com.notification.service.EmailService.sendEmail(EmailService.java:46) ~[classes/:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569) ~[na:na]
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:352) ~[spring-aop-6.1.1.jar:6.1.1]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.invokeJoinpoint(ReflectiveMethodInvocation.java:196) ~[spring-aop-6.1.1.jar:6.1.1]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163) ~[spring-aop-6.1.1.jar:6.1.1]
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:765) ~[spring-aop-6.1.1.jar:6.1.1]
+	at org.springframework.aop.interceptor.AsyncExecutionInterceptor.lambda$invoke$0(AsyncExecutionInterceptor.java:115) ~[spring-aop-6.1.1.jar:6.1.1]
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:840) ~[na:na]
+Caused by: org.springframework.mail.MailAuthenticationException: Authentication failed
+	at org.springframework.mail.javamail.JavaMailSenderImpl.doSend(JavaMailSenderImpl.java:402) ~[spring-context-support-6.1.1.jar:6.1.1]
+	at org.springframework.mail.javamail.JavaMailSenderImpl.send(JavaMailSenderImpl.java:317) ~[spring-context-support-6.1.1.jar:6.1.1]
+	at org.springframework.mail.MailSender.send(MailSender.java:42) ~[spring-context-support-6.1.1.jar:6.1.1]
+	at com.notification.service.EmailService.sendEmail(EmailService.java:41) ~[classes/:na]
+	... 13 common frames omitted
+Caused by: jakarta.mail.AuthenticationFailedException: 250-smtp.gmail.com at your service, [103.248.208.98]
+250-SIZE 35882577
+250-8BITMIME
+250-AUTH LOGIN PLAIN XOAUTH2 PLAIN-CLIENTTOKEN OAUTHBEARER XOAUTH
+250-ENHANCEDSTATUSCODES
+250-PIPELINING
+250-CHUNKING
+250 SMTPUTF8
+
+	at org.eclipse.angus.mail.smtp.SMTPTransport$Authenticator.authenticate(SMTPTransport.java:949) ~[jakarta.mail-2.0.2.jar:na]
+	at org.eclipse.angus.mail.smtp.SMTPTransport.authenticate(SMTPTransport.java:865) ~[jakarta.mail-2.0.2.jar:na]
+	at org.eclipse.angus.mail.smtp.SMTPTransport.protocolConnect(SMTPTransport.java:769) ~[jakarta.mail-2.0.2.jar:na]
+	at jakarta.mail.Service.connect(Service.java:345) ~[jakarta.mail-2.0.2.jar:na]
+	at org.springframework.mail.javamail.JavaMailSenderImpl.connectTransport(JavaMailSenderImpl.java:480) ~[spring-context-support-6.1.1.jar:6.1.1]
+	at org.springframework.mail.javamail.JavaMailSenderImpl.doSend(JavaMailSenderImpl.java:399) ~[spring-context-support-6.1.1.jar:6.1.1]
+	... 16 common frames omitted
+Caused by: jakarta.mail.MessagingException: Can't send command to SMTP host
+	at org.eclipse.angus.mail.smtp.SMTPTransport.sendCommand(SMTPTransport.java:2464) ~[jakarta.mail-2.0.2.jar:na]
+	at org.eclipse.angus.mail.smtp.SMTPTransport.sendCommand(SMTPTransport.java:2451) ~[jakarta.mail-2.0.2.jar:na]
+	at org.eclipse.angus.mail.smtp.SMTPTransport.simpleCommand(SMTPTransport.java:2423) ~[jakarta.mail-2.0.2.jar:na]
+	at org.eclipse.angus.mail.smtp.SMTPTransport$Authenticator.authenticate(SMTPTransport.java:917) ~[jakarta.mail-2.0.2.jar:na]
+	... 21 common frames omitted
+Caused by: java.net.SocketException: Broken pipe
+	at java.base/sun.nio.ch.NioSocketImpl.implWrite(NioSocketImpl.java:425) ~[na:na]
+	at java.base/sun.nio.ch.NioSocketImpl.write(NioSocketImpl.java:445) ~[na:na]
+	at java.base/sun.nio.ch.NioSocketImpl$2.write(NioSocketImpl.java:831) ~[na:na]
+	at java.base/java.net.Socket$SocketOutputStream.write(Socket.java:1035) ~[na:na]
+	at org.eclipse.angus.mail.util.TimeoutOutputStream.write(WriteTimeoutSocket.java:445) ~[jakarta.mail-2.0.2.jar:na]
+	at java.base/sun.security.ssl.SSLSocketOutputRecord.deliver(SSLSocketOutputRecord.java:345) ~[na:na]
+	at java.base/sun.security.ssl.SSLSocketImpl$AppOutputStream.write(SSLSocketImpl.java:1308) ~[na:na]
+	at org.eclipse.angus.mail.util.TraceOutputStream.write(TraceOutputStream.java:120) ~[jakarta.mail-2.0.2.jar:na]
+	at java.base/java.io.BufferedOutputStream.flushBuffer(BufferedOutputStream.java:81) ~[na:na]
+	at java.base/java.io.BufferedOutputStream.flush(BufferedOutputStream.java:142) ~[na:na]
+	at org.eclipse.angus.mail.smtp.SMTPTransport.sendCommand(SMTPTransport.java:2462) ~[jakarta.mail-2.0.2.jar:na]
+	... 24 common frames omitted
+
+2026-01-02T15:29:40.402+05:30 DEBUG 63850 --- [notification-service] [pool-2-thread-5] o.s.a.r.listener.BlockingQueueConsumer   : Storing delivery for consumerTag: 'amq.ctag-nE7vSFG-50ZNqBD78n6HXg' with deliveryTag: '2' in Consumer@7f2a5d5f: tags=[[amq.ctag-nE7vSFG-50ZNqBD78n6HXg]], channel=Cached Rabbit Channel: AMQChannel(amqp://guest@127.0.0.1:5672/,1), conn: Proxy@4f3f8115 Shared Rabbit Connection: SimpleConnection@46110b82 [delegate=amqp://guest@127.0.0.1:5672/, localPort=57230], acknowledgeMode=AUTO local queue size=0
+2026-01-02T15:29:40.404+05:30 DEBUG 63850 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] o.s.a.r.listener.BlockingQueueConsumer   : Received message: (Body:'[B@66f6beb1(byte[307])' MessageProperties [headers={__TypeId__=com.ticket.event.TicketAssignedEvent}, contentType=application/json, contentEncoding=UTF-8, contentLength=0, receivedDeliveryMode=PERSISTENT, priority=0, redelivered=false, receivedExchange=ticket.exchange, receivedRoutingKey=ticket.assigned, deliveryTag=2, consumerTag=amq.ctag-nE7vSFG-50ZNqBD78n6HXg, consumerQueue=notification.queue])
+2026-01-02T15:29:40.417+05:30 DEBUG 63850 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] .a.r.l.a.MessagingMessageListenerAdapter : Processing [GenericMessage [payload=com.ticket.event.TicketAssignedEvent@6ffad598, headers={amqp_receivedDeliveryMode=PERSISTENT, amqp_receivedExchange=ticket.exchange, amqp_deliveryTag=2, amqp_consumerQueue=notification.queue, amqp_redelivered=false, amqp_receivedRoutingKey=ticket.assigned, amqp_contentEncoding=UTF-8, id=59f77bf7-460b-6f90-ca73-60f2a014d78d, amqp_consumerTag=amq.ctag-nE7vSFG-50ZNqBD78n6HXg, amqp_lastInBatch=false, contentType=application/json, __TypeId__=com.ticket.event.TicketAssignedEvent, timestamp=1767347980417}]]
+2026-01-02T15:29:40.419+05:30  INFO 63850 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.notification.listener.EventListener    : Received TicketAssignedEvent: TKT-20260102-00063 assigned to Sujay
+2026-01-02T15:29:40.426+05:30  INFO 63850 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.n.service.NotificationService          : Creating notification for user Sujay: TICKET_ASSIGNED
+2026-01-02T15:29:40.495+05:30  INFO 63850 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.n.service.NotificationService          : Email notification sent to sujaynsv@gmail.com
+2026-01-02T15:29:40.502+05:30 DEBUG 63850 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] org.hibernate.SQL                        : 
+    insert 
+    into
+        notifications
+        (created_at, delivery_channel, error_message, event_type, is_read, message, notification_type, read_at, retry_count, sent_at, status, subject, ticket_id, ticket_number, updated_at, user_email, user_id, username, notification_id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-01-02T15:29:40.509+05:30 DEBUG 63850 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] org.hibernate.SQL                        : 
+    update
+        notifications 
+    set
+        created_at=?,
+        delivery_channel=?,
+        error_message=?,
+        event_type=?,
+        is_read=?,
+        message=?,
+        notification_type=?,
+        read_at=?,
+        retry_count=?,
+        sent_at=?,
+        status=?,
+        subject=?,
+        ticket_id=?,
+        ticket_number=?,
+        updated_at=?,
+        user_email=?,
+        user_id=?,
+        username=? 
+    where
+        notification_id=?
+2026-01-02T15:29:40.518+05:30  INFO 63850 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.n.service.NotificationService          : Creating notification for user Sujay: TICKET_ASSIGNED
+2026-01-02T15:29:40.553+05:30 DEBUG 63850 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] org.hibernate.SQL                        : 
+    insert 
+    into
+        notifications
+        (created_at, delivery_channel, error_message, event_type, is_read, message, notification_type, read_at, retry_count, sent_at, status, subject, ticket_id, ticket_number, updated_at, user_email, user_id, username, notification_id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-01-02T15:29:40.558+05:30 DEBUG 63850 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] org.hibernate.SQL                        : 
+    update
+        notifications 
+    set
+        created_at=?,
+        delivery_channel=?,
+        error_message=?,
+        event_type=?,
+        is_read=?,
+        message=?,
+        notification_type=?,
+        read_at=?,
+        retry_count=?,
+        sent_at=?,
+        status=?,
+        subject=?,
+        ticket_id=?,
+        ticket_number=?,
+        updated_at=?,
+        user_email=?,
+        user_id=?,
+        username=? 
+    where
+        notification_id=?
+2026-01-02T15:29:40.564+05:30  INFO 63850 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.notification.listener.EventListener    : Agent notification sent for ticket assignment: TKT-20260102-00063
+2026-01-02T15:29:44.618+05:30  INFO 63850 --- [notification-service] [task-2] com.notification.service.EmailService    : Email sent to sujaynsv@gmail.com: New Ticket Assigned: TKT-20260102-00063
+2026-01-02T15:30:19.969+05:30  INFO 63850 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-02T15:33:06.546+05:30 DEBUG 63850 --- [notification-service] [pool-2-thread-6] o.s.a.r.listener.BlockingQueueConsumer   : Storing delivery for consumerTag: 'amq.ctag-nE7vSFG-50ZNqBD78n6HXg' with deliveryTag: '3' in Consumer@7f2a5d5f: tags=[[amq.ctag-nE7vSFG-50ZNqBD78n6HXg]], channel=Cached Rabbit Channel: AMQChannel(amqp://guest@127.0.0.1:5672/,1), conn: Proxy@4f3f8115 Shared Rabbit Connection: SimpleConnection@46110b82 [delegate=amqp://guest@127.0.0.1:5672/, localPort=57230], acknowledgeMode=AUTO local queue size=0
+2026-01-02T15:33:06.550+05:30 DEBUG 63850 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] o.s.a.r.listener.BlockingQueueConsumer   : Received message: (Body:'[B@1fe0f044(byte[737])' MessageProperties [headers={__TypeId__=com.ticket.event.TicketEscalatedEvent}, contentType=application/json, contentEncoding=UTF-8, contentLength=0, receivedDeliveryMode=PERSISTENT, priority=0, redelivered=false, receivedExchange=ticket.exchange, receivedRoutingKey=ticket.escalated, deliveryTag=3, consumerTag=amq.ctag-nE7vSFG-50ZNqBD78n6HXg, consumerQueue=notification.queue])
+2026-01-02T15:33:06.560+05:30 DEBUG 63850 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] .a.r.l.a.MessagingMessageListenerAdapter : Processing [GenericMessage [payload=com.ticket.event.TicketEscalatedEvent@26a70250, headers={amqp_receivedDeliveryMode=PERSISTENT, amqp_receivedExchange=ticket.exchange, amqp_deliveryTag=3, amqp_consumerQueue=notification.queue, amqp_redelivered=false, amqp_receivedRoutingKey=ticket.escalated, amqp_contentEncoding=UTF-8, id=b3424dac-345f-3234-a884-c1cd7a303e4f, amqp_consumerTag=amq.ctag-nE7vSFG-50ZNqBD78n6HXg, amqp_lastInBatch=false, contentType=application/json, __TypeId__=com.ticket.event.TicketEscalatedEvent, timestamp=1767348186559}]]
+2026-01-02T15:33:06.562+05:30  INFO 63850 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.notification.listener.EventListener    : Received TicketEscalatedEvent: TKT-20260102-00063 escalated to sujaynsv
+2026-01-02T15:33:06.569+05:30  INFO 63850 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.n.service.NotificationService          : Creating notification for user sujaynsv: TICKET_ESCALATED
+2026-01-02T15:33:06.601+05:30  INFO 63850 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.n.service.NotificationService          : Email notification sent to nsvsujay@gmail.com
+2026-01-02T15:33:06.604+05:30 DEBUG 63850 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] org.hibernate.SQL                        : 
+    insert 
+    into
+        notifications
+        (created_at, delivery_channel, error_message, event_type, is_read, message, notification_type, read_at, retry_count, sent_at, status, subject, ticket_id, ticket_number, updated_at, user_email, user_id, username, notification_id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-01-02T15:33:06.612+05:30 DEBUG 63850 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] org.hibernate.SQL                        : 
+    update
+        notifications 
+    set
+        created_at=?,
+        delivery_channel=?,
+        error_message=?,
+        event_type=?,
+        is_read=?,
+        message=?,
+        notification_type=?,
+        read_at=?,
+        retry_count=?,
+        sent_at=?,
+        status=?,
+        subject=?,
+        ticket_id=?,
+        ticket_number=?,
+        updated_at=?,
+        user_email=?,
+        user_id=?,
+        username=? 
+    where
+        notification_id=?
+2026-01-02T15:33:06.617+05:30  INFO 63850 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.n.service.NotificationService          : Creating notification for user sujaynsv: TICKET_ESCALATED
+2026-01-02T15:33:06.633+05:30 DEBUG 63850 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] org.hibernate.SQL                        : 
+    insert 
+    into
+        notifications
+        (created_at, delivery_channel, error_message, event_type, is_read, message, notification_type, read_at, retry_count, sent_at, status, subject, ticket_id, ticket_number, updated_at, user_email, user_id, username, notification_id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-01-02T15:33:06.635+05:30 DEBUG 63850 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] org.hibernate.SQL                        : 
+    update
+        notifications 
+    set
+        created_at=?,
+        delivery_channel=?,
+        error_message=?,
+        event_type=?,
+        is_read=?,
+        message=?,
+        notification_type=?,
+        read_at=?,
+        retry_count=?,
+        sent_at=?,
+        status=?,
+        subject=?,
+        ticket_id=?,
+        ticket_number=?,
+        updated_at=?,
+        user_email=?,
+        user_id=?,
+        username=? 
+    where
+        notification_id=?
+2026-01-02T15:33:06.637+05:30  INFO 63850 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.n.service.NotificationService          : Creating notification for user Sujay: TICKET_ESCALATED
+2026-01-02T15:33:06.649+05:30  INFO 63850 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.n.service.NotificationService          : Email notification sent to sujaynsv@gmail.com
+2026-01-02T15:33:06.650+05:30 DEBUG 63850 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] org.hibernate.SQL                        : 
+    insert 
+    into
+        notifications
+        (created_at, delivery_channel, error_message, event_type, is_read, message, notification_type, read_at, retry_count, sent_at, status, subject, ticket_id, ticket_number, updated_at, user_email, user_id, username, notification_id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-01-02T15:33:06.651+05:30 DEBUG 63850 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] org.hibernate.SQL                        : 
+    update
+        notifications 
+    set
+        created_at=?,
+        delivery_channel=?,
+        error_message=?,
+        event_type=?,
+        is_read=?,
+        message=?,
+        notification_type=?,
+        read_at=?,
+        retry_count=?,
+        sent_at=?,
+        status=?,
+        subject=?,
+        ticket_id=?,
+        ticket_number=?,
+        updated_at=?,
+        user_email=?,
+        user_id=?,
+        username=? 
+    where
+        notification_id=?
+2026-01-02T15:33:06.653+05:30  INFO 63850 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.n.service.NotificationService          : Creating notification for user Sujay: TICKET_ESCALATED
+2026-01-02T15:33:06.666+05:30 DEBUG 63850 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] org.hibernate.SQL                        : 
+    insert 
+    into
+        notifications
+        (created_at, delivery_channel, error_message, event_type, is_read, message, notification_type, read_at, retry_count, sent_at, status, subject, ticket_id, ticket_number, updated_at, user_email, user_id, username, notification_id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-01-02T15:33:06.669+05:30 DEBUG 63850 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] org.hibernate.SQL                        : 
+    update
+        notifications 
+    set
+        created_at=?,
+        delivery_channel=?,
+        error_message=?,
+        event_type=?,
+        is_read=?,
+        message=?,
+        notification_type=?,
+        read_at=?,
+        retry_count=?,
+        sent_at=?,
+        status=?,
+        subject=?,
+        ticket_id=?,
+        ticket_number=?,
+        updated_at=?,
+        user_email=?,
+        user_id=?,
+        username=? 
+    where
+        notification_id=?
+2026-01-02T15:33:06.671+05:30  INFO 63850 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.notification.listener.EventListener    : Escalation notifications sent for ticket: TKT-20260102-00063
+2026-01-02T15:33:10.418+05:30  INFO 63850 --- [notification-service] [task-3] com.notification.service.EmailService    : Email sent to nsvsujay@gmail.com: Ticket Escalated to You: TKT-20260102-00063
+2026-01-02T15:33:10.641+05:30  INFO 63850 --- [notification-service] [task-4] com.notification.service.EmailService    : Email sent to sujaynsv@gmail.com: Ticket Escalated: TKT-20260102-00063
+2026-01-02T15:34:38.274+05:30 DEBUG 63850 --- [notification-service] [pool-2-thread-7] o.s.a.r.listener.BlockingQueueConsumer   : Storing delivery for consumerTag: 'amq.ctag-nE7vSFG-50ZNqBD78n6HXg' with deliveryTag: '4' in Consumer@7f2a5d5f: tags=[[amq.ctag-nE7vSFG-50ZNqBD78n6HXg]], channel=Cached Rabbit Channel: AMQChannel(amqp://guest@127.0.0.1:5672/,1), conn: Proxy@4f3f8115 Shared Rabbit Connection: SimpleConnection@46110b82 [delegate=amqp://guest@127.0.0.1:5672/, localPort=57230], acknowledgeMode=AUTO local queue size=0
+2026-01-02T15:34:38.276+05:30 DEBUG 63850 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] o.s.a.r.listener.BlockingQueueConsumer   : Received message: (Body:'[B@1ba83a7e(byte[303])' MessageProperties [headers={__TypeId__=com.ticket.event.TicketCreatedEvent}, contentType=application/json, contentEncoding=UTF-8, contentLength=0, receivedDeliveryMode=PERSISTENT, priority=0, redelivered=false, receivedExchange=ticket.exchange, receivedRoutingKey=ticket.created, deliveryTag=4, consumerTag=amq.ctag-nE7vSFG-50ZNqBD78n6HXg, consumerQueue=notification.queue])
+2026-01-02T15:34:38.277+05:30 DEBUG 63850 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] .a.r.l.a.MessagingMessageListenerAdapter : Processing [GenericMessage [payload=com.ticket.event.TicketCreatedEvent@64201d47, headers={amqp_receivedDeliveryMode=PERSISTENT, amqp_receivedExchange=ticket.exchange, amqp_deliveryTag=4, amqp_consumerQueue=notification.queue, amqp_redelivered=false, amqp_receivedRoutingKey=ticket.created, amqp_contentEncoding=UTF-8, id=50e6320b-5bff-96d8-b8c6-1e8752b40da1, amqp_consumerTag=amq.ctag-nE7vSFG-50ZNqBD78n6HXg, amqp_lastInBatch=false, contentType=application/json, __TypeId__=com.ticket.event.TicketCreatedEvent, timestamp=1767348278277}]]
+2026-01-02T15:34:38.278+05:30  INFO 63850 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.notification.listener.EventListener    : Received TicketCreatedEvent: TKT-20260102-00064
+2026-01-02T15:34:38.282+05:30  INFO 63850 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.n.service.NotificationService          : Creating notification for user sujay: TICKET_CREATED
+2026-01-02T15:34:38.363+05:30  INFO 63850 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.n.service.NotificationService          : Email notification sent to nsvsujay04@gmail.com
+2026-01-02T15:34:38.364+05:30 DEBUG 63850 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] org.hibernate.SQL                        : 
+    insert 
+    into
+        notifications
+        (created_at, delivery_channel, error_message, event_type, is_read, message, notification_type, read_at, retry_count, sent_at, status, subject, ticket_id, ticket_number, updated_at, user_email, user_id, username, notification_id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-01-02T15:34:38.374+05:30 DEBUG 63850 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] org.hibernate.SQL                        : 
+    update
+        notifications 
+    set
+        created_at=?,
+        delivery_channel=?,
+        error_message=?,
+        event_type=?,
+        is_read=?,
+        message=?,
+        notification_type=?,
+        read_at=?,
+        retry_count=?,
+        sent_at=?,
+        status=?,
+        subject=?,
+        ticket_id=?,
+        ticket_number=?,
+        updated_at=?,
+        user_email=?,
+        user_id=?,
+        username=? 
+    where
+        notification_id=?
+2026-01-02T15:34:38.381+05:30  INFO 63850 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.n.service.NotificationService          : Creating notification for user sujay: TICKET_CREATED
+2026-01-02T15:34:38.389+05:30 DEBUG 63850 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] org.hibernate.SQL                        : 
+    insert 
+    into
+        notifications
+        (created_at, delivery_channel, error_message, event_type, is_read, message, notification_type, read_at, retry_count, sent_at, status, subject, ticket_id, ticket_number, updated_at, user_email, user_id, username, notification_id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-01-02T15:34:38.391+05:30 DEBUG 63850 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] org.hibernate.SQL                        : 
+    update
+        notifications 
+    set
+        created_at=?,
+        delivery_channel=?,
+        error_message=?,
+        event_type=?,
+        is_read=?,
+        message=?,
+        notification_type=?,
+        read_at=?,
+        retry_count=?,
+        sent_at=?,
+        status=?,
+        subject=?,
+        ticket_id=?,
+        ticket_number=?,
+        updated_at=?,
+        user_email=?,
+        user_id=?,
+        username=? 
+    where
+        notification_id=?
+2026-01-02T15:34:38.392+05:30  INFO 63850 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.notification.listener.EventListener    : Notifications sent for ticket creation: TKT-20260102-00064
+2026-01-02T15:34:42.194+05:30  INFO 63850 --- [notification-service] [task-5] com.notification.service.EmailService    : Email sent to nsvsujay04@gmail.com: Ticket Created: TKT-20260102-00064
+2026-01-02T15:35:19.978+05:30  INFO 63850 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-02T15:40:19.951+05:30  INFO 63850 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration

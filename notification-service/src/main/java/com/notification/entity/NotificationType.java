@@ -8,6 +8,7 @@ public enum NotificationType {
     TICKET_CLOSED,
     COMMENT_ADDED,
     SLA_WARNING,
+    TICKET_ESCALATED,
     SLA_BREACH,
     TICKET_REASSIGNED,
     TICKET_UPDATED

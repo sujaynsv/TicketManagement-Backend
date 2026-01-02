@@ -5,9 +5,17 @@ import com.assignment.dto.AssignmentDTO;
 import com.assignment.dto.ManualAssignmentRequest;
 import com.assignment.dto.ReassignmentRequest;
 import com.assignment.dto.UnassignedTicketDTO;
+import com.assignment.entity.Assignment;
+import com.assignment.entity.AssignmentStatus;
 import com.assignment.entity.TicketCache;
+import com.assignment.repository.AssignmentRepository;
 import com.assignment.service.AssignmentService;
+import com.assignment.service.EventPublisher;
+
 import jakarta.validation.Valid;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +30,11 @@ public class AssignmentController {
     @Autowired
     private AssignmentService assignmentService;
     
+    @Autowired
+    private AssignmentRepository assignmentRepository;
+
+    private static final Logger log = LoggerFactory.getLogger(AssignmentController.class);
+
     /**
      * Get unassigned tickets for manager dashboard
      */
@@ -85,6 +98,29 @@ public class AssignmentController {
             .body("Reassignment Failed: "+e.getMessage());
         }
     }
+
+    @GetMapping("/ticket/{ticketId}")
+    public ResponseEntity<AssignmentDTO> getAssignmentByTicketId(@PathVariable String ticketId) {
+        log.info("Fetching assignment for ticket: {}", ticketId);
+        
+        Assignment assignment = assignmentRepository.findByTicketIdAndStatus(ticketId, AssignmentStatus.ACTIVE)
+                .orElseThrow(() -> new RuntimeException("No active assignment found for ticket: " + ticketId));
+        
+        AssignmentDTO dto = new AssignmentDTO();
+        dto.setAssignmentId(assignment.getAssignmentId());
+        dto.setTicketId(assignment.getTicketId());
+        dto.setTicketNumber(assignment.getTicketNumber());
+        dto.setAgentId(assignment.getAgentId());
+        dto.setAgentUsername(assignment.getAgentUsername());
+        dto.setAssignedBy(assignment.getAssignedBy());
+        dto.setAssignedByUsername(assignment.getAssignedByUsername());
+        dto.setAssignmentType(assignment.getAssignmentType().name());
+        dto.setAssignedAt(assignment.getAssignedAt());
+        dto.setStatus(assignment.getStatus().name());
+        
+        return ResponseEntity.ok(dto);
+    }
+
 
 
 }
