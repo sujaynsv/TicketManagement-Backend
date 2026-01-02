@@ -32,7 +32,6 @@ public class AssignmentService {
 
     @Autowired
     private AuthServiceClient authServiceClient;
-
     
     @Autowired
     private AssignmentRepository assignmentRepository;
@@ -103,7 +102,7 @@ public class AssignmentService {
             throw new RuntimeException("Ticket already assigned to " + ticket.getAssignedAgentUsername());
         }
         
-        //   NEW: Update priority (manager sets it during assignment)
+        // Update priority (manager sets it during assignment)
         String oldPriority = ticket.getPriority();
         ticket.setPriority(request.getPriority());
         
@@ -127,7 +126,7 @@ public class AssignmentService {
             throw new RuntimeException("Agent has reached maximum ticket capacity");
         }
         
-        // Create assignment record
+        // Create assignment record with ASSIGNED status
         Assignment assignment = new Assignment(
                 ticket.getTicketId(),
                 ticket.getTicketNumber(),
@@ -139,6 +138,8 @@ public class AssignmentService {
         );
         assignment.setAssignmentStrategy("MANUAL");
         assignment.setAssignmentNotes(request.getAssignmentNote());
+        assignment.setStatus(AssignmentStatus.ASSIGNED); // Set to ASSIGNED
+        assignment.setTicketStatus("ASSIGNED");
         Assignment savedAssignment = assignmentRepository.save(assignment);
         
         // Update ticket cache with assignment and priority
@@ -161,11 +162,11 @@ public class AssignmentService {
         
         agentWorkloadRepository.save(agent);
         
-        //   Create SLA tracking with the priority manager set
+        // Create SLA tracking with the priority manager set
         slaService.createSlaTracking(
                 ticket.getTicketId(),
                 ticket.getTicketNumber(),
-                request.getPriority(),  //   Use priority from request
+                request.getPriority(),
                 ticket.getCategory()
         );
         
@@ -188,7 +189,6 @@ public class AssignmentService {
         
         return convertToAssignmentDTO(savedAssignment);
     }
-
     
     /**
      * Auto-assign ticket to best available agent
@@ -224,7 +224,7 @@ public class AssignmentService {
             return;
         }
         
-        // Create assignment
+        // Create assignment with ASSIGNED status
         Assignment assignment = new Assignment(
                 ticket.getTicketId(),
                 ticket.getTicketNumber(),
@@ -235,6 +235,8 @@ public class AssignmentService {
                 AssignmentType.AUTO
         );
         assignment.setAssignmentStrategy(assignmentStrategy);
+        assignment.setStatus(AssignmentStatus.ASSIGNED);
+        assignment.setTicketStatus("ASSIGNED");
         
         assignmentRepository.save(assignment);
         
@@ -294,7 +296,7 @@ public class AssignmentService {
      */
     public List<AssignmentDTO> getAgentTickets(String agentId) {
         List<Assignment> assignments = assignmentRepository
-                .findByAgentIdAndStatus(agentId, AssignmentStatus.ACTIVE);
+                .findByAgentIdAndStatus(agentId, AssignmentStatus.ASSIGNED);
         
         return assignments.stream()
                 .map(this::convertToAssignmentDTO)
@@ -302,20 +304,21 @@ public class AssignmentService {
     }
     
     /**
-     * Complete assignment when ticket is resolved
+     * Complete assignment when ticket is resolved - No longer changes status
      */
     @Transactional
     public void completeAssignment(String ticketId) {
         Optional<Assignment> assignmentOpt = assignmentRepository
-                .findByTicketIdAndStatus(ticketId, AssignmentStatus.ACTIVE);
+                .findByTicketIdAndStatus(ticketId, AssignmentStatus.ASSIGNED);
         
         if (assignmentOpt.isEmpty()) {
             return;
         }
         
         Assignment assignment = assignmentOpt.get();
-        assignment.setStatus(AssignmentStatus.COMPLETED);
+        // Just set completed time, don't change status
         assignment.setCompletedAt(LocalDateTime.now());
+        assignment.setTicketStatus("RESOLVED");
         assignmentRepository.save(assignment);
         
         // Update agent workload
@@ -393,25 +396,26 @@ public class AssignmentService {
     @Transactional
     public void syncAgentsFromAuthService(){
         log.info("Getting Agents from auth service");
-        List<AuthServiceClient.AgentDTO> agents= authServiceClient.getAllAgents();
+        List<AuthServiceClient.AgentDTO> agents = authServiceClient.getAllAgents();
 
-        for(AuthServiceClient.AgentDTO agentDTO: agents){
-            Optional<AgentWorkload> existingAgent=agentWorkloadRepository.findById(agentDTO.getUserId());
+        for(AuthServiceClient.AgentDTO agentDTO : agents){
+            Optional<AgentWorkload> existingAgent = agentWorkloadRepository.findById(agentDTO.getUserId());
 
             if(existingAgent.isEmpty()){
-                AgentWorkload newAgent=new AgentWorkload(
+                AgentWorkload newAgent = new AgentWorkload(
                     agentDTO.getUserId(),
                     agentDTO.getUsername()
                 );
                 newAgent.setStatus(AgentStatus.AVAILABLE);
                 agentWorkloadRepository.save(newAgent);
 
-                log.info("Got new Agent: {} ({})", agentDTO.getUsername(),agentDTO.getUserId());
+                log.info("Got new Agent: {} ({})", agentDTO.getUsername(), agentDTO.getUserId());
             }
         }
-        log.info("Toatal Agents {} and they are: {}", agents.size(), agents);
+        log.info("Total Agents {} and they are: {}", agents.size(), agents);
     }
-        /**
+    
+    /**
      * Reassign ticket to different agent
      */
     @Transactional
@@ -470,15 +474,15 @@ public class AssignmentService {
         
         agentWorkloadRepository.save(newAgent);
         
-        // Mark old assignment as completed
-        assignmentRepository.findByTicketIdAndStatus(ticketId, AssignmentStatus.ACTIVE)
+        // Mark old assignment as REASSIGNED
+        assignmentRepository.findByTicketIdAndStatus(ticketId, AssignmentStatus.ASSIGNED)
                 .ifPresent(oldAssignment -> {
-                    oldAssignment.setStatus(AssignmentStatus.COMPLETED);
+                    oldAssignment.setStatus(AssignmentStatus.REASSIGNED);
                     oldAssignment.setCompletedAt(LocalDateTime.now());
                     assignmentRepository.save(oldAssignment);
                 });
         
-        // Create new assignment record
+        // Create new assignment record with ASSIGNED status
         Assignment newAssignment = new Assignment(
                 ticketId,
                 ticket.getTicketNumber(),
@@ -489,6 +493,8 @@ public class AssignmentService {
                 AssignmentType.MANUAL
         );
         newAssignment.setAssignmentStrategy("MANUAL_REASSIGN");
+        newAssignment.setStatus(AssignmentStatus.ASSIGNED);
+        newAssignment.setTicketStatus("ASSIGNED");
         assignmentRepository.save(newAssignment);
         
         // Publish TicketAssignedEvent
@@ -507,7 +513,4 @@ public class AssignmentService {
         log.info("Ticket {} reassigned from {} to {} by {}", 
                 ticket.getTicketNumber(), oldAgentId, newAgent.getAgentUsername(), managerUsername);
     }
-
-
-    
 }

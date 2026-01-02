@@ -7,10 +7,8 @@ import com.assignment.dto.ReassignmentRequest;
 import com.assignment.dto.UnassignedTicketDTO;
 import com.assignment.entity.Assignment;
 import com.assignment.entity.AssignmentStatus;
-import com.assignment.entity.TicketCache;
 import com.assignment.repository.AssignmentRepository;
 import com.assignment.service.AssignmentService;
-import com.assignment.service.EventPublisher;
 
 import jakarta.validation.Valid;
 
@@ -103,7 +101,8 @@ public class AssignmentController {
     public ResponseEntity<AssignmentDTO> getAssignmentByTicketId(@PathVariable String ticketId) {
         log.info("Fetching assignment for ticket: {}", ticketId);
         
-        Assignment assignment = assignmentRepository.findByTicketIdAndStatus(ticketId, AssignmentStatus.ACTIVE)
+        // Find ASSIGNED assignment (current active assignment)
+        Assignment assignment = assignmentRepository.findByTicketIdAndStatus(ticketId, AssignmentStatus.ASSIGNED)
                 .orElseThrow(() -> new RuntimeException("No active assignment found for ticket: " + ticketId));
         
         AssignmentDTO dto = new AssignmentDTO();
@@ -120,7 +119,4 @@ public class AssignmentController {
         
         return ResponseEntity.ok(dto);
     }
-
-
-
 }

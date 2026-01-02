@@ -1,7 +1,7 @@
 package com.assignment.entity;
 
 public enum AssignmentStatus {
-    ACTIVE,        // Currently assigned
-    COMPLETED,     // Ticket resolved/closed
+    NOT_ASSIGNED,
+    ASSIGNED,       
     REASSIGNED     // Transferred to another agent
 }

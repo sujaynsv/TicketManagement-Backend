@@ -59,12 +59,24 @@ public class Assignment {
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 20)
     private AssignmentStatus status;
+
+    @Column(name="ticket_status", nullable = false, length = 20)
+    private String ticketStatus;
     
+    public void setTicketStatus(String ticketStatus){
+        this.ticketStatus=ticketStatus;
+    }
+
+    public String getTicketStatus(){
+        return ticketStatus;
+    }
+
+
     // Constructors
     public Assignment() {
         this.assignmentId = UUID.randomUUID().toString();
         this.assignedAt = LocalDateTime.now();
-        this.status = AssignmentStatus.ACTIVE;
+        this.status = AssignmentStatus.NOT_ASSIGNED;
     }
     
     public Assignment(String ticketId, String ticketNumber, String agentId, 
