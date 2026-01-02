@@ -8427,3 +8427,10 @@ com.netflix.discovery.shared.transport.TransportException: Cannot execute reques
 2026-01-02T19:21:06.012+05:30  INFO 63779 --- [ticket-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.t.listener.AssignmentEventListener     : Received TicketAssignedEvent: Ticket TKT-20260102-00069 assigned to sarah_agent
 2026-01-02T19:21:06.016+05:30  INFO 63779 --- [ticket-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.t.listener.AssignmentEventListener     : Updated ticket TKT-20260102-00069 with assignment to sarah_agent
 2026-01-02T19:21:06.019+05:30  INFO 63779 --- [ticket-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.t.listener.AssignmentEventListener     : Logged activity for ticket assignment: TKT-20260102-00069
+2026-01-02T19:24:15.761+05:30  INFO 63779 --- [ticket-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-02T19:29:15.767+05:30  INFO 63779 --- [ticket-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-02T19:34:15.774+05:30  INFO 63779 --- [ticket-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-02T19:39:15.783+05:30  INFO 63779 --- [ticket-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-02T19:44:15.787+05:30  INFO 63779 --- [ticket-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-02T19:49:15.790+05:30  INFO 63779 --- [ticket-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-02T19:54:15.835+05:30  INFO 63779 --- [ticket-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration

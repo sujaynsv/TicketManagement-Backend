@@ -13584,3 +13584,152 @@ Caused by: java.net.SocketException: Connection reset
         notification_id=?
 2026-01-02T19:21:06.030+05:30  INFO 63850 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.notification.listener.EventListener    : Agent notification sent for ticket assignment: TKT-20260102-00069
 2026-01-02T19:21:09.422+05:30  INFO 63850 --- [notification-service] [task-18] com.notification.service.EmailService    : Email sent to sarah@company.com: New Ticket Assigned: TKT-20260102-00069
+2026-01-02T19:24:21.531+05:30  INFO 63850 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-02T19:29:21.537+05:30  INFO 63850 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-02T19:33:45.844+05:30 DEBUG 63850 --- [notification-service] [pool-2-thread-11] o.s.a.r.listener.BlockingQueueConsumer   : Storing delivery for consumerTag: 'amq.ctag-nE7vSFG-50ZNqBD78n6HXg' with deliveryTag: '18' in Consumer@7f2a5d5f: tags=[[amq.ctag-nE7vSFG-50ZNqBD78n6HXg]], channel=Cached Rabbit Channel: AMQChannel(amqp://guest@127.0.0.1:5672/,1), conn: Proxy@4f3f8115 Shared Rabbit Connection: SimpleConnection@46110b82 [delegate=amqp://guest@127.0.0.1:5672/, localPort=57230], acknowledgeMode=AUTO local queue size=0
+2026-01-02T19:33:45.848+05:30 DEBUG 63850 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] o.s.a.r.listener.BlockingQueueConsumer   : Received message: (Body:'[B@1d22a48e(byte[452])' MessageProperties [headers={__TypeId__=com.ticket.event.SlaWarningEvent}, contentType=application/json, contentEncoding=UTF-8, contentLength=0, receivedDeliveryMode=PERSISTENT, priority=0, redelivered=false, receivedExchange=ticket.exchange, receivedRoutingKey=sla.warning, deliveryTag=18, consumerTag=amq.ctag-nE7vSFG-50ZNqBD78n6HXg, consumerQueue=notification.queue])
+2026-01-02T19:33:45.943+05:30 DEBUG 63850 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] .a.r.l.a.MessagingMessageListenerAdapter : Processing [GenericMessage [payload=com.ticket.event.SlaWarningEvent@2e9515d0, headers={amqp_receivedDeliveryMode=PERSISTENT, amqp_receivedExchange=ticket.exchange, amqp_deliveryTag=18, amqp_consumerQueue=notification.queue, amqp_redelivered=false, amqp_receivedRoutingKey=sla.warning, amqp_contentEncoding=UTF-8, id=b6573354-f15c-fc81-6fd3-39bc25ad2502, amqp_consumerTag=amq.ctag-nE7vSFG-50ZNqBD78n6HXg, amqp_lastInBatch=false, contentType=application/json, __TypeId__=com.ticket.event.SlaWarningEvent, timestamp=1767362625941}]]
+2026-01-02T19:33:45.964+05:30  INFO 63850 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.notification.listener.EventListener    : Received SlaWarningEvent: TKT-20260102-00069 - RESPONSE warning
+2026-01-02T19:33:45.975+05:30  INFO 63850 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.n.service.NotificationService          : Creating notification for user sarah_agent: SLA_WARNING
+2026-01-02T19:33:46.014+05:30  INFO 63850 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.n.service.NotificationService          : Email notification sent to sarah@company.com
+2026-01-02T19:33:46.018+05:30 DEBUG 63850 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] org.hibernate.SQL                        : 
+    insert 
+    into
+        notifications
+        (created_at, delivery_channel, error_message, event_type, is_read, message, notification_type, read_at, retry_count, sent_at, status, subject, ticket_id, ticket_number, updated_at, user_email, user_id, username, notification_id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-01-02T19:33:46.035+05:30 DEBUG 63850 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] org.hibernate.SQL                        : 
+    update
+        notifications 
+    set
+        created_at=?,
+        delivery_channel=?,
+        error_message=?,
+        event_type=?,
+        is_read=?,
+        message=?,
+        notification_type=?,
+        read_at=?,
+        retry_count=?,
+        sent_at=?,
+        status=?,
+        subject=?,
+        ticket_id=?,
+        ticket_number=?,
+        updated_at=?,
+        user_email=?,
+        user_id=?,
+        username=? 
+    where
+        notification_id=?
+2026-01-02T19:33:46.037+05:30  INFO 63850 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.n.service.NotificationService          : Creating notification for user sarah_agent: SLA_WARNING
+2026-01-02T19:33:46.044+05:30 DEBUG 63850 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] org.hibernate.SQL                        : 
+    insert 
+    into
+        notifications
+        (created_at, delivery_channel, error_message, event_type, is_read, message, notification_type, read_at, retry_count, sent_at, status, subject, ticket_id, ticket_number, updated_at, user_email, user_id, username, notification_id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-01-02T19:33:46.044+05:30 DEBUG 63850 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] org.hibernate.SQL                        : 
+    update
+        notifications 
+    set
+        created_at=?,
+        delivery_channel=?,
+        error_message=?,
+        event_type=?,
+        is_read=?,
+        message=?,
+        notification_type=?,
+        read_at=?,
+        retry_count=?,
+        sent_at=?,
+        status=?,
+        subject=?,
+        ticket_id=?,
+        ticket_number=?,
+        updated_at=?,
+        user_email=?,
+        user_id=?,
+        username=? 
+    where
+        notification_id=?
+2026-01-02T19:33:46.045+05:30  INFO 63850 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.notification.listener.EventListener    : SLA warning notification sent for ticket: TKT-20260102-00069
+2026-01-02T19:33:49.220+05:30  INFO 63850 --- [notification-service] [task-19] com.notification.service.EmailService    : Email sent to sarah@company.com: SLA Warning: Ticket TKT-20260102-00069 (RESPONSE)
+2026-01-02T19:34:21.543+05:30  INFO 63850 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-02T19:36:45.924+05:30 DEBUG 63850 --- [notification-service] [pool-2-thread-12] o.s.a.r.listener.BlockingQueueConsumer   : Storing delivery for consumerTag: 'amq.ctag-nE7vSFG-50ZNqBD78n6HXg' with deliveryTag: '19' in Consumer@7f2a5d5f: tags=[[amq.ctag-nE7vSFG-50ZNqBD78n6HXg]], channel=Cached Rabbit Channel: AMQChannel(amqp://guest@127.0.0.1:5672/,1), conn: Proxy@4f3f8115 Shared Rabbit Connection: SimpleConnection@46110b82 [delegate=amqp://guest@127.0.0.1:5672/, localPort=57230], acknowledgeMode=AUTO local queue size=0
+2026-01-02T19:36:45.926+05:30 DEBUG 63850 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] o.s.a.r.listener.BlockingQueueConsumer   : Received message: (Body:'[B@4b9648b0(byte[512])' MessageProperties [headers={__TypeId__=com.ticket.event.SlaBreachEvent}, contentType=application/json, contentEncoding=UTF-8, contentLength=0, receivedDeliveryMode=PERSISTENT, priority=0, redelivered=false, receivedExchange=ticket.exchange, receivedRoutingKey=sla.breach, deliveryTag=19, consumerTag=amq.ctag-nE7vSFG-50ZNqBD78n6HXg, consumerQueue=notification.queue])
+2026-01-02T19:36:45.928+05:30 DEBUG 63850 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] .a.r.l.a.MessagingMessageListenerAdapter : Processing [GenericMessage [payload=com.ticket.event.SlaBreachEvent@3d8f1c16, headers={amqp_receivedDeliveryMode=PERSISTENT, amqp_receivedExchange=ticket.exchange, amqp_deliveryTag=19, amqp_consumerQueue=notification.queue, amqp_redelivered=false, amqp_receivedRoutingKey=sla.breach, amqp_contentEncoding=UTF-8, id=df0eee0b-32ed-4a6d-a62d-44924bc881bf, amqp_consumerTag=amq.ctag-nE7vSFG-50ZNqBD78n6HXg, amqp_lastInBatch=false, contentType=application/json, __TypeId__=com.ticket.event.SlaBreachEvent, timestamp=1767362805928}]]
+2026-01-02T19:36:45.929+05:30  INFO 63850 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.notification.listener.EventListener    : Received SlaBreachEvent: TKT-20260102-00069 - RESPONSE breach
+2026-01-02T19:36:45.935+05:30  INFO 63850 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.n.service.NotificationService          : Creating notification for user sarah_agent: SLA_BREACH
+2026-01-02T19:36:45.950+05:30  INFO 63850 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.n.service.NotificationService          : Email notification sent to sarah@company.com
+2026-01-02T19:36:45.952+05:30 DEBUG 63850 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] org.hibernate.SQL                        : 
+    insert 
+    into
+        notifications
+        (created_at, delivery_channel, error_message, event_type, is_read, message, notification_type, read_at, retry_count, sent_at, status, subject, ticket_id, ticket_number, updated_at, user_email, user_id, username, notification_id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-01-02T19:36:45.954+05:30 DEBUG 63850 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] org.hibernate.SQL                        : 
+    update
+        notifications 
+    set
+        created_at=?,
+        delivery_channel=?,
+        error_message=?,
+        event_type=?,
+        is_read=?,
+        message=?,
+        notification_type=?,
+        read_at=?,
+        retry_count=?,
+        sent_at=?,
+        status=?,
+        subject=?,
+        ticket_id=?,
+        ticket_number=?,
+        updated_at=?,
+        user_email=?,
+        user_id=?,
+        username=? 
+    where
+        notification_id=?
+2026-01-02T19:36:45.957+05:30  INFO 63850 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.n.service.NotificationService          : Creating notification for user sarah_agent: SLA_BREACH
+2026-01-02T19:36:45.969+05:30 DEBUG 63850 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] org.hibernate.SQL                        : 
+    insert 
+    into
+        notifications
+        (created_at, delivery_channel, error_message, event_type, is_read, message, notification_type, read_at, retry_count, sent_at, status, subject, ticket_id, ticket_number, updated_at, user_email, user_id, username, notification_id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-01-02T19:36:45.970+05:30 DEBUG 63850 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] org.hibernate.SQL                        : 
+    update
+        notifications 
+    set
+        created_at=?,
+        delivery_channel=?,
+        error_message=?,
+        event_type=?,
+        is_read=?,
+        message=?,
+        notification_type=?,
+        read_at=?,
+        retry_count=?,
+        sent_at=?,
+        status=?,
+        subject=?,
+        ticket_id=?,
+        ticket_number=?,
+        updated_at=?,
+        user_email=?,
+        user_id=?,
+        username=? 
+    where
+        notification_id=?
+2026-01-02T19:36:45.972+05:30  INFO 63850 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.notification.listener.EventListener    : SLA breach notification sent for ticket: TKT-20260102-00069
+2026-01-02T19:36:50.341+05:30  INFO 63850 --- [notification-service] [task-20] com.notification.service.EmailService    : Email sent to sarah@company.com: SLA BREACHED: Ticket TKT-20260102-00069 (RESPONSE)
+2026-01-02T19:39:21.549+05:30  INFO 63850 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-02T19:44:21.555+05:30  INFO 63850 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-02T19:49:21.562+05:30  INFO 63850 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-02T19:54:21.605+05:30  INFO 63850 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
