@@ -2,7 +2,12 @@ package com.assignment.scheduler;
 
 import com.assignment.entity.SlaStatus;
 import com.assignment.entity.SlaTracking;
+import com.assignment.entity.TicketCache;
 import com.assignment.repository.SlaTrackingRepository;
+import com.assignment.repository.TicketCacheRepository;
+import com.assignment.service.EventPublisher;
+import com.ticket.event.SlaBreachEvent;
+import com.ticket.event.SlaWarningEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Component
 public class SlaBreachScheduler {
@@ -22,17 +29,21 @@ public class SlaBreachScheduler {
     @Autowired
     private SlaTrackingRepository slaTrackingRepository;
     
-    /**
-     * Check for SLA breaches every 60 seconds
-     */
-    @Scheduled(fixedDelay = 60000) // 60 seconds
+    @Autowired
+    private TicketCacheRepository ticketCacheRepository;
+    
+    @Autowired
+    private EventPublisher EventPublisher;
+    
+    private Set<String> warningsSent = new HashSet<>();
+    private Set<String> breachesSent = new HashSet<>();
+    
+    @Scheduled(fixedDelay = 60000)
     @Transactional
     public void checkSlaBreaches() {
         log.info("=== Running SLA breach check ===");
         
         LocalDateTime now = LocalDateTime.now();
-        
-        // Get all active SLA trackings (not resolved yet)
         List<SlaTracking> activeTrackings = slaTrackingRepository.findByResolvedAtIsNull();
         
         log.info("Found {} active SLA trackings to check", activeTrackings.size());
@@ -44,16 +55,15 @@ public class SlaBreachScheduler {
         for (SlaTracking tracking : activeTrackings) {
             boolean updated = false;
             
-            // Skip if already marked as BREACHED
             if (tracking.getSlaStatus() == SlaStatus.BREACHED) {
                 continue;
             }
             
-            // ===== CHECK RESPONSE SLA =====
+            TicketCache ticket = ticketCacheRepository.findByTicketId(tracking.getTicketId())
+                    .orElse(null);
+            
             if (tracking.getFirstResponseAt() == null) {
-                // Response not yet made
                 if (now.isAfter(tracking.getResponseDueAt())) {
-                    // BREACHED!
                     tracking.setResponseBreached(true);
                     tracking.setSlaStatus(SlaStatus.BREACHED);
                     tracking.setBreachedAt(now);
@@ -65,8 +75,9 @@ public class SlaBreachScheduler {
                              tracking.getTicketNumber(), 
                              tracking.getResponseDueAt(), 
                              now);
+                    
+                    publishResponseBreachEvent(tracking, ticket, now);
                 } else {
-                    // Check if WARNING needed (80% time consumed)
                     long totalMinutes = Duration.between(tracking.getSlaStartTime(), tracking.getResponseDueAt()).toMinutes();
                     long elapsedMinutes = Duration.between(tracking.getSlaStartTime(), now).toMinutes();
                     double percentageUsed = (double) elapsedMinutes / totalMinutes;
@@ -78,15 +89,14 @@ public class SlaBreachScheduler {
                         log.warn("RESPONSE SLA WARNING: Ticket {} - {}% time consumed", 
                                  tracking.getTicketNumber(), 
                                  Math.round(percentageUsed * 100));
+                        
+                        publishResponseWarningEvent(tracking, ticket, now, percentageUsed);
                     }
                 }
             }
             
-            // ===== CHECK RESOLUTION SLA =====
             if (tracking.getResolvedAt() == null) {
-                // Ticket not yet resolved
                 if (now.isAfter(tracking.getResolutionDueAt())) {
-                    // BREACHED!
                     tracking.setResolutionBreached(true);
                     tracking.setSlaStatus(SlaStatus.BREACHED);
                     if (tracking.getBreachedAt() == null) {
@@ -100,8 +110,9 @@ public class SlaBreachScheduler {
                              tracking.getTicketNumber(), 
                              tracking.getResolutionDueAt(), 
                              now);
+                    
+                    publishResolutionBreachEvent(tracking, ticket, now);
                 } else if (tracking.getFirstResponseAt() != null) {
-                    // Response made, check resolution warning
                     long totalMinutes = Duration.between(tracking.getSlaStartTime(), tracking.getResolutionDueAt()).toMinutes();
                     long elapsedMinutes = Duration.between(tracking.getSlaStartTime(), now).toMinutes();
                     double percentageUsed = (double) elapsedMinutes / totalMinutes;
@@ -113,11 +124,12 @@ public class SlaBreachScheduler {
                         log.warn("RESOLUTION SLA WARNING: Ticket {} - {}% time consumed", 
                                  tracking.getTicketNumber(), 
                                  Math.round(percentageUsed * 100));
+                        
+                        publishResolutionWarningEvent(tracking, ticket, now, percentageUsed);
                     }
                 }
             }
             
-            // Save if updated
             if (updated) {
                 tracking.setUpdatedAt(LocalDateTime.now());
                 slaTrackingRepository.save(tracking);
@@ -126,5 +138,117 @@ public class SlaBreachScheduler {
         
         log.info("SLA check complete - Response Breached: {}, Resolution Breached: {}, Warnings: {}", 
                  responseBreachedCount, resolutionBreachedCount, warningCount);
+    }
+    
+    private void publishResponseWarningEvent(SlaTracking tracking, TicketCache ticket, 
+                                            LocalDateTime now, double percentageUsed) {
+        String key = tracking.getTrackingId() + "-RESPONSE-WARNING";
+        if (warningsSent.contains(key)) {
+            return;
+        }
+        
+        SlaWarningEvent event = new SlaWarningEvent();
+        event.setTrackingId(tracking.getTrackingId());
+        event.setTicketId(tracking.getTicketId());
+        event.setTicketNumber(tracking.getTicketNumber());
+        event.setPriority(tracking.getPriority());
+        event.setCategory(tracking.getCategory());
+        event.setWarningType("RESPONSE");
+        event.setDueAt(tracking.getResponseDueAt());
+        event.setMinutesRemaining((int) Duration.between(now, tracking.getResponseDueAt()).toMinutes());
+        event.setPercentageTimeUsed(percentageUsed * 100);
+        
+        if (ticket != null) {
+            event.setAssignedAgentId(ticket.getAssignedAgentId());
+            event.setAssignedAgentUsername(ticket.getAssignedAgentUsername());
+        }
+        
+        EventPublisher.publishSlaWarning(event);
+        warningsSent.add(key);
+    }
+    
+    private void publishResolutionWarningEvent(SlaTracking tracking, TicketCache ticket, 
+                                               LocalDateTime now, double percentageUsed) {
+        String key = tracking.getTrackingId() + "-RESOLUTION-WARNING";
+        if (warningsSent.contains(key)) {
+            return;
+        }
+        
+        SlaWarningEvent event = new SlaWarningEvent();
+        event.setTrackingId(tracking.getTrackingId());
+        event.setTicketId(tracking.getTicketId());
+        event.setTicketNumber(tracking.getTicketNumber());
+        event.setPriority(tracking.getPriority());
+        event.setCategory(tracking.getCategory());
+        event.setWarningType("RESOLUTION");
+        event.setDueAt(tracking.getResolutionDueAt());
+        event.setMinutesRemaining((int) Duration.between(now, tracking.getResolutionDueAt()).toMinutes());
+        event.setPercentageTimeUsed(percentageUsed * 100);
+        
+        if (ticket != null) {
+            event.setAssignedAgentId(ticket.getAssignedAgentId());
+            event.setAssignedAgentUsername(ticket.getAssignedAgentUsername());
+        }
+        
+        EventPublisher.publishSlaWarning(event);
+        warningsSent.add(key);
+    }
+    
+    private void publishResponseBreachEvent(SlaTracking tracking, TicketCache ticket, LocalDateTime now) {
+        String key = tracking.getTrackingId() + "-RESPONSE-BREACH";
+        if (breachesSent.contains(key)) {
+            return;
+        }
+        
+        SlaBreachEvent event = new SlaBreachEvent();
+        event.setTrackingId(tracking.getTrackingId());
+        event.setTicketId(tracking.getTicketId());
+        event.setTicketNumber(tracking.getTicketNumber());
+        event.setPriority(tracking.getPriority());
+        event.setCategory(tracking.getCategory());
+        event.setBreachType("RESPONSE");
+        event.setDueAt(tracking.getResponseDueAt());
+        event.setBreachedAt(now);
+        event.setMinutesOverdue((int) Duration.between(tracking.getResponseDueAt(), now).toMinutes());
+        event.setBreachReason(tracking.getBreachReason());
+        event.setResponseBreached(true);
+        event.setResolutionBreached(false);
+        
+        if (ticket != null) {
+            event.setAssignedAgentId(ticket.getAssignedAgentId());
+            event.setAssignedAgentUsername(ticket.getAssignedAgentUsername());
+        }
+        
+        EventPublisher.publishSlaBreach(event);
+        breachesSent.add(key);
+    }
+    
+    private void publishResolutionBreachEvent(SlaTracking tracking, TicketCache ticket, LocalDateTime now) {
+        String key = tracking.getTrackingId() + "-RESOLUTION-BREACH";
+        if (breachesSent.contains(key)) {
+            return;
+        }
+        
+        SlaBreachEvent event = new SlaBreachEvent();
+        event.setTrackingId(tracking.getTrackingId());
+        event.setTicketId(tracking.getTicketId());
+        event.setTicketNumber(tracking.getTicketNumber());
+        event.setPriority(tracking.getPriority());
+        event.setCategory(tracking.getCategory());
+        event.setBreachType("RESOLUTION");
+        event.setDueAt(tracking.getResolutionDueAt());
+        event.setBreachedAt(now);
+        event.setMinutesOverdue((int) Duration.between(tracking.getResolutionDueAt(), now).toMinutes());
+        event.setBreachReason(tracking.getBreachReason());
+        event.setResponseBreached(false);
+        event.setResolutionBreached(true);
+        
+        if (ticket != null) {
+            event.setAssignedAgentId(ticket.getAssignedAgentId());
+            event.setAssignedAgentUsername(ticket.getAssignedAgentUsername());
+        }
+        
+        EventPublisher.publishSlaBreach(event);
+        breachesSent.add(key);
     }
 }

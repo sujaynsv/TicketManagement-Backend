@@ -13,37 +13,26 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitMQConfig {
     
-    // Exchange
     public static final String EXCHANGE = "ticket.exchange";
-    
-    // Queue
     public static final String NOTIFICATION_QUEUE = "notification.queue";
     
-    // Routing Keys
     public static final String TICKET_CREATED_KEY = "ticket.created";
     public static final String TICKET_ASSIGNED_KEY = "ticket.assigned";
     public static final String TICKET_STATUS_CHANGED_KEY = "ticket.status.changed";
     public static final String COMMENT_ADDED_KEY = "comment.added";
+    public static final String SLA_WARNING_KEY = "sla.warning";
+    public static final String SLA_BREACH_KEY = "sla.breach";
     
-    /**
-     * Create exchange
-     */
     @Bean
     public TopicExchange exchange() {
         return new TopicExchange(EXCHANGE);
     }
     
-    /**
-     * Create notification queue
-     */
     @Bean
     public Queue notificationQueue() {
-        return new Queue(NOTIFICATION_QUEUE, true);  // durable = true
+        return new Queue(NOTIFICATION_QUEUE, true);
     }
     
-    /**
-     * Bind notification queue to exchange for all events
-     */
     @Bean
     public Binding ticketCreatedBinding(Queue notificationQueue, TopicExchange exchange) {
         return BindingBuilder.bind(notificationQueue)
@@ -72,9 +61,20 @@ public class RabbitMQConfig {
                 .with(COMMENT_ADDED_KEY);
     }
     
-    /**
-     * JSON message converter with JSR310 support for LocalDateTime
-     */
+    @Bean
+    public Binding slaWarningBinding(Queue notificationQueue, TopicExchange exchange) {
+        return BindingBuilder.bind(notificationQueue)
+                .to(exchange)
+                .with(SLA_WARNING_KEY);
+    }
+    
+    @Bean
+    public Binding slaBreachBinding(Queue notificationQueue, TopicExchange exchange) {
+        return BindingBuilder.bind(notificationQueue)
+                .to(exchange)
+                .with(SLA_BREACH_KEY);
+    }
+    
     @Bean
     public MessageConverter messageConverter() {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -82,9 +82,6 @@ public class RabbitMQConfig {
         return new Jackson2JsonMessageConverter(objectMapper);
     }
     
-    /**
-     * RabbitTemplate with JSON converter
-     */
     @Bean
     public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
         RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);

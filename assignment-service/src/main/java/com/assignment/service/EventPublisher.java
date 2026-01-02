@@ -1,5 +1,7 @@
 package com.assignment.service;
 
+import com.ticket.event.SlaBreachEvent;
+import com.ticket.event.SlaWarningEvent;
 import com.ticket.event.TicketAssignedEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +30,26 @@ public class EventPublisher {
         } catch (Exception e) {
             log.error("Failed to publish TicketAssignedEvent for ticket {}: {}", 
                       event.getTicketNumber(), e.getMessage());
+        }
+    }
+
+    public void publishSlaWarning(SlaWarningEvent event) {
+        try {
+            rabbitTemplate.convertAndSend(EXCHANGE, "sla.warning", event);
+            log.info("Published SlaWarningEvent for ticket: {} ({})", 
+                    event.getTicketNumber(), event.getWarningType());
+        } catch (Exception e) {
+            log.error("Failed to publish SlaWarningEvent: {}", e.getMessage(), e);
+        }
+    }
+    
+    public void publishSlaBreach(SlaBreachEvent event) {
+        try {
+            rabbitTemplate.convertAndSend(EXCHANGE, "sla.breach", event);
+            log.info("Published SlaBreachEvent for ticket: {} ({})", 
+                    event.getTicketNumber(), event.getBreachType());
+        } catch (Exception e) {
+            log.error("Failed to publish SlaBreachEvent: {}", e.getMessage(), e);
         }
     }
 }

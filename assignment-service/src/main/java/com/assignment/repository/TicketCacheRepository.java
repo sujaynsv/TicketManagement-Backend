@@ -21,6 +21,10 @@ public interface TicketCacheRepository extends JpaRepository<TicketCache, String
     
     // Find by status
     List<TicketCache> findByStatus(String status);
+
+    
+    Optional<TicketCache> findByTicketId(String ticketId);
+
     
     // Count unassigned tickets
     Long countByStatusAndAssignedAgentIdIsNull(String status);

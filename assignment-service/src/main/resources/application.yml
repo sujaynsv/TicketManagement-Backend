@@ -50,7 +50,7 @@ sla:
   # Default SLA rules (in minutes for response, hours for resolution)
   rules:
     CRITICAL:
-      response-time-minutes: 15
+      response-time-minutes: 5
       resolution-time-hours: 4
     HIGH:
       response-time-minutes: 60

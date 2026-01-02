@@ -4,6 +4,8 @@ import com.notification.entity.DeliveryChannel;
 import com.notification.entity.NotificationType;
 import com.notification.service.NotificationService;
 import com.ticket.event.CommentAddedEvent;
+import com.ticket.event.SlaBreachEvent;
+import com.ticket.event.SlaWarningEvent;
 import com.ticket.event.TicketAssignedEvent;
 import com.ticket.event.TicketCreatedEvent;
 import com.ticket.event.TicketStatusChangedEvent;
@@ -325,4 +327,169 @@ public class EventListener {
             default -> NotificationType.TICKET_STATUS_CHANGED;
         };
     }
+
+    @RabbitHandler
+public void handleSlaWarning(SlaWarningEvent event) {
+    try {
+        log.info("Received SlaWarningEvent: {} - {} warning", 
+                 event.getTicketNumber(), event.getWarningType());
+        
+        if (event.getAssignedAgentId() == null) {
+            log.warn("Skipping SlaWarningEvent - no agent assigned yet");
+            return;
+        }
+        
+        String subject = String.format("SLA Warning: Ticket %s (%s)", 
+                                      event.getTicketNumber(), event.getWarningType());
+        
+        String message = String.format(
+            "Hello %s,\n\n" +
+            "SLA WARNING for ticket %s\n\n" +
+            "Warning Details:\n" +
+            "----------------\n" +
+            "Ticket Number: %s\n" +
+            "Priority: %s\n" +
+            "Category: %s\n" +
+            "SLA Type: %s\n" +
+            "Due At: %s\n" +
+            "Time Remaining: %d minutes\n" +
+            "Time Used: %.1f%%\n\n" +
+            "URGENT ACTION REQUIRED:\n" +
+            "This ticket is approaching its SLA deadline. Please take immediate action to avoid SLA breach.\n\n" +
+            "Thank you,\n" +
+            "Ticket Management System",
+            event.getAssignedAgentUsername(),
+            event.getTicketNumber(),
+            event.getTicketNumber(),
+            event.getPriority(),
+            event.getCategory(),
+            event.getWarningType(),
+            event.getDueAt(),
+            event.getMinutesRemaining(),
+            event.getPercentageTimeUsed()
+        );
+        
+        notificationService.createNotification(
+            event.getAssignedAgentId(),
+            event.getAssignedAgentUsername(),
+            NotificationType.SLA_WARNING,
+            "SLA_WARNING",
+            event.getTicketId(),
+            event.getTicketNumber(),
+            subject,
+            message,
+            DeliveryChannel.EMAIL
+        );
+        
+        String inAppMessage = String.format(
+            "SLA Warning: Ticket %s - %s SLA at %.0f%% (Due: %s)",
+            event.getTicketNumber(),
+            event.getWarningType(),
+            event.getPercentageTimeUsed(),
+            event.getDueAt()
+        );
+        
+        notificationService.createNotification(
+            event.getAssignedAgentId(),
+            event.getAssignedAgentUsername(),
+            NotificationType.SLA_WARNING,
+            "SLA_WARNING",
+            event.getTicketId(),
+            event.getTicketNumber(),
+            "SLA Warning",
+            inAppMessage,
+            DeliveryChannel.IN_APP
+        );
+        
+        log.info("SLA warning notification sent for ticket: {}", event.getTicketNumber());
+        
+    } catch (Exception e) {
+        log.error("Error handling SlaWarningEvent for {}: {}", 
+                 event.getTicketNumber(), e.getMessage(), e);
+    }
+}
+
+    @RabbitHandler
+    public void handleSlaBreach(SlaBreachEvent event) {
+        try {
+            log.info("Received SlaBreachEvent: {} - {} breach", 
+                    event.getTicketNumber(), event.getBreachType());
+            
+            if (event.getAssignedAgentId() == null) {
+                log.warn("Skipping SlaBreachEvent - no agent assigned");
+                return;
+            }
+            
+            String subject = String.format("SLA BREACHED: Ticket %s (%s)", 
+                                        event.getTicketNumber(), event.getBreachType());
+            
+            String message = String.format(
+                "Hello %s,\n\n" +
+                "CRITICAL: SLA BREACH for ticket %s\n\n" +
+                "Breach Details:\n" +
+                "----------------\n" +
+                "Ticket Number: %s\n" +
+                "Priority: %s\n" +
+                "Category: %s\n" +
+                "Breach Type: %s\n" +
+                "Was Due At: %s\n" +
+                "Breached At: %s\n" +
+                "Minutes Overdue: %d\n" +
+                "Breach Reason: %s\n\n" +
+                "IMMEDIATE ESCALATION REQUIRED:\n" +
+                "This ticket has breached its SLA commitment. Please escalate to management immediately and take corrective action.\n\n" +
+                "Thank you,\n" +
+                "Ticket Management System",
+                event.getAssignedAgentUsername(),
+                event.getTicketNumber(),
+                event.getTicketNumber(),
+                event.getPriority(),
+                event.getCategory(),
+                event.getBreachType(),
+                event.getDueAt(),
+                event.getBreachedAt(),
+                event.getMinutesOverdue(),
+                event.getBreachReason()
+            );
+            
+            notificationService.createNotification(
+                event.getAssignedAgentId(),
+                event.getAssignedAgentUsername(),
+                NotificationType.SLA_BREACH,
+                "SLA_BREACH",
+                event.getTicketId(),
+                event.getTicketNumber(),
+                subject,
+                message,
+                DeliveryChannel.EMAIL
+            );
+            
+            String inAppMessage = String.format(
+                "SLA BREACH: Ticket %s - %s SLA overdue by %d minutes",
+                event.getTicketNumber(),
+                event.getBreachType(),
+                event.getMinutesOverdue()
+            );
+            
+            notificationService.createNotification(
+                event.getAssignedAgentId(),
+                event.getAssignedAgentUsername(),
+                NotificationType.SLA_BREACH,
+                "SLA_BREACH",
+                event.getTicketId(),
+                event.getTicketNumber(),
+                "SLA BREACH",
+                inAppMessage,
+                DeliveryChannel.IN_APP
+            );
+            
+            log.info("SLA breach notification sent for ticket: {}", event.getTicketNumber());
+            
+        } catch (Exception e) {
+            log.error("Error handling SlaBreachEvent for {}: {}", 
+                    event.getTicketNumber(), e.getMessage(), e);
+        }
+    }
+
+
 }
