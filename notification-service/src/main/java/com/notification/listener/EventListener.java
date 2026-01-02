@@ -1,5 +1,7 @@
 package com.notification.listener;
 
+import com.notification.client.TicketServiceClient;
+import com.notification.dto.TicketDTO;
 import com.notification.entity.DeliveryChannel;
 import com.notification.entity.NotificationType;
 import com.notification.service.NotificationService;
@@ -13,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -27,6 +30,10 @@ public class EventListener {
      * Handle TicketCreatedEvent
      * Notify: User who created the ticket
      */
+
+    @Autowired
+    private TicketServiceClient ticketServiceClient;
+
     @RabbitHandler
     public void handleTicketCreated(TicketCreatedEvent event) {
         try {
@@ -260,62 +267,62 @@ public class EventListener {
      * Handle CommentAddedEvent
      * Notify: Ticket creator + Assigned agent (excluding comment author)
      */
-    @RabbitHandler
-    public void handleCommentAdded(CommentAddedEvent event) {
-        try {
-            log.info("Received CommentAddedEvent: {} by {}", 
-                     event.getTicketNumber(), event.getUsername());
+    // @RabbitHandler
+    // public void handleCommentAdded(CommentAddedEvent event) {
+    //     try {
+    //         log.info("Received CommentAddedEvent: {} by {}", 
+    //                  event.getTicketNumber(), event.getUsername());
             
-            // Only notify for non-internal comments
-            if (event.getIsInternal() != null && event.getIsInternal()) {
-                log.info("Internal comment, skipping notification");
-                return;
-            }
+    //         // Only notify for non-internal comments
+    //         if (event.getIsInternal() != null && event.getIsInternal()) {
+    //             log.info("Internal comment, skipping notification");
+    //             return;
+    //         }
             
-            String subject = "New Comment on Ticket: " + event.getTicketNumber();
-            String message = String.format(
-                "Hello,\n\n" +
-                "A new comment has been added to ticket %s.\n\n" +
-                "Comment Details:\n" +
-                "----------------\n" +
-                "Comment By: %s\n" +
-                "Added At: %s\n\n" +
-                "Comment:\n" +
-                "%s\n\n" +
-                "Please log in to view the full conversation.\n\n" +
-                "Thank you,\n" +
-                "Ticket Management System",
-                event.getTicketNumber(),
-                event.getUsername(),
-                event.getCreatedAt(),
-                event.getCommentText()
-            );
+    //         String subject = "New Comment on Ticket: " + event.getTicketNumber();
+    //         String message = String.format(
+    //             "Hello,\n\n" +
+    //             "A new comment has been added to ticket %s.\n\n" +
+    //             "Comment Details:\n" +
+    //             "----------------\n" +
+    //             "Comment By: %s\n" +
+    //             "Added At: %s\n\n" +
+    //             "Comment:\n" +
+    //             "%s\n\n" +
+    //             "Please log in to view the full conversation.\n\n" +
+    //             "Thank you,\n" +
+    //             "Ticket Management System",
+    //             event.getTicketNumber(),
+    //             event.getUsername(),
+    //             event.getCreatedAt(),
+    //             event.getCommentText()
+    //         );
             
-            // Create in-app notification for comment author
-            String inAppMessage = String.format(
-                "You added a comment on ticket %s",
-                event.getTicketNumber()
-            );
+    //         // Create in-app notification for comment author
+    //         String inAppMessage = String.format(
+    //             "You added a comment on ticket %s",
+    //             event.getTicketNumber()
+    //         );
             
-            notificationService.createNotification(
-                event.getUserId(),
-                event.getUsername(),
-                NotificationType.COMMENT_ADDED,
-                "COMMENT_ADDED",
-                event.getTicketId(),
-                event.getTicketNumber(),
-                "Comment Added",
-                inAppMessage,
-                DeliveryChannel.IN_APP
-            );
+    //         notificationService.createNotification(
+    //             event.getUserId(),
+    //             event.getUsername(),
+    //             NotificationType.COMMENT_ADDED,
+    //             "COMMENT_ADDED",
+    //             event.getTicketId(),
+    //             event.getTicketNumber(),
+    //             "Comment Added",
+    //             inAppMessage,
+    //             DeliveryChannel.IN_APP
+    //         );
             
-            log.info("Comment notification sent for ticket: {}", event.getTicketNumber());
+    //         log.info("Comment notification sent for ticket: {}", event.getTicketNumber());
             
-        } catch (Exception e) {
-            log.error("Error handling CommentAddedEvent for {}: {}", 
-                     event.getTicketNumber(), e.getMessage(), e);
-        }
-    }
+    //     } catch (Exception e) {
+    //         log.error("Error handling CommentAddedEvent for {}: {}", 
+    //                  event.getTicketNumber(), e.getMessage(), e);
+    //     }
+    // }
     
     /**
      * Get notification type based on ticket status
@@ -490,6 +497,156 @@ public void handleSlaWarning(SlaWarningEvent event) {
                     event.getTicketNumber(), e.getMessage(), e);
         }
     }
+
+
+    @RabbitHandler
+    public void handleCommentAdded(CommentAddedEvent event) {
+        try {
+            log.info("Received CommentAddedEvent: {} by {}", 
+                    event.getTicketNumber(), event.getUsername());
+            
+            if (event.getIsInternal() != null && event.getIsInternal()) {
+                log.info("Internal comment, skipping external notifications");
+                return;
+            }
+            
+            TicketDTO ticket;
+            try {
+                ticket = ticketServiceClient.getTicket(event.getTicketId());
+            } catch (Exception e) {
+                log.error("Failed to fetch ticket {} from ticket-service: {}", 
+                        event.getTicketId(), e.getMessage());
+                return;
+            }
+            
+            if (ticket == null) {
+                log.warn("Ticket {} not found", event.getTicketNumber());
+                return;
+            }
+            
+            String subject = "New Comment on Ticket: " + event.getTicketNumber();
+            
+            if (ticket.createdByUserId() != null && 
+                !ticket.createdByUserId().equals(event.getUserId())) {
+                
+                String creatorMessage = String.format(
+                    "Hello %s,\n\n" +
+                    "A new comment has been added to your ticket %s.\n\n" +
+                    "Comment Details:\n" +
+                    "----------------\n" +
+                    "Comment By: %s\n" +
+                    "Added At: %s\n\n" +
+                    "Comment:\n" +
+                    "%s\n\n" +
+                    "Please log in to view the full conversation and respond if needed.\n\n" +
+                    "Thank you,\n" +
+                    "Ticket Management System",
+                    ticket.createdByUsername(),
+                    event.getTicketNumber(),
+                    event.getUsername(),
+                    event.getCreatedAt(),
+                    event.getCommentText()
+                );
+                
+                notificationService.createNotification(
+                    ticket.createdByUserId(),
+                    ticket.createdByUsername(),
+                    NotificationType.COMMENT_ADDED,
+                    "COMMENT_ADDED",
+                    event.getTicketId(),
+                    event.getTicketNumber(),
+                    subject,
+                    creatorMessage,
+                    DeliveryChannel.EMAIL
+                );
+                
+                String creatorInAppMessage = String.format(
+                    "%s commented on your ticket %s",
+                    event.getUsername(),
+                    event.getTicketNumber()
+                );
+                
+                notificationService.createNotification(
+                    ticket.createdByUserId(),
+                    ticket.createdByUsername(),
+                    NotificationType.COMMENT_ADDED,
+                    "COMMENT_ADDED",
+                    event.getTicketId(),
+                    event.getTicketNumber(),
+                    "New Comment",
+                    creatorInAppMessage,
+                    DeliveryChannel.IN_APP
+                );
+                
+                log.info("Comment notification sent to ticket creator: {}", 
+                        ticket.createdByUsername());
+            }
+            
+            if (ticket.assignedToUserId() != null && 
+                !ticket.assignedToUserId().equals(event.getUserId()) &&
+                !ticket.assignedToUserId().equals(ticket.createdByUserId())) {
+                
+                String agentMessage = String.format(
+                    "Hello %s,\n\n" +
+                    "A new comment has been added to ticket %s assigned to you.\n\n" +
+                    "Comment Details:\n" +
+                    "----------------\n" +
+                    "Comment By: %s\n" +
+                    "Added At: %s\n\n" +
+                    "Comment:\n" +
+                    "%s\n\n" +
+                    "Please review and respond as needed.\n\n" +
+                    "Thank you,\n" +
+                    "Ticket Management System",
+                    ticket.assignedToUsername(),
+                    event.getTicketNumber(),
+                    event.getUsername(),
+                    event.getCreatedAt(),
+                    event.getCommentText()
+                );
+                
+                notificationService.createNotification(
+                    ticket.assignedToUserId(),
+                    ticket.assignedToUsername(),
+                    NotificationType.COMMENT_ADDED,
+                    "COMMENT_ADDED",
+                    event.getTicketId(),
+                    event.getTicketNumber(),
+                    subject,
+                    agentMessage,
+                    DeliveryChannel.EMAIL
+                );
+                
+                String agentInAppMessage = String.format(
+                    "%s commented on ticket %s",
+                    event.getUsername(),
+                    event.getTicketNumber()
+                );
+                
+                notificationService.createNotification(
+                    ticket.assignedToUserId(),
+                    ticket.assignedToUsername(),
+                    NotificationType.COMMENT_ADDED,
+                    "COMMENT_ADDED",
+                    event.getTicketId(),
+                    event.getTicketNumber(),
+                    "New Comment",
+                    agentInAppMessage,
+                    DeliveryChannel.IN_APP
+                );
+                
+                log.info("Comment notification sent to assigned agent: {}", 
+                        ticket.assignedToUsername());
+            }
+            
+            log.info("Comment notifications processed for ticket: {}", event.getTicketNumber());
+            
+        } catch (Exception e) {
+            log.error("Error handling CommentAddedEvent for {}: {}", 
+                    event.getTicketNumber(), e.getMessage(), e);
+        }
+    }
+
 
 
 }

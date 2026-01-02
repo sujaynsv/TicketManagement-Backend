@@ -55,7 +55,34 @@ eureka:
   instance:
     prefer-ip-address: true
 
-# Auth Service URL
+# Service URLs
+services:
+  ticket-service:
+    url: http://localhost:8082
+  auth-service:
+    url: http://localhost:8081
+
+# Feign Client Configuration
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 5000
+        readTimeout: 5000
+        loggerLevel: basic
+      ticket-service:
+        connectTimeout: 5000
+        readTimeout: 10000
+        loggerLevel: full
+  hystrix:
+    enabled: false
+  compression:
+    request:
+      enabled: true
+    response:
+      enabled: true
+
+# Auth Service URL (legacy - keep for backward compatibility)
 auth-service:
   url: http://localhost:8081
 
@@ -74,8 +101,11 @@ notification:
 logging:
   level:
     com.notification: DEBUG
+    com.notification.client: DEBUG
     org.springframework.amqp: DEBUG
     org.springframework.mail.javamail: DEBUG
+    org.springframework.cloud.openfeign: DEBUG
+    feign: DEBUG
     javax.mail: DEBUG
     org.springframework.mail: DEBUG
     org.hibernate.SQL: DEBUG
