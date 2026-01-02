@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.Optional;
 
 @Service
@@ -29,21 +28,28 @@ public class SlaService {
     @Autowired
     private SlaTrackingRepository slaTrackingRepository;
     
-    @Value("${sla.business-hours.enabled}")
+    @Value("${sla.business-hours.enabled:false}")
     private Boolean businessHoursEnabled;
     
-    @Value("${sla.business-hours.start-time}")
+    @Value("${sla.business-hours.start-time:09:00}")
     private String businessStartTime;
     
-    @Value("${sla.business-hours.end-time}")
+    @Value("${sla.business-hours.end-time:18:00}")
     private String businessEndTime;
     
     /**
      * Create SLA tracking for a new ticket
+     * Only creates tracking if priority is set (by manager)
      */
     @Transactional
     public SlaTracking createSlaTracking(String ticketId, String ticketNumber, 
                                         String priority, String category) {
+        //   If priority is null, don't create SLA tracking yet
+        if (priority == null || priority.trim().isEmpty()) {
+            log.info("Skipping SLA tracking for ticket {} - priority not set yet", ticketNumber);
+            return null;
+        }
+        
         // Get SLA rule
         SlaRule rule = getSlaRule(priority, category);
         
@@ -66,41 +72,70 @@ public class SlaService {
         
         SlaTracking savedTracking = slaTrackingRepository.save(tracking);
         
-        log.info("Created SLA tracking for ticket {}: Response due at {}, Resolution due at {}", 
-                 ticketNumber, responseDueAt, resolutionDueAt);
+        log.info("  Created SLA tracking for ticket {}: Priority={}, Response due at {}, Resolution due at {}", 
+                 ticketNumber, priority, responseDueAt, resolutionDueAt);
         
         return savedTracking;
+    }
+    
+    /**
+     * Create SLA tracking when priority is assigned by manager
+     */
+    @Transactional
+    public SlaTracking createSlaTrackingOnPriorityAssignment(String ticketId, String ticketNumber, 
+                                                             String priority, String category) {
+        // Check if tracking already exists
+        Optional<SlaTracking> existingTracking = slaTrackingRepository.findByTicketId(ticketId);
+        if (existingTracking.isPresent()) {
+            log.info("SLA tracking already exists for ticket {}", ticketNumber);
+            return existingTracking.get();
+        }
+        
+        // Create new tracking
+        return createSlaTracking(ticketId, ticketNumber, priority, category);
     }
     
     /**
      * Get SLA rule for priority and category
      */
     private SlaRule getSlaRule(String priority, String category) {
+        // Normalize priority
+        String normalizedPriority = priority != null ? priority.toUpperCase() : "MEDIUM";
+        
         // Try to find category-specific rule first
-        Optional<SlaRule> categoryRule = slaRuleRepository.findByPriorityAndCategory(priority, category);
-        if (categoryRule.isPresent()) {
-            return categoryRule.get();
+        if (category != null && !category.trim().isEmpty()) {
+            Optional<SlaRule> categoryRule = slaRuleRepository.findByPriorityAndCategory(normalizedPriority, category);
+            if (categoryRule.isPresent()) {
+                log.info("Using category-specific SLA rule: priority={}, category={}", normalizedPriority, category);
+                return categoryRule.get();
+            }
         }
         
         // Fall back to default rule (no category)
-        Optional<SlaRule> defaultRule = slaRuleRepository.findByPriorityAndCategoryIsNull(priority);
+        Optional<SlaRule> defaultRule = slaRuleRepository.findByPriorityAndCategoryIsNull(normalizedPriority);
         if (defaultRule.isPresent()) {
+            log.info("Using default SLA rule for priority={}", normalizedPriority);
             return defaultRule.get();
         }
         
         // If no rule exists, create default based on priority
-        return createDefaultSlaRule(priority);
+        log.info("No SLA rule found, creating default for priority={}", normalizedPriority);
+        return createDefaultSlaRule(normalizedPriority, category);
     }
     
     /**
      * Create default SLA rule if none exists
      */
-    private SlaRule createDefaultSlaRule(String priority) {
+    private SlaRule createDefaultSlaRule(String priority, String category) {
         SlaRule rule = new SlaRule();
-        rule.setPriority(priority);
+        
+        //   Handle null priority - use MEDIUM as fallback
+        String effectivePriority = priority != null ? priority.toUpperCase() : "MEDIUM";
+        rule.setPriority(effectivePriority);
+        rule.setCategory(category);
         
         // Default SLA times based on priority
-        switch (priority.toUpperCase()) {
+        switch (effectivePriority) {
             case "CRITICAL":
                 rule.setResponseTimeMinutes(15);
                 rule.setResolutionTimeHours(4);
@@ -122,7 +157,11 @@ public class SlaService {
                 rule.setResolutionTimeHours(24);
         }
         
-        return slaRuleRepository.save(rule);
+        SlaRule savedRule = slaRuleRepository.save(rule);
+        log.info("  Created default SLA rule: priority={}, category={}, responseTime={}min, resolutionTime={}hrs",
+                effectivePriority, category, rule.getResponseTimeMinutes(), rule.getResolutionTimeHours());
+        
+        return savedRule;
     }
     
     /**
@@ -132,7 +171,7 @@ public class SlaService {
     public void recordFirstResponse(String ticketId) {
         Optional<SlaTracking> trackingOpt = slaTrackingRepository.findByTicketId(ticketId);
         if (trackingOpt.isEmpty()) {
-            log.warn("No SLA tracking found for ticket {}", ticketId);
+            log.debug("No SLA tracking found for ticket {} - priority may not be set yet", ticketId);
             return;
         }
         
@@ -140,6 +179,7 @@ public class SlaService {
         
         // Already recorded
         if (tracking.getFirstResponseAt() != null) {
+            log.debug("First response already recorded for ticket {}", tracking.getTicketNumber());
             return;
         }
         
@@ -156,11 +196,11 @@ public class SlaService {
             tracking.setSlaStatus(SlaStatus.BREACHED);
             tracking.setBreachedAt(now);
             tracking.setBreachReason("First response exceeded SLA time");
-            log.warn("Response SLA breached for ticket {}: {} minutes (due in {} minutes)", 
+            log.warn("   Response SLA breached for ticket {}: {} minutes (due in {} minutes)", 
                      tracking.getTicketNumber(), minutes, 
                      Duration.between(tracking.getSlaStartTime(), tracking.getResponseDueAt()).toMinutes());
         } else {
-            log.info("First response recorded for ticket {} within SLA: {} minutes", 
+            log.info("  First response recorded for ticket {} within SLA: {} minutes", 
                      tracking.getTicketNumber(), minutes);
         }
         
@@ -175,7 +215,7 @@ public class SlaService {
     public void recordResolution(String ticketId) {
         Optional<SlaTracking> trackingOpt = slaTrackingRepository.findByTicketId(ticketId);
         if (trackingOpt.isEmpty()) {
-            log.warn("No SLA tracking found for ticket {}", ticketId);
+            log.debug("No SLA tracking found for ticket {} - priority may not be set yet", ticketId);
             return;
         }
         
@@ -183,6 +223,7 @@ public class SlaService {
         
         // Already resolved
         if (tracking.getResolvedAt() != null) {
+            log.debug("Ticket {} already marked as resolved", tracking.getTicketNumber());
             return;
         }
         
@@ -202,10 +243,14 @@ public class SlaService {
                 tracking.setBreachedAt(now);
             }
             tracking.setBreachReason("Resolution exceeded SLA time");
-            log.warn("Resolution SLA breached for ticket {}: {} hours", 
+            log.warn("   Resolution SLA breached for ticket {}: {} hours", 
                      tracking.getTicketNumber(), hours);
         } else {
-            log.info("Ticket {} resolved within SLA: {} hours", 
+            // Mark as met if not breached
+            if (tracking.getSlaStatus() != SlaStatus.BREACHED) {
+                tracking.setSlaStatus(SlaStatus.OK);
+            }
+            log.info("  Ticket {} resolved within SLA: {} hours", 
                      tracking.getTicketNumber(), hours);
         }
         
@@ -224,6 +269,10 @@ public class SlaService {
      * Calculate time remaining until SLA breach
      */
     public String calculateTimeRemaining(SlaTracking tracking) {
+        if (tracking == null) {
+            return "No SLA set";
+        }
+        
         LocalDateTime now = LocalDateTime.now();
         
         // If already resolved, return completed
@@ -252,14 +301,19 @@ public class SlaService {
      * Format time remaining in human-readable format
      */
     private String formatTimeRemaining(long minutes) {
-        if (minutes < 60) {
+        if (minutes < 0) {
+            return "Breached";
+        } else if (minutes < 60) {
             return minutes + " minutes";
         } else if (minutes < 1440) {
-            return (minutes / 60) + " hours " + (minutes % 60) + " minutes";
+            long hours = minutes / 60;
+            long mins = minutes % 60;
+            return hours + " hours" + (mins > 0 ? " " + mins + " minutes" : "");
         } else {
             long days = minutes / 1440;
             long hours = (minutes % 1440) / 60;
-            return days + " days " + hours + " hours";
+            return days + " day" + (days > 1 ? "s" : "") + 
+                   (hours > 0 ? " " + hours + " hour" + (hours > 1 ? "s" : "") : "");
         }
     }
 }

@@ -1,0 +1,14 @@
+package com.notification.entity;
+
+public enum NotificationType {
+    TICKET_CREATED,
+    TICKET_ASSIGNED,
+    TICKET_STATUS_CHANGED,
+    TICKET_RESOLVED,
+    TICKET_CLOSED,
+    COMMENT_ADDED,
+    SLA_BREACH_WARNING,
+    SLA_BREACHED,
+    TICKET_REASSIGNED,
+    TICKET_UPDATED
+}

@@ -58,3 +58,15 @@ rabbitmq:
     ticket-status-changed: ticket.status.changed
     ticket-updated: ticket.updated
     comment-added: comment.added
+
+logging:
+  level:
+    com.ticket: DEBUG
+    com.ticket.service.EventPublisherService: DEBUG
+    org.springframework.amqp: DEBUG
+    org.springframework.data.mongodb: INFO
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+  file:
+    name: logs/ticket-service.log
+    path: logs

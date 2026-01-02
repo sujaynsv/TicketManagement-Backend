@@ -3,7 +3,8 @@ package com.ticket.event;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import com.fasterxml.jackson.annotation.JsonFormat;
-
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class TicketAssignedEvent implements Serializable {
     
     private String ticketId;

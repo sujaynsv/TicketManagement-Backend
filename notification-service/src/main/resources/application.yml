@@ -1,0 +1,90 @@
+spring:
+  application:
+    name: notification-service
+  
+  # PostgreSQL Configuration
+  datasource:
+    url: jdbc:postgresql://localhost:5432/notification_db
+    username: sujaynimmagadda
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+  
+  # JPA Configuration
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+  
+  # RabbitMQ Configuration
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+  
+  # Mail Configuration (Gmail)
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: nsvsujay@gmail.com
+    password: ahcwmyoztibtyjqh
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+
+# Server Configuration
+server:
+  port: 8084
+
+# Eureka Configuration
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    prefer-ip-address: true
+
+# Auth Service URL
+auth-service:
+  url: http://localhost:8081
+
+# Notification Configuration
+notification:
+  email:
+    enabled: true
+    from: ${MAIL_USERNAME:noreply@ticketing.com}
+    from-name: Ticket Management System
+  
+  retry:
+    max-attempts: 3
+    delay-seconds: 60
+
+# Logging
+logging:
+  level:
+    com.notification: DEBUG
+    org.springframework.amqp: DEBUG
+    org.springframework.mail.javamail: DEBUG
+    javax.mail: DEBUG
+    org.springframework.mail: DEBUG
+    org.hibernate.SQL: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+  file:
+    name: logs/notification-service.log 
+    path: logs
+  logback:
+    rollingpolicy:
+      max-file-size: 10MB
+      max-history: 10

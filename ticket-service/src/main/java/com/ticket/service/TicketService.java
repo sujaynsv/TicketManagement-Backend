@@ -384,23 +384,26 @@ public class TicketService {
         // Save ticket
         Ticket savedTicket = ticketRepository.save(ticket);
         
+        log.info("Ticket saved: {} - {}", savedTicket.getTicketNumber(), savedTicket.getTitle());
+        log.info("Added ticket: {}",ticket);
+
         // Log activity
         logActivity(savedTicket.getTicketId(), "TICKET_CREATED", 
                 "Ticket created", userId, username);
         
-        // // Publish event to RabbitMQ
-        // TicketCreatedEvent event = new TicketCreatedEvent(
-        //         savedTicket.getTicketId(),
-        //         savedTicket.getTicketNumber(),
-        //         savedTicket.getTitle(),
-        //         savedTicket.getDescription(),
-        //         userId,
-        //         username,
-        //         category.name(),
-        //         priority.name(),
-        //         savedTicket.getCreatedAt()
-        // );
-        // eventPublisher.publishTicketCreated(event);
+        // Publish event to RabbitMQ
+        TicketCreatedEvent event = new TicketCreatedEvent(
+                savedTicket.getTicketId(),
+                savedTicket.getTicketNumber(),
+                savedTicket.getTitle(),
+                savedTicket.getDescription(),
+                userId,
+                username,
+                category.name(),
+                null,
+                savedTicket.getCreatedAt()
+        );
+        eventPublisher.publishTicketCreated(event);
         
         return convertToDTO(savedTicket);
     }
@@ -454,7 +457,7 @@ public class TicketService {
     
     logActivity(ticketId, "PRIORITY_SET", activityMessage, managerId, managerUsername);
     
-    // ✅ NOW publish TicketCreatedEvent (if this is first time setting priority)
+    //   NOW publish TicketCreatedEvent (if this is first time setting priority)
     if (oldPriority == null) {
         TicketCreatedEvent event = new TicketCreatedEvent(
                 updatedTicket.getTicketId(),

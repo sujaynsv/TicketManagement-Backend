@@ -1,4 +1,4 @@
-package com.ticket.config;
+package com.notification.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -7,48 +7,30 @@ import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class RabbitMQConfig {
     
-    @Value("${rabbitmq.exchange.name}")
-    private String exchange;
+    // Exchange
+    public static final String EXCHANGE = "ticket.exchange";
     
-    @Value("${rabbitmq.queue.ticket.name}")
-    private String ticketQueueName;
+    // Queue
+    public static final String NOTIFICATION_QUEUE = "notification.queue";
     
-    @Value("${rabbitmq.queue.notification.name}")
-    private String notificationQueueName;
-    
-    @Value("${rabbitmq.routing-key.ticket-created}")
-    private String ticketCreatedKey;
-    
-    @Value("${rabbitmq.routing-key.ticket-assigned}")
-    private String ticketAssignedKey;
-    
-    @Value("${rabbitmq.routing-key.ticket-status-changed}")
-    private String ticketStatusChangedKey;
-    
-    @Value("${rabbitmq.routing-key.comment-added}")
-    private String commentAddedKey;
+    // Routing Keys
+    public static final String TICKET_CREATED_KEY = "ticket.created";
+    public static final String TICKET_ASSIGNED_KEY = "ticket.assigned";
+    public static final String TICKET_STATUS_CHANGED_KEY = "ticket.status.changed";
+    public static final String COMMENT_ADDED_KEY = "comment.added";
     
     /**
      * Create exchange
      */
     @Bean
     public TopicExchange exchange() {
-        return new TopicExchange(exchange);
-    }
-    
-    /**
-     * Create ticket queue
-     */
-    @Bean
-    public Queue ticketQueue() {
-        return new Queue(ticketQueueName, true);
+        return new TopicExchange(EXCHANGE);
     }
     
     /**
@@ -56,48 +38,38 @@ public class RabbitMQConfig {
      */
     @Bean
     public Queue notificationQueue() {
-        return new Queue(notificationQueueName, true);
+        return new Queue(NOTIFICATION_QUEUE, true);  // durable = true
     }
     
     /**
-     * Bind ticket queue to exchange for ticket.assigned events
-     */
-    @Bean
-    public Binding ticketAssignedBinding(Queue ticketQueue, TopicExchange exchange) {
-        return BindingBuilder.bind(ticketQueue)
-                .to(exchange)
-                .with(ticketAssignedKey);
-    }
-    
-    /**
-     * Bind notification queue to various events
+     * Bind notification queue to exchange for all events
      */
     @Bean
     public Binding ticketCreatedBinding(Queue notificationQueue, TopicExchange exchange) {
         return BindingBuilder.bind(notificationQueue)
                 .to(exchange)
-                .with(ticketCreatedKey);
+                .with(TICKET_CREATED_KEY);
     }
     
     @Bean
-    public Binding ticketAssignedNotificationBinding(Queue notificationQueue, TopicExchange exchange) {
+    public Binding ticketAssignedBinding(Queue notificationQueue, TopicExchange exchange) {
         return BindingBuilder.bind(notificationQueue)
                 .to(exchange)
-                .with(ticketAssignedKey);
+                .with(TICKET_ASSIGNED_KEY);
     }
     
     @Bean
     public Binding ticketStatusChangedBinding(Queue notificationQueue, TopicExchange exchange) {
         return BindingBuilder.bind(notificationQueue)
                 .to(exchange)
-                .with(ticketStatusChangedKey);
+                .with(TICKET_STATUS_CHANGED_KEY);
     }
     
     @Bean
     public Binding commentAddedBinding(Queue notificationQueue, TopicExchange exchange) {
         return BindingBuilder.bind(notificationQueue)
                 .to(exchange)
-                .with(commentAddedKey);
+                .with(COMMENT_ADDED_KEY);
     }
     
     /**
@@ -106,7 +78,7 @@ public class RabbitMQConfig {
     @Bean
     public MessageConverter messageConverter() {
         ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());  //   Add this!
+        objectMapper.registerModule(new JavaTimeModule());
         return new Jackson2JsonMessageConverter(objectMapper);
     }
     

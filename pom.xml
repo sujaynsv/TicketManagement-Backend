@@ -34,6 +34,7 @@
         <module>auth-service</module>
         <module>ticket-service</module>
         <module>assignment-service</module>
+        <module>notification-service</module>
     </modules>
 
     <dependencyManagement>

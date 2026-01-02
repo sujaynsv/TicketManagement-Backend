@@ -103,7 +103,7 @@ public class AssignmentService {
             throw new RuntimeException("Ticket already assigned to " + ticket.getAssignedAgentUsername());
         }
         
-        // ✅ NEW: Update priority (manager sets it during assignment)
+        //   NEW: Update priority (manager sets it during assignment)
         String oldPriority = ticket.getPriority();
         ticket.setPriority(request.getPriority());
         
@@ -161,11 +161,11 @@ public class AssignmentService {
         
         agentWorkloadRepository.save(agent);
         
-        // ✅ Create SLA tracking with the priority manager set
+        //   Create SLA tracking with the priority manager set
         slaService.createSlaTracking(
                 ticket.getTicketId(),
                 ticket.getTicketNumber(),
-                request.getPriority(),  // ✅ Use priority from request
+                request.getPriority(),  //   Use priority from request
                 ticket.getCategory()
         );
         

@@ -14,7 +14,7 @@ public class TicketCache {
     @Column(name = "ticket_number", nullable = false, length = 50)
     private String ticketNumber;
     
-    @Column(name = "title", nullable = false, length = 200)
+    @Column(name = "title",length = 200)
     private String title;
     
     @Column(name = "description", columnDefinition = "TEXT")
@@ -23,7 +23,7 @@ public class TicketCache {
     @Column(name = "category", length = 50)
     private String category;
     
-    @Column(name = "priority", nullable = false, length = 20)
+    @Column(name = "priority", nullable = true, length = 20)
     private String priority;
     
     @Column(name = "status", nullable = false, length = 20)
