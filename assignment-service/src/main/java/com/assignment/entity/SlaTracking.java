@@ -58,7 +58,7 @@ public class SlaTracking {
     // SLA status
     @Enumerated(EnumType.STRING)
     @Column(name = "sla_status", nullable = false, length = 20)
-    private SlaStatus slaStatus = SlaStatus.OK;
+    private SlaStatus slaStatus = SlaStatus.ON_TIME;
     
     @Column(name = "paused_at")
     private LocalDateTime pausedAt;

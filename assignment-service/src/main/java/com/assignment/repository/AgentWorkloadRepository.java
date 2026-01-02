@@ -20,4 +20,7 @@ public interface AgentWorkloadRepository extends JpaRepository<AgentWorkload, St
     // Find agent with least workload
     @Query("SELECT a FROM AgentWorkload a WHERE a.status = 'AVAILABLE' ORDER BY a.activeTickets ASC LIMIT 1")
     AgentWorkload findAgentWithLeastWorkload();
+
+    long countByStatus(AgentStatus status);
+
 }

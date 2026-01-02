@@ -4,6 +4,7 @@ import com.assignment.entity.TicketCache;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,4 +29,14 @@ public interface TicketCacheRepository extends JpaRepository<TicketCache, String
     
     // Count unassigned tickets
     Long countByStatusAndAssignedAgentIdIsNull(String status);
+
+        // Add these methods
+    long countByStatus(String status);
+    long countByPriority(String priority);
+    long countByPriorityIsNull();
+    long countByPriorityAndStatusNot(String priority, String status);
+    long countByStatusAndUpdatedAtAfter(String status, LocalDateTime after);
+    long countByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
+    long countByStatusAndUpdatedAtBetween(String status, LocalDateTime start, LocalDateTime end);
+
 }

@@ -32,4 +32,9 @@ public interface SlaTrackingRepository extends JpaRepository<SlaTracking, String
     List<SlaTracking> findByResponseBreachedTrue();
 
     List<SlaTracking> findByResolutionBreachedTrue();
+
+    // Add these methods
+    List<SlaTracking> findByResolvedAtIsNotNull();
+    long countBySlaStatus(SlaStatus status);
+
 }

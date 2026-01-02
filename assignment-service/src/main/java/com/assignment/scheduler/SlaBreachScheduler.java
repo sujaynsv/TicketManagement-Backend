@@ -117,7 +117,7 @@ public class SlaBreachScheduler {
                     long elapsedMinutes = Duration.between(tracking.getSlaStartTime(), now).toMinutes();
                     double percentageUsed = (double) elapsedMinutes / totalMinutes;
                     
-                    if (percentageUsed >= 0.8 && tracking.getSlaStatus() == SlaStatus.OK) {
+                    if (percentageUsed >= 0.8 && tracking.getSlaStatus() == SlaStatus.ON_TIME) {
                         tracking.setSlaStatus(SlaStatus.WARNING);
                         updated = true;
                         warningCount++;
