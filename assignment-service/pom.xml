@@ -12,6 +12,7 @@
         <relativePath/>
     </parent>
 
+
     <groupId>com.assignment</groupId>
     <artifactId>assignment-service</artifactId>
     <version>1.0.0</version>
@@ -21,6 +22,7 @@
     <properties>
         <java.version>17</java.version>
         <spring-cloud.version>2023.0.0</spring-cloud.version>
+        <sonar.cpd.exclusions>**/dto/**</sonar.cpd.exclusions>
     </properties>
 
     <!-- Spring Cloud Dependency Management -->

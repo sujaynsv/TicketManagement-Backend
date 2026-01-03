@@ -14,6 +14,11 @@
     <name>Ticket Common Library</name>
     <description>Shared DTOs and utilities</description>
 
+    <properties>
+        <sonar.cpd.exclusions>**/dto/**</sonar.cpd.exclusions>
+    </properties>
+
+
     <dependencies>
         <!-- Lombok -->
         <dependency>
@@ -38,6 +43,7 @@
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jsr310</artifactId>
         </dependency>
+
 
         <!-- Validation API -->
         <dependency>

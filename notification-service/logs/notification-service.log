@@ -3168,3 +3168,6 @@ java.lang.IllegalStateException: No micrometer registry present (or more than on
 2026-01-03T22:17:38.473+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
 2026-01-03T22:22:38.484+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
 2026-01-03T22:27:38.488+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T22:32:38.496+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T22:37:38.508+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T22:42:38.528+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration

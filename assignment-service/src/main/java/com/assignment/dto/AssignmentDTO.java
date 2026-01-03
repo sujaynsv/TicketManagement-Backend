@@ -2,6 +2,7 @@ package com.assignment.dto;
 
 import java.time.LocalDateTime;
 
+@SuppressWarnings("java:S1192")
 public class AssignmentDTO {
     
     private String assignmentId;

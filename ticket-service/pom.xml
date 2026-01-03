@@ -16,6 +16,10 @@
     <name>Ticket Service</name>
     <description>Ticket management microservice with MongoDB and AWS S3</description>
 
+    <properties>
+        <sonar.cpd.exclusions>**/dto/**</sonar.cpd.exclusions>
+    </properties>
+
     <dependencies>
         <!-- Spring Boot Starter Web -->
         <dependency>
