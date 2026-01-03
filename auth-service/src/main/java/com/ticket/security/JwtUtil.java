@@ -28,19 +28,20 @@ public class JwtUtil {
         return Keys.hmacShaKeyFor(keyBytes);
     }
     
-    public String generateToken(String userId, String username, String email, String role) {
+
+    public String generateToken(String userId, String username, String email, String role, Integer tokenVersion) {
         Map<String, Object> claims = new HashMap<>();
-        claims.put("userId", userId);
         claims.put("username", username);
         claims.put("email", email);
         claims.put("role", role);
+        claims.put("tokenVersion", tokenVersion);  
         
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(userId)
-                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
-                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
+                .signWith(getSigningKey())
                 .compact();
     }
     
@@ -85,6 +86,28 @@ public class JwtUtil {
     public Boolean validateToken(String token) {
         try {
             return !isTokenExpired(token);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public Integer extractTokenVersion(String token) {
+        return extractClaim(token, claims -> claims.get("tokenVersion", Integer.class));
+    }
+
+    public Boolean validateToken(String token, Integer currentUserTokenVersion) {
+        try {
+            if (isTokenExpired(token)) {
+                return false;
+            }
+            
+            // Check if token version matches user's current version
+            Integer tokenVersion = extractTokenVersion(token);
+            if (tokenVersion == null || !tokenVersion.equals(currentUserTokenVersion)) {
+                return false;  // Token invalidated by logout
+            }
+            
+            return true;
         } catch (Exception e) {
             return false;
         }

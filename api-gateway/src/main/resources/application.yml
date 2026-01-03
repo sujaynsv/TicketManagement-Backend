@@ -1,0 +1,288 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+  
+  cloud:
+    gateway:
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowed-origins: "*"
+            allowed-methods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - PATCH
+              - OPTIONS
+            allowed-headers: "*"
+            allow-credentials: false
+            max-age: 3600
+      
+      routes:
+        # ==========================================
+        # PUBLIC ROUTES (No Authentication)
+        # ==========================================
+        
+        - id: auth-register
+          uri: lb://auth-service
+          predicates:
+            - Path=/auth/register
+            - Method=POST
+          order: 1
+        
+        - id: auth-login
+          uri: lb://auth-service
+          predicates:
+            - Path=/auth/login
+            - Method=POST
+          order: 2
+        
+        - id: auth-logout
+          uri: lb://auth-service
+          predicates:
+            - Path=/auth/logout
+            - Method=POST
+          filters:
+            - AuthenticationFilter
+          order: 3
+        
+        - id: auth-health
+          uri: lb://auth-service
+          predicates:
+            - Path=/auth/health
+            - Method=GET
+          order: 4
+        
+        # ==========================================
+        # PROTECTED ROUTES (Authentication Required)
+        # ==========================================
+        
+        # User Routes
+        - id: users-agents
+          uri: lb://auth-service
+          predicates:
+            - Path=/users/agents
+            - Method=GET
+          filters:
+            - AuthenticationFilter
+          order: 10
+        
+        - id: users-managers
+          uri: lb://auth-service
+          predicates:
+            - Path=/users/managers
+            - Method=GET
+          filters:
+            - AuthenticationFilter
+          order: 11
+        
+        - id: users-by-id
+          uri: lb://auth-service
+          predicates:
+            - Path=/users/{userId}
+            - Method=GET
+          filters:
+            - AuthenticationFilter
+          order: 12
+        
+        # Ticket Routes
+        - id: tickets
+          uri: lb://ticket-service
+          predicates:
+            - Path=/tickets/**
+          filters:
+            - AuthenticationFilter
+          order: 20
+        
+        - id: comments
+          uri: lb://ticket-service
+          predicates:
+            - Path=/comments/**
+          filters:
+            - AuthenticationFilter
+          order: 21
+        
+        - id: attachments
+          uri: lb://ticket-service
+          predicates:
+            - Path=/attachments/**
+          filters:
+            - AuthenticationFilter
+          order: 22
+        
+        # Assignment Routes
+        - id: assignments
+          uri: lb://assignment-service
+          predicates:
+            - Path=/assignments/**
+          filters:
+            - AuthenticationFilter
+          order: 30
+        
+        - id: agents
+          uri: lb://assignment-service
+          predicates:
+            - Path=/agents/**
+          filters:
+            - AuthenticationFilter
+          order: 31
+        
+        - id: sla
+          uri: lb://assignment-service
+          predicates:
+            - Path=/sla/**
+          filters:
+            - AuthenticationFilter
+          order: 32
+        
+        # ==========================================
+        # ADMIN ROUTES (Admin Role Required)
+        # ==========================================
+        
+        - id: admin-users-stats
+          uri: lb://auth-service
+          predicates:
+            - Path=/admin/users/stats
+            - Method=GET
+          filters:
+            - AuthenticationFilter
+          order: 40
+        
+        - id: admin-users-agents
+          uri: lb://auth-service
+          predicates:
+            - Path=/admin/users/agents
+            - Method=GET
+          filters:
+            - AuthenticationFilter
+          order: 41
+        
+        - id: admin-users-managers
+          uri: lb://auth-service
+          predicates:
+            - Path=/admin/users/managers
+            - Method=GET
+          filters:
+            - AuthenticationFilter
+          order: 42
+        
+        - id: admin-users-by-id
+          uri: lb://auth-service
+          predicates:
+            - Path=/admin/users/{userId}/**
+          filters:
+            - AuthenticationFilter
+          order: 43
+        
+        - id: admin-users-list
+          uri: lb://auth-service
+          predicates:
+            - Path=/admin/users
+            - Method=GET,POST
+          filters:
+            - AuthenticationFilter
+          order: 44
+        
+        - id: admin-tickets
+          uri: lb://ticket-service
+          predicates:
+            - Path=/admin/tickets/**
+          filters:
+            - AuthenticationFilter
+          order: 50
+        
+        - id: admin-assignments
+          uri: lb://assignment-service
+          predicates:
+            - Path=/admin/assignments/**
+          filters:
+            - AuthenticationFilter
+          order: 60
+        
+        - id: admin-analytics-overview
+          uri: lb://assignment-service
+          predicates:
+            - Path=/admin/analytics/overview
+            - Method=GET
+          filters:
+            - AuthenticationFilter
+          order: 70
+        
+        - id: admin-analytics-tickets
+          uri: lb://assignment-service
+          predicates:
+            - Path=/admin/analytics/tickets
+            - Method=GET
+          filters:
+            - AuthenticationFilter
+          order: 71
+        
+        - id: admin-analytics-agents
+          uri: lb://assignment-service
+          predicates:
+            - Path=/admin/analytics/agents
+            - Method=GET
+          filters:
+            - AuthenticationFilter
+          order: 72
+        
+        - id: admin-analytics-sla
+          uri: lb://assignment-service
+          predicates:
+            - Path=/admin/analytics/sla
+            - Method=GET
+          filters:
+            - AuthenticationFilter
+          order: 73
+        
+        - id: admin-analytics-categories
+          uri: lb://assignment-service
+          predicates:
+            - Path=/admin/analytics/categories
+            - Method=GET
+          filters:
+            - AuthenticationFilter
+          order: 74
+        
+        - id: admin-analytics-trends
+          uri: lb://assignment-service
+          predicates:
+            - Path=/admin/analytics/trends
+            - Method=GET
+          filters:
+            - AuthenticationFilter
+          order: 75
+      
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    prefer-ip-address: true
+
+jwt:
+  secret: your-super-secret-key-min-256-bits-change-this-in-production-environment
+  expiration: 3600000
+
+logging:
+  level:
+    root: INFO
+    com.gateway: DEBUG
+    org.springframework.cloud.gateway: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,gateway

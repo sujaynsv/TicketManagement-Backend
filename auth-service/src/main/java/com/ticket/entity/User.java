@@ -35,6 +35,9 @@ public class User {
     
     @Column(name = "last_name", length = 100)
     private String lastName;
+
+    @Column(name = "token_version", nullable = false)
+    private Integer tokenVersion = 0;  
     
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false, length = 50)
