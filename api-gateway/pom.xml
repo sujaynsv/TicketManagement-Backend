@@ -75,6 +75,18 @@
             <scope>runtime</scope>
             <optional>true</optional>
         </dependency>
+
+        <!-- Add this dependency to each service -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-config</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-bootstrap</artifactId>
+        </dependency>
+
         
         <!-- Test -->
         <dependency>

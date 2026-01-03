@@ -1,95 +1,95 @@
-spring:
-  application:
-    name: ticket-service
+# spring:
+#   application:
+#     name: ticket-service
   
-  # MongoDB Configuration
-  data:
-    mongodb:
-      uri: mongodb://localhost:27017/ticket_service_db
-      auto-index-creation: true
+#   # MongoDB Configuration
+#   data:
+#     mongodb:
+#       uri: mongodb://localhost:27017/ticket_service_db
+#       auto-index-creation: true
   
-  # RabbitMQ Configuration
-  rabbitmq:
-    host: localhost
-    port: 5672
-    username: guest
-    password: guest
+#   # RabbitMQ Configuration
+#   rabbitmq:
+#     host: localhost
+#     port: 5672
+#     username: guest
+#     password: guest
   
-  # File Upload Configuration
-  servlet:
-    multipart:
-      enabled: true
-      max-file-size: 10MB
-      max-request-size: 10MB
+#   # File Upload Configuration
+#   servlet:
+#     multipart:
+#       enabled: true
+#       max-file-size: 10MB
+#       max-request-size: 10MB
 
-# AWS S3 Configuration
-aws:
-  region: ap-south-1
-  s3:
-    bucket-name: ticket-attachements-2025
-  credentials:
-    access-key: ${AWS_ACCESS_KEY_ID}
-    secret-key: ${AWS_SECRET_ACCESS_KEY}
+# # AWS S3 Configuration
+# aws:
+#   region: ap-south-1
+#   s3:
+#     bucket-name: ticket-attachements-2025
+#   credentials:
+#     access-key: ${AWS_ACCESS_KEY_ID}
+#     secret-key: ${AWS_SECRET_ACCESS_KEY}
 
-# Server Configuration
-server:
-  port: 8082
+# # Server Configuration
+# server:
+#   port: 8082
 
-# Eureka Configuration
-eureka:
-  client:
-    service-url:
-      defaultZone: http://localhost:8761/eureka/
-  instance:
-    prefer-ip-address: true
+# # Eureka Configuration
+# eureka:
+#   client:
+#     service-url:
+#       defaultZone: http://localhost:8761/eureka/
+#   instance:
+#     prefer-ip-address: true
 
-# Service URLs
-services:
-  assignment-service:
-    url: http://localhost:8083
-  auth-service:
-    url: http://localhost:8081
+# # Service URLs
+# services:
+#   assignment-service:
+#     url: http://localhost:8083
+#   auth-service:
+#     url: http://localhost:8081
 
-# Feign Client Configuration
-feign:
-  client:
-    config:
-      default:
-        connectTimeout: 5000
-        readTimeout: 5000
-        loggerLevel: basic
-      assignment-service:
-        connectTimeout: 5000
-        readTimeout: 10000
-        loggerLevel: full
+# # Feign Client Configuration
+# feign:
+#   client:
+#     config:
+#       default:
+#         connectTimeout: 5000
+#         readTimeout: 5000
+#         loggerLevel: basic
+#       assignment-service:
+#         connectTimeout: 5000
+#         readTimeout: 10000
+#         loggerLevel: full
 
-# RabbitMQ Exchanges and Queues
-rabbitmq:
-  exchange:
-    name: ticket.exchange
-  queue:
-    ticket:
-      name: ticket.queue
-    notification:
-      name: notification.queue
-  routing-key:
-    ticket-created: ticket.created
-    ticket-assigned: ticket.assigned
-    ticket-status-changed: ticket.status.changed
-    ticket-updated: ticket.updated
-    comment-added: comment.added
+# # RabbitMQ Exchanges and Queues
+# rabbitmq:
+#   exchange:
+#     name: ticket.exchange
+#   queue:
+#     ticket:
+#       name: ticket.queue
+#     notification:
+#       name: notification.queue
+#   routing-key:
+#     ticket-created: ticket.created
+#     ticket-assigned: ticket.assigned
+#     ticket-status-changed: ticket.status.changed
+#     ticket-updated: ticket.updated
+#     comment-added: comment.added
 
-logging:
-  level:
-    com.ticket: DEBUG
-    com.ticket.service.EventPublisherService: DEBUG
-    com.ticket.client: DEBUG
-    org.springframework.amqp: DEBUG
-    org.springframework.cloud.openfeign: DEBUG
-    org.springframework.data.mongodb: INFO
-    feign: DEBUG
-  pattern:
-    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
-  file:
-    name: logs/ticket-service.log
-    path: logs
+# logging:
+#   level:
+#     com.ticket: DEBUG
+#     com.ticket.service.EventPublisherService: DEBUG
+#     com.ticket.client: DEBUG
+#     org.springframework.amqp: DEBUG
+#     org.springframework.cloud.openfeign: DEBUG
+#     org.springframework.data.mongodb: INFO
+#     feign: DEBUG
+#   pattern:
+#     console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+#   file:
+#     name: logs/ticket-service.log
+#     path: logs
