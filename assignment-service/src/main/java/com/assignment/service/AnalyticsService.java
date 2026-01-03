@@ -3,11 +3,7 @@ package com.assignment.service;
 import com.assignment.dto.*;
 import com.assignment.entity.*;
 import com.assignment.repository.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -17,19 +13,34 @@ import java.util.stream.Collectors;
 @Service
 public class AnalyticsService {
     
-    private static final Logger log = LoggerFactory.getLogger(AnalyticsService.class);
+
+    private static final String STATUS_ASSIGNED = "ASSIGNED";
+    private static final String STATUS_IN_PROGRESS = "IN_PROGRESS";
+    private static final String STATUS_RESOLVED = "RESOLVED";
     
-    @Autowired
+    private static final String PRIORITY_CRITICAL = "CRITICAL";
+    private static final String PRIORITY_MEDIUM = "MEDIUM";
+    
     private TicketCacheRepository ticketCacheRepository;
     
-    @Autowired
     private AssignmentRepository assignmentRepository;
     
-    @Autowired
     private AgentWorkloadRepository agentWorkloadRepository;
     
-    @Autowired
     private SlaTrackingRepository slaTrackingRepository;
+
+    public AnalyticsService(
+        SlaTrackingRepository slaTrackingRepository,
+        AgentWorkloadRepository agentWorkloadRepository,
+        AssignmentRepository assignmentRepository,
+        TicketCacheRepository ticketCacheRepository
+    )
+    {
+        this.slaTrackingRepository=slaTrackingRepository;
+        this.agentWorkloadRepository=agentWorkloadRepository;
+        this.assignmentRepository=assignmentRepository;
+        this.ticketCacheRepository=ticketCacheRepository;
+    }
     
     /**
      * Get system overview dashboard
@@ -37,13 +48,13 @@ public class AnalyticsService {
     public SystemOverviewDTO getSystemOverview() {
         // Ticket metrics
         long totalTickets = ticketCacheRepository.count();
-        long activeTickets = ticketCacheRepository.countByStatus("ASSIGNED") +
-                           ticketCacheRepository.countByStatus("IN_PROGRESS") +
+        long activeTickets = ticketCacheRepository.countByStatus(STATUS_ASSIGNED) +
+                           ticketCacheRepository.countByStatus(STATUS_IN_PROGRESS) +
                            ticketCacheRepository.countByStatus("OPEN");
         
         // Tickets resolved today
         LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
-        long resolvedToday = ticketCacheRepository.countByStatusAndUpdatedAtAfter("RESOLVED", startOfDay);
+        long resolvedToday = ticketCacheRepository.countByStatusAndUpdatedAtAfter(STATUS_RESOLVED, startOfDay);
         
         // Average resolution time (from SLA tracking)
         Double avgResolutionHours = calculateAverageResolutionTime();
@@ -58,7 +69,7 @@ public class AnalyticsService {
         long busyAgents = agentWorkloadRepository.countByStatus(AgentStatus.BUSY);
         
         // Critical tickets
-        long criticalTicketsOpen = ticketCacheRepository.countByPriorityAndStatusNot("CRITICAL", "RESOLVED");
+        long criticalTicketsOpen = ticketCacheRepository.countByPriorityAndStatusNot(PRIORITY_CRITICAL, STATUS_RESOLVED);
         
         // Top categories
         List<CategoryCount> topCategories = getTopCategories(5);
@@ -86,7 +97,6 @@ public class AnalyticsService {
      * Get ticket analytics and trends
      */
     public TicketAnalyticsDTO getTicketAnalytics(int days) {
-        LocalDateTime startDate = LocalDateTime.now().minusDays(days);
         
         // Daily ticket counts
         Map<LocalDate, Long> createdByDay = new LinkedHashMap<>();
@@ -98,7 +108,7 @@ public class AnalyticsService {
             LocalDateTime dayEnd = date.plusDays(1).atStartOfDay();
             
             long created = ticketCacheRepository.countByCreatedAtBetween(dayStart, dayEnd);
-            long resolved = ticketCacheRepository.countByStatusAndUpdatedAtBetween("RESOLVED", dayStart, dayEnd);
+            long resolved = ticketCacheRepository.countByStatusAndUpdatedAtBetween(STATUS_RESOLVED, dayStart, dayEnd);
             
             createdByDay.put(date, created);
             resolvedByDay.put(date, resolved);
@@ -106,18 +116,18 @@ public class AnalyticsService {
         
         // By priority
         Map<String, Long> byPriority = new HashMap<>();
-        byPriority.put("CRITICAL", ticketCacheRepository.countByPriority("CRITICAL"));
+        byPriority.put(PRIORITY_CRITICAL, ticketCacheRepository.countByPriority(PRIORITY_CRITICAL));
         byPriority.put("HIGH", ticketCacheRepository.countByPriority("HIGH"));
-        byPriority.put("MEDIUM", ticketCacheRepository.countByPriority("MEDIUM"));
+        byPriority.put(PRIORITY_MEDIUM, ticketCacheRepository.countByPriority(PRIORITY_MEDIUM));
         byPriority.put("LOW", ticketCacheRepository.countByPriority("LOW"));
         byPriority.put("UNASSIGNED", ticketCacheRepository.countByPriorityIsNull());
         
         // By status
         Map<String, Long> byStatus = new HashMap<>();
         byStatus.put("OPEN", ticketCacheRepository.countByStatus("OPEN"));
-        byStatus.put("ASSIGNED", ticketCacheRepository.countByStatus("ASSIGNED"));
-        byStatus.put("IN_PROGRESS", ticketCacheRepository.countByStatus("IN_PROGRESS"));
-        byStatus.put("RESOLVED", ticketCacheRepository.countByStatus("RESOLVED"));
+        byStatus.put(STATUS_ASSIGNED, ticketCacheRepository.countByStatus(STATUS_ASSIGNED));
+        byStatus.put(STATUS_IN_PROGRESS, ticketCacheRepository.countByStatus(STATUS_IN_PROGRESS));
+        byStatus.put(STATUS_RESOLVED, ticketCacheRepository.countByStatus(STATUS_RESOLVED));
         byStatus.put("CLOSED", ticketCacheRepository.countByStatus("CLOSED"));
         byStatus.put("ESCALATED", ticketCacheRepository.countByStatus("ESCALATED"));
         
@@ -169,7 +179,7 @@ public class AnalyticsService {
                     );
                 })
                 .sorted(Comparator.comparing(AgentPerformanceDTO::completedTickets).reversed())
-                .collect(Collectors.toList());
+                .toList();
         
         // Calculate team averages
         double avgActiveTickets = performances.stream()
@@ -217,10 +227,10 @@ public class AnalyticsService {
         
         // By priority
         Map<String, SlaByPriorityDTO> byPriority = new HashMap<>();
-        for (String priority : Arrays.asList("CRITICAL", "HIGH", "MEDIUM", "LOW")) {
+        for (String priority : Arrays.asList(PRIORITY_CRITICAL, "HIGH", PRIORITY_MEDIUM, "LOW")) {
             List<SlaTracking> prioritySla = allSla.stream()
                     .filter(sla -> priority.equals(sla.getPriority()))
-                    .collect(Collectors.toList());
+                    .toList();
             
             long tracked = prioritySla.size();
             long priorityBreached = prioritySla.stream()
@@ -280,8 +290,6 @@ public class AnalyticsService {
      * Get time-based trends
      */
     public TrendsReportDTO getTrends(String period, int days) {
-        LocalDateTime startDate = LocalDateTime.now().minusDays(days);
-        
         Map<String, Long> ticketsByPeriod = new LinkedHashMap<>();
         Map<String, Long> assignmentsByPeriod = new LinkedHashMap<>();
         Map<String, Long> resolutionsByPeriod = new LinkedHashMap<>();
@@ -297,7 +305,7 @@ public class AnalyticsService {
                 long tickets = ticketCacheRepository.countByCreatedAtBetween(dayStart, dayEnd);
                 long assignments = assignmentRepository.countByAssignedAtBetween(dayStart, dayEnd);
                 long resolutions = ticketCacheRepository.countByStatusAndUpdatedAtBetween(
-                        "RESOLVED", dayStart, dayEnd);
+                        STATUS_RESOLVED, dayStart, dayEnd);
                 
                 ticketsByPeriod.put(key, tickets);
                 assignmentsByPeriod.put(key, assignments);
@@ -306,7 +314,7 @@ public class AnalyticsService {
         } else if ("weekly".equalsIgnoreCase(period)) {
             int weeks = days / 7;
             for (int i = weeks - 1; i >= 0; i--) {
-                LocalDate weekStart = LocalDate.now().minusWeeks(i + 1);
+                LocalDate weekStart = LocalDate.now().minusWeeks((long) i + 1);
                 LocalDate weekEnd = LocalDate.now().minusWeeks(i);
                 String key = "Week " + weekStart.toString();
                 
@@ -316,7 +324,7 @@ public class AnalyticsService {
                 long tickets = ticketCacheRepository.countByCreatedAtBetween(start, end);
                 long assignments = assignmentRepository.countByAssignedAtBetween(start, end);
                 long resolutions = ticketCacheRepository.countByStatusAndUpdatedAtBetween(
-                        "RESOLVED", start, end);
+                        STATUS_RESOLVED, start, end);
                 
                 ticketsByPeriod.put(key, tickets);
                 assignmentsByPeriod.put(key, assignments);
@@ -342,13 +350,11 @@ public class AnalyticsService {
             return null;
         }
         
-        double totalHours = resolved.stream()
+        return resolved.stream()
                 .filter(sla -> sla.getResolutionTimeHours() != null)
                 .mapToDouble(sla->sla.getResolutionTimeHours().doubleValue())
                 .average()
                 .orElse(0.0);
-        
-        return totalHours;
     }
     
     private double calculateSlaCompliance() {
@@ -366,13 +372,11 @@ public class AnalyticsService {
             return null;
         }
         
-        double avgHours = completed.stream()
+        return completed.stream()
                 .filter(a -> a.getCompletedAt() != null && a.getAssignedAt() != null)
                 .mapToDouble(a -> ChronoUnit.HOURS.between(a.getAssignedAt(), a.getCompletedAt()))
                 .average()
                 .orElse(0.0);
-        
-        return avgHours;
     }
     
     private double calculateAgentSlaCompliance(String agentId) {
@@ -405,7 +409,7 @@ public class AnalyticsService {
                 .sorted(Map.Entry.<String, Long>comparingByValue().reversed())
                 .limit(limit)
                 .map(e -> new CategoryCount(e.getKey(), e.getValue()))
-                .collect(Collectors.toList());
+                .toList();
     }
     
     private Map<String, Long> getAllCategoryCounts() {

@@ -9,12 +9,9 @@ import com.assignment.entity.Assignment;
 import com.assignment.entity.AssignmentStatus;
 import com.assignment.repository.AssignmentRepository;
 import com.assignment.service.AssignmentService;
-
 import jakarta.validation.Valid;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,11 +22,14 @@ import java.util.List;
 @RequestMapping("/assignments")
 public class AssignmentController {
     
-    @Autowired
     private AssignmentService assignmentService;
     
-    @Autowired
     private AssignmentRepository assignmentRepository;
+
+    public AssignmentController(AssignmentService assignmentService, AssignmentRepository assignmentRepository){
+        this.assignmentRepository=assignmentRepository;
+        this.assignmentService=assignmentService;
+    }
 
     private static final Logger log = LoggerFactory.getLogger(AssignmentController.class);
 
@@ -78,7 +78,7 @@ public class AssignmentController {
     }
     
     @PutMapping("/reassign")
-    public ResponseEntity<?> reassignTickets(
+    public ResponseEntity<String> reassignTickets(
         @Valid @RequestBody ReassignmentRequest request,
         @RequestHeader("X-User-Id") String managerId,
         @RequestHeader("X-Username") String managerUsername

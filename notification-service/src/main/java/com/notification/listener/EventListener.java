@@ -16,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -25,6 +24,9 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class EventListener {
     
+    private static final String COMMENT_ADDED_ACTION = "COMMENT_ADDED";
+    private static final String TICKET_ESCALATED_ACTION = "TICKET_ESCALATED";
+
     private final NotificationService notificationService;
     
     /**
@@ -32,8 +34,7 @@ public class EventListener {
      * Notify: User who created the ticket
      */
 
-    @Autowired
-    private TicketServiceClient ticketServiceClient;
+    private final TicketServiceClient ticketServiceClient;
 
     @RabbitHandler
     public void handleTicketCreated(TicketCreatedEvent event) {
@@ -42,22 +43,28 @@ public class EventListener {
             
             // Notify ticket creator
             String subject = "Ticket Created: " + event.getTicketNumber();
-            String message = String.format(
-                "Hello %s,\n\n" +
-                "Your ticket has been created successfully.\n\n" +
-                "Ticket Details:\n" +
-                "----------------\n" +
-                "Ticket Number: %s\n" +
-                "Title: %s\n" +
-                "Category: %s\n" +
-                "Priority: %s\n\n" +
-                "Our support team will review and assign it shortly.\n\n" +
-                "You will receive notifications when:\n" +
-                "- Your ticket is assigned to an agent\n" +
-                "- The agent responds to your ticket\n" +
-                "- The status of your ticket changes\n\n" +
-                "Thank you,\n" +
-                "Ticket Management System",
+            String message = String.format("""
+                Hello %s,
+
+                Your ticket has been created successfully.
+
+                Ticket Details:
+                ----------------
+                Ticket Number: %s
+                Title: %s
+                Category: %s
+                Priority: %s
+
+                Our support team will review and assign it shortly.
+
+                You will receive notifications when:
+                - Your ticket is assigned to an agent
+                - The agent responds to your ticket
+                - The status of your ticket changes
+
+                Thank you,
+                Ticket Management System
+                """,
                 event.getCreatedByUsername(),
                 event.getTicketNumber(),
                 event.getTitle(),
@@ -124,22 +131,28 @@ public class EventListener {
             
             // Notify Agent
             String agentSubject = "New Ticket Assigned: " + event.getTicketNumber();
-            String agentMessage = String.format(
-                "Hello %s,\n\n" +
-                "A new ticket has been assigned to you.\n\n" +
-                "Ticket Details:\n" +
-                "----------------\n" +
-                "Ticket Number: %s\n" +
-                "Assignment Type: %s\n" +
-                "Assigned By: %s\n" +
-                "Assigned At: %s\n\n" +
-                "Action Required:\n" +
-                "- Review the ticket details\n" +
-                "- Respond to the customer within the SLA timeframe\n" +
-                "- Update the ticket status as you progress\n\n" +
-                "Please log in to the system to view the full details.\n\n" +
-                "Thank you,\n" +
-                "Ticket Management System",
+            String agentMessage = String.format("""
+                Hello %s,
+
+                A new ticket has been assigned to you.
+
+                Ticket Details:
+                ----------------
+                Ticket Number: %s
+                Assignment Type: %s
+                Assigned By: %s
+                Assigned At: %s
+
+                Action Required:
+                - Review the ticket details
+                - Respond to the customer within the SLA timeframe
+                - Update the ticket status as you progress
+
+                Please log in to the system to view the full details.
+
+                Thank you,
+                Ticket Management System
+                """,
                 event.getAssignedToUsername(),
                 event.getTicketNumber(),
                 event.getAssignmentType(),
@@ -198,18 +211,23 @@ public class EventListener {
                      event.getTicketNumber(), event.getOldStatus(), event.getNewStatus());
             
             String subject = "Ticket Status Updated: " + event.getTicketNumber();
-            String message = String.format(
-                "Hello %s,\n\n" +
-                "The status of ticket %s has been updated.\n\n" +
-                "Status Change:\n" +
-                "----------------\n" +
-                "Old Status: %s\n" +
-                "New Status: %s\n" +
-                "Changed By: %s\n" +
-                "Changed At: %s\n\n" +
-                "Comment: %s\n\n" +
-                "Thank you,\n" +
-                "Ticket Management System",
+                String message = String.format("""
+                Hello %s,
+
+                The status of ticket %s has been updated.
+
+                Status Change:
+                ----------------
+                Old Status: %s
+                New Status: %s
+                Changed By: %s
+                Changed At: %s
+
+                Comment: %s
+
+                Thank you,
+                Ticket Management System
+                """,
                 event.getChangedByUsername(),
                 event.getTicketNumber(),
                 event.getOldStatus(),
@@ -265,67 +283,6 @@ public class EventListener {
     }
     
     /**
-     * Handle CommentAddedEvent
-     * Notify: Ticket creator + Assigned agent (excluding comment author)
-     */
-    // @RabbitHandler
-    // public void handleCommentAdded(CommentAddedEvent event) {
-    //     try {
-    //         log.info("Received CommentAddedEvent: {} by {}", 
-    //                  event.getTicketNumber(), event.getUsername());
-            
-    //         // Only notify for non-internal comments
-    //         if (event.getIsInternal() != null && event.getIsInternal()) {
-    //             log.info("Internal comment, skipping notification");
-    //             return;
-    //         }
-            
-    //         String subject = "New Comment on Ticket: " + event.getTicketNumber();
-    //         String message = String.format(
-    //             "Hello,\n\n" +
-    //             "A new comment has been added to ticket %s.\n\n" +
-    //             "Comment Details:\n" +
-    //             "----------------\n" +
-    //             "Comment By: %s\n" +
-    //             "Added At: %s\n\n" +
-    //             "Comment:\n" +
-    //             "%s\n\n" +
-    //             "Please log in to view the full conversation.\n\n" +
-    //             "Thank you,\n" +
-    //             "Ticket Management System",
-    //             event.getTicketNumber(),
-    //             event.getUsername(),
-    //             event.getCreatedAt(),
-    //             event.getCommentText()
-    //         );
-            
-    //         // Create in-app notification for comment author
-    //         String inAppMessage = String.format(
-    //             "You added a comment on ticket %s",
-    //             event.getTicketNumber()
-    //         );
-            
-    //         notificationService.createNotification(
-    //             event.getUserId(),
-    //             event.getUsername(),
-    //             NotificationType.COMMENT_ADDED,
-    //             "COMMENT_ADDED",
-    //             event.getTicketId(),
-    //             event.getTicketNumber(),
-    //             "Comment Added",
-    //             inAppMessage,
-    //             DeliveryChannel.IN_APP
-    //         );
-            
-    //         log.info("Comment notification sent for ticket: {}", event.getTicketNumber());
-            
-    //     } catch (Exception e) {
-    //         log.error("Error handling CommentAddedEvent for {}: {}", 
-    //                  event.getTicketNumber(), e.getMessage(), e);
-    //     }
-    // }
-    
-    /**
      * Get notification type based on ticket status
      */
     private NotificationType getNotificationTypeForStatus(String status) {
@@ -350,22 +307,27 @@ public void handleSlaWarning(SlaWarningEvent event) {
         String subject = String.format("SLA Warning: Ticket %s (%s)", 
                                       event.getTicketNumber(), event.getWarningType());
         
-        String message = String.format(
-            "Hello %s,\n\n" +
-            "SLA WARNING for ticket %s\n\n" +
-            "Warning Details:\n" +
-            "----------------\n" +
-            "Ticket Number: %s\n" +
-            "Priority: %s\n" +
-            "Category: %s\n" +
-            "SLA Type: %s\n" +
-            "Due At: %s\n" +
-            "Time Remaining: %d minutes\n" +
-            "Time Used: %.1f%%\n\n" +
-            "URGENT ACTION REQUIRED:\n" +
-            "This ticket is approaching its SLA deadline. Please take immediate action to avoid SLA breach.\n\n" +
-            "Thank you,\n" +
-            "Ticket Management System",
+        String message = String.format("""
+            Hello %s,
+
+            SLA WARNING for ticket %s
+
+            Warning Details:
+            ----------------
+            Ticket Number: %s
+            Priority: %s
+            Category: %s
+            SLA Type: %s
+            Due At: %s
+            Time Remaining: %d minutes
+            Time Used: %.1f%%
+
+            URGENT ACTION REQUIRED:
+            This ticket is approaching its SLA deadline. Please take immediate action to avoid SLA breach.
+
+            Thank you,
+            Ticket Management System
+            """,
             event.getAssignedAgentUsername(),
             event.getTicketNumber(),
             event.getTicketNumber(),
@@ -431,23 +393,28 @@ public void handleSlaWarning(SlaWarningEvent event) {
             String subject = String.format("SLA BREACHED: Ticket %s (%s)", 
                                         event.getTicketNumber(), event.getBreachType());
             
-            String message = String.format(
-                "Hello %s,\n\n" +
-                "CRITICAL: SLA BREACH for ticket %s\n\n" +
-                "Breach Details:\n" +
-                "----------------\n" +
-                "Ticket Number: %s\n" +
-                "Priority: %s\n" +
-                "Category: %s\n" +
-                "Breach Type: %s\n" +
-                "Was Due At: %s\n" +
-                "Breached At: %s\n" +
-                "Minutes Overdue: %d\n" +
-                "Breach Reason: %s\n\n" +
-                "IMMEDIATE ESCALATION REQUIRED:\n" +
-                "This ticket has breached its SLA commitment. Please escalate to management immediately and take corrective action.\n\n" +
-                "Thank you,\n" +
-                "Ticket Management System",
+            String message = String.format("""
+                Hello %s,
+
+                CRITICAL: SLA BREACH for ticket %s
+
+                Breach Details:
+                ----------------
+                Ticket Number: %s
+                Priority: %s
+                Category: %s
+                Breach Type: %s
+                Was Due At: %s
+                Breached At: %s
+                Minutes Overdue: %d
+                Breach Reason: %s
+
+                IMMEDIATE ESCALATION REQUIRED:
+                This ticket has breached its SLA commitment. Please escalate to management immediately and take corrective action.
+
+                Thank you,
+                Ticket Management System
+                """,
                 event.getAssignedAgentUsername(),
                 event.getTicketNumber(),
                 event.getTicketNumber(),
@@ -530,18 +497,24 @@ public void handleSlaWarning(SlaWarningEvent event) {
             if (ticket.createdByUserId() != null && 
                 !ticket.createdByUserId().equals(event.getUserId())) {
                 
-                String creatorMessage = String.format(
-                    "Hello %s,\n\n" +
-                    "A new comment has been added to your ticket %s.\n\n" +
-                    "Comment Details:\n" +
-                    "----------------\n" +
-                    "Comment By: %s\n" +
-                    "Added At: %s\n\n" +
-                    "Comment:\n" +
-                    "%s\n\n" +
-                    "Please log in to view the full conversation and respond if needed.\n\n" +
-                    "Thank you,\n" +
-                    "Ticket Management System",
+                String creatorMessage = String.format("""
+                    Hello %s,
+
+                    A new comment has been added to your ticket %s.
+
+                    Comment Details:
+                    ----------------
+                    Comment By: %s
+                    Added At: %s
+
+                    Comment:
+                    %s
+
+                    Please log in to view the full conversation and respond if needed.
+
+                    Thank you,
+                    Ticket Management System
+                    """,
                     ticket.createdByUsername(),
                     event.getTicketNumber(),
                     event.getUsername(),
@@ -553,7 +526,7 @@ public void handleSlaWarning(SlaWarningEvent event) {
                     ticket.createdByUserId(),
                     ticket.createdByUsername(),
                     NotificationType.COMMENT_ADDED,
-                    "COMMENT_ADDED",
+                    COMMENT_ADDED_ACTION,
                     event.getTicketId(),
                     event.getTicketNumber(),
                     subject,
@@ -571,7 +544,7 @@ public void handleSlaWarning(SlaWarningEvent event) {
                     ticket.createdByUserId(),
                     ticket.createdByUsername(),
                     NotificationType.COMMENT_ADDED,
-                    "COMMENT_ADDED",
+                    COMMENT_ADDED_ACTION,
                     event.getTicketId(),
                     event.getTicketNumber(),
                     "New Comment",
@@ -587,18 +560,24 @@ public void handleSlaWarning(SlaWarningEvent event) {
                 !ticket.assignedToUserId().equals(event.getUserId()) &&
                 !ticket.assignedToUserId().equals(ticket.createdByUserId())) {
                 
-                String agentMessage = String.format(
-                    "Hello %s,\n\n" +
-                    "A new comment has been added to ticket %s assigned to you.\n\n" +
-                    "Comment Details:\n" +
-                    "----------------\n" +
-                    "Comment By: %s\n" +
-                    "Added At: %s\n\n" +
-                    "Comment:\n" +
-                    "%s\n\n" +
-                    "Please review and respond as needed.\n\n" +
-                    "Thank you,\n" +
-                    "Ticket Management System",
+                String agentMessage = String.format("""
+                    Hello %s,
+
+                    A new comment has been added to ticket %s assigned to you.
+
+                    Comment Details:
+                    ----------------
+                    Comment By: %s
+                    Added At: %s
+
+                    Comment:
+                    %s
+
+                    Please review and respond as needed.
+
+                    Thank you,
+                    Ticket Management System
+                    """,
                     ticket.assignedToUsername(),
                     event.getTicketNumber(),
                     event.getUsername(),
@@ -610,7 +589,7 @@ public void handleSlaWarning(SlaWarningEvent event) {
                     ticket.assignedToUserId(),
                     ticket.assignedToUsername(),
                     NotificationType.COMMENT_ADDED,
-                    "COMMENT_ADDED",
+                    COMMENT_ADDED_ACTION,
                     event.getTicketId(),
                     event.getTicketNumber(),
                     subject,
@@ -628,7 +607,7 @@ public void handleSlaWarning(SlaWarningEvent event) {
                     ticket.assignedToUserId(),
                     ticket.assignedToUsername(),
                     NotificationType.COMMENT_ADDED,
-                    "COMMENT_ADDED",
+                    COMMENT_ADDED_ACTION,
                     event.getTicketId(),
                     event.getTicketNumber(),
                     "New Comment",
@@ -657,25 +636,30 @@ public void handleSlaWarning(SlaWarningEvent event) {
             String escalationType = "MANUAL".equals(event.getEscalationType()) ? "Manual Escalation" : "Auto-Escalation (SLA Breach)";
             
             String managerSubject = String.format("Ticket Escalated to You: %s", event.getTicketNumber());
-            String managerMessage = String.format(
-                "Hello %s,\n\n" +
-                "A ticket has been escalated to you.\n\n" +
-                "Escalation Details:\n" +
-                "----------------\n" +
-                "Ticket Number: %s\n" +
-                "Title: %s\n" +
-                "Category: %s\n" +
-                "Priority: %s\n" +
-                "Escalation Type: %s\n" +
-                "Escalated By: %s\n" +
-                "Escalation Reason: %s\n" +
-                "Previous Agent: %s\n" +
-                "Escalated At: %s\n\n" +
-                "Action Required:\n" +
-                "This ticket requires your immediate attention. Please review and take appropriate action.\n" +
-                "You can now resolve or close this ticket as needed.\n\n" +
-                "Thank you,\n" +
-                "Ticket Management System",
+            String managerMessage = String.format("""
+                Hello %s,
+
+                A ticket has been escalated to you.
+
+                Escalation Details:
+                ----------------
+                Ticket Number: %s
+                Title: %s
+                Category: %s
+                Priority: %s
+                Escalation Type: %s
+                Escalated By: %s
+                Escalation Reason: %s
+                Previous Agent: %s
+                Escalated At: %s
+
+                Action Required:
+                This ticket requires your immediate attention. Please review and take appropriate action.
+                You can now resolve or close this ticket as needed.
+
+                Thank you,
+                Ticket Management System
+                """,
                 event.getEscalatedToUsername(),
                 event.getTicketNumber(),
                 event.getTitle(),
@@ -692,7 +676,7 @@ public void handleSlaWarning(SlaWarningEvent event) {
                 event.getEscalatedToUserId(),
                 event.getEscalatedToUsername(),
                 NotificationType.TICKET_ESCALATED,
-                "TICKET_ESCALATED",
+                TICKET_ESCALATED_ACTION,
                 event.getTicketId(),
                 event.getTicketNumber(),
                 managerSubject,
@@ -710,7 +694,7 @@ public void handleSlaWarning(SlaWarningEvent event) {
                 event.getEscalatedToUserId(),
                 event.getEscalatedToUsername(),
                 NotificationType.TICKET_ESCALATED,
-                "TICKET_ESCALATED",
+                TICKET_ESCALATED_ACTION,
                 event.getTicketId(),
                 event.getTicketNumber(),
                 "Ticket Escalated",
@@ -720,19 +704,24 @@ public void handleSlaWarning(SlaWarningEvent event) {
             
             if (event.getPreviousAgentId() != null) {
                 String agentSubject = String.format("Ticket Escalated: %s", event.getTicketNumber());
-                String agentMessage = String.format(
-                    "Hello %s,\n\n" +
-                    "The ticket assigned to you has been escalated to management.\n\n" +
-                    "Escalation Details:\n" +
-                    "----------------\n" +
-                    "Ticket Number: %s\n" +
-                    "Title: %s\n" +
-                    "Escalated To: %s\n" +
-                    "Escalation Type: %s\n" +
-                    "Reason: %s\n\n" +
-                    "This ticket is now being handled by %s.\n\n" +
-                    "Thank you,\n" +
-                    "Ticket Management System",
+                String agentMessage = String.format("""
+                    Hello %s,
+
+                    The ticket assigned to you has been escalated to management.
+
+                    Escalation Details:
+                    ----------------
+                    Ticket Number: %s
+                    Title: %s
+                    Escalated To: %s
+                    Escalation Type: %s
+                    Reason: %s
+
+                    This ticket is now being handled by %s.
+
+                    Thank you,
+                    Ticket Management System
+                    """,
                     event.getPreviousAgentUsername(),
                     event.getTicketNumber(),
                     event.getTitle(),
@@ -746,7 +735,7 @@ public void handleSlaWarning(SlaWarningEvent event) {
                     event.getPreviousAgentId(),
                     event.getPreviousAgentUsername(),
                     NotificationType.TICKET_ESCALATED,
-                    "TICKET_ESCALATED",
+                    TICKET_ESCALATED_ACTION,
                     event.getTicketId(),
                     event.getTicketNumber(),
                     agentSubject,
@@ -764,7 +753,7 @@ public void handleSlaWarning(SlaWarningEvent event) {
                     event.getPreviousAgentId(),
                     event.getPreviousAgentUsername(),
                     NotificationType.TICKET_ESCALATED,
-                    "TICKET_ESCALATED",
+                    TICKET_ESCALATED_ACTION,
                     event.getTicketId(),
                     event.getTicketNumber(),
                     "Ticket Escalated",

@@ -9,7 +9,6 @@ import com.ticket.repository.TicketRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -20,11 +19,14 @@ public class AssignmentEventListener {
     
     private static final Logger log = LoggerFactory.getLogger(AssignmentEventListener.class);
     
-    @Autowired
     private TicketRepository ticketRepository;
     
-    @Autowired
     private TicketActivityRepository ticketActivityRepository;
+
+    public AssignmentEventListener( TicketRepository ticketRepository, TicketActivityRepository ticketActivityRepository){
+        this.ticketRepository=ticketRepository;
+        this.ticketActivityRepository=ticketActivityRepository;
+    }
     
     /**
      * Listen to TicketAssignedEvent from Assignment Service

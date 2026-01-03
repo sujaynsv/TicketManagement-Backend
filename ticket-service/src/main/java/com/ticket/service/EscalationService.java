@@ -9,6 +9,7 @@ import com.ticket.entity.Ticket;
 import com.ticket.enums.EscalationType;
 import com.ticket.enums.TicketStatus;
 import com.ticket.event.TicketEscalatedEvent;
+import com.ticket.exception.TicketEscalationException;
 import com.ticket.repository.TicketRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,11 +36,11 @@ public class EscalationService {
                 .orElseThrow(() -> new RuntimeException("Ticket not found: " + ticketId));
         
         if (ticket.getStatus() == TicketStatus.ESCALATED) {
-            throw new RuntimeException("Ticket is already escalated");
+            throw new TicketEscalationException("Ticket is already escalated");
         }
         
         if (ticket.getStatus() == TicketStatus.CLOSED) {
-            throw new RuntimeException("Cannot escalate a closed ticket");
+            throw new TicketEscalationException("Cannot escalate a closed ticket");
         }
         
         AssignmentDTO assignment;
@@ -47,11 +48,11 @@ public class EscalationService {
             assignment = assignmentServiceClient.getAssignmentByTicketId(ticketId);
         } catch (Exception e) {
             log.error("Failed to fetch assignment for ticket {}: {}", ticketId, e.getMessage());
-            throw new RuntimeException("Ticket is not assigned. Cannot escalate unassigned ticket.");
+            throw new TicketEscalationException("Ticket is not assigned. Cannot escalate unassigned ticket.");
         }
         
         if (assignment == null) {
-            throw new RuntimeException("Ticket is not assigned. Cannot escalate unassigned ticket.");
+            throw new TicketEscalationException("Ticket is not assigned. Cannot escalate unassigned ticket.");
         }
         
         String managerId = assignment.getAssignedBy();
@@ -62,7 +63,7 @@ public class EscalationService {
             manager = userServiceClient.getUserById(managerId);
         } catch (Exception e) {
             log.error("Failed to fetch manager details: {}", e.getMessage());
-            throw new RuntimeException("Failed to fetch manager details");
+            throw new TicketEscalationException("Failed to fetch manager details");
         }
         
         String previousAgentId = ticket.getAssignedToUserId();

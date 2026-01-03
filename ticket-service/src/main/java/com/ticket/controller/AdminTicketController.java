@@ -3,7 +3,6 @@ package com.ticket.controller;
 import com.ticket.dto.*;
 import com.ticket.service.AdminTicketService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,8 +13,12 @@ import java.util.Map;
 @RequestMapping("/admin/tickets")
 public class AdminTicketController {
     
-    @Autowired
+    
     private AdminTicketService adminTicketService;
+
+    public AdminTicketController( AdminTicketService adminTicketService){
+        this.adminTicketService=adminTicketService;
+    }
     
     /**
      * Get all tickets with pagination and filtering
@@ -32,8 +35,11 @@ public class AdminTicketController {
             @RequestParam(required = false) String createdByUserId,
             @RequestParam(required = false) String search
     ) {
+
+        TicketFilterRequest filterRequest= new TicketFilterRequest(page, size, status, priority, category, assignedToUserId, createdByUserId, search);
+
         Page<AdminTicketDTO> tickets = adminTicketService.getAllTickets(
-                page, size, status, priority, category, assignedToUserId, createdByUserId, search);
+                filterRequest);
         return ResponseEntity.ok(tickets);
     }
     

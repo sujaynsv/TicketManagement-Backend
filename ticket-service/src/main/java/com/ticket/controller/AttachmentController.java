@@ -2,7 +2,6 @@ package com.ticket.controller;
 
 import com.ticket.dto.AttachmentDTO;
 import com.ticket.service.AttachmentService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,8 +14,11 @@ import java.util.List;
 @RequestMapping("/tickets/{ticketId}/attachments")
 public class AttachmentController {
     
-    @Autowired
     private AttachmentService attachmentService;
+
+    public AttachmentController( AttachmentService attachmentService){
+        this.attachmentService=attachmentService;
+    }
     
     /**
      * Upload attachment

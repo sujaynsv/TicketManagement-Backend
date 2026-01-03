@@ -3,7 +3,6 @@ package com.ticket.controller;
 import com.ticket.dto.*;
 import com.ticket.service.AdminUserService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,8 +15,11 @@ import java.util.Map;
 @RequestMapping("/admin/users")
 public class AdminUserController {
     
-    @Autowired
     private AdminUserService adminUserService;
+
+    public AdminUserController(AdminUserService adminUserService){
+        this.adminUserService=adminUserService;
+    }
     
     /**
      * Get all users with pagination and filtering

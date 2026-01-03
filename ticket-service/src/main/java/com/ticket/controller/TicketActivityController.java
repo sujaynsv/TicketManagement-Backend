@@ -3,19 +3,21 @@ package com.ticket.controller;
 import com.ticket.dto.TicketActivityDTO;
 import com.ticket.entity.TicketActivity;
 import com.ticket.repository.TicketActivityRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/tickets/{ticketId}/activities")
 public class TicketActivityController {
     
-    @Autowired
     private TicketActivityRepository ticketActivityRepository;
+
+    public TicketActivityController( TicketActivityRepository ticketActivityRepository){
+        this.ticketActivityRepository=ticketActivityRepository;
+    }
     
     /**
      * Get activity log for ticket
@@ -26,7 +28,7 @@ public class TicketActivityController {
         
         List<TicketActivityDTO> activityDTOs = activities.stream()
                 .map(this::convertToDTO)
-                .collect(Collectors.toList());
+                .toList();
         
         return ResponseEntity.ok(activityDTOs);
     }

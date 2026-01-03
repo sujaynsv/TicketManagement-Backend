@@ -14,7 +14,10 @@ public class AgentWorkloadDTO {
     private Boolean isRecommended;
     
     // Constructors
-    public AgentWorkloadDTO() {}
+    // Default constructor required for frameworks like Jackson or JPA
+    public AgentWorkloadDTO() {
+        //
+    }
     
     // Getters and Setters
     public String getAgentId() {

@@ -11,12 +11,13 @@ import com.ticket.repository.UserRepository;
 import com.ticket.security.JwtUtil;
 
 import org.slf4j.Logger;
-
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.ticket.exception.BadCredentialsException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.ticket.exception.AccountDeactivatedException;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -24,11 +25,14 @@ import java.util.UUID;
 @Service
 public class AuthService {
     
-    @Autowired
     private UserRepository userRepository;
     
-    @Autowired
     private JwtUtil jwtUtil;
+
+    public AuthService(UserRepository userRepository, JwtUtil jwtUtil){
+        this.userRepository=userRepository;
+        this.jwtUtil=jwtUtil;
+    }
 
     private static final Logger log = LoggerFactory.getLogger(AuthService.class);
     
@@ -37,23 +41,21 @@ public class AuthService {
     /**
      * Login - Authenticate existing user
      */
-    /**
- * Login - Generate token with tokenVersion
- */
+
 @Transactional
 public LoginResponse login(LoginRequest request) {
     // Find user
     User user = userRepository.findByUsername(request.username())
-            .orElseThrow(() -> new RuntimeException("Invalid username or password"));
+            .orElseThrow(() -> new BadCredentialsException("Invalid username or password"));
     
     // Check if user is active
     if (Boolean.FALSE.equals(user.getIsActive())) {
-        throw new RuntimeException("Account is deactivated. Please contact administrator.");
+        throw new AccountDeactivatedException("Account is deactivated. Please contact administrator.");
     }
     
     // Verify password
     if (!passwordEncoder.matches(request.password(), user.getPasswordHash())) {
-        throw new RuntimeException("Invalid username or password");
+        throw new BadCredentialsException("Invalid username or password");
     }
     
     // Update last login
@@ -90,12 +92,12 @@ public LoginResponse login(LoginRequest request) {
     public RegisterResponse register(RegisterRequest request) {
         // Validate username not taken
         if (userRepository.existsByUsername(request.username())) {
-            throw new RuntimeException("Username already exists");
+            throw new com.ticket.exception.UsernameAlreadyExistsException("Username already exists");
         }
         
         // Validate email not taken
         if (userRepository.existsByEmail(request.email())) {
-            throw new RuntimeException("Email already exists");
+            throw new com.ticket.exception.EmailAlreadyExistsException("Email already exists");
         }
         
         //   FIXED: Get UserRole enum from string
@@ -159,7 +161,7 @@ public LoginResponse login(LoginRequest request) {
             String userId = jwtUtil.extractUserId(token);
             
             // Check if token is expired
-            if (jwtUtil.isTokenExpired(token)) {
+            if (Boolean.TRUE.equals(jwtUtil.isTokenExpired(token))) {
                 log.warn("Token expired for user: {}", userId);
                 return false;
             }

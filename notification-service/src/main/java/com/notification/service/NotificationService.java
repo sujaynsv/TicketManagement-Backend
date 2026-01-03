@@ -7,27 +7,28 @@ import com.notification.repository.NotificationRepository;
 import com.ticket.event.CommentAddedEvent;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
 public class NotificationService {
     
-    @Autowired
     private NotificationRepository notificationRepository;
     
-    @Autowired
     private EmailService emailService;
     
-    @Autowired
     private UserService userService;
+
+    public NotificationService(UserService usersService, EmailService emailService, NotificationRepository notificationRepository){
+        this.userService=usersService;
+        this.emailService=emailService;
+        this.notificationRepository=notificationRepository;
+    }
     
     @Value("${notification.retry.max-attempts:3}")
     private Integer maxRetryAttempts;
@@ -128,7 +129,7 @@ public class NotificationService {
                 .findByUserIdOrderByCreatedAtDesc(userId);
         return notifications.stream()
                 .map(this::convertToDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
     
     /**
@@ -139,7 +140,7 @@ public class NotificationService {
                 .findByUserIdAndIsReadFalseOrderByCreatedAtDesc(userId);
         return notifications.stream()
                 .map(this::convertToDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
     
     /**

@@ -22,9 +22,9 @@ public class LoggingFilter implements GlobalFilter, Ordered {
         log.info("Incoming Request: {} {}", request.getMethod(), request.getPath());
         log.debug("Request Headers: {}", request.getHeaders());
         
-        return chain.filter(exchange).then(Mono.fromRunnable(() -> {
-            log.info("Response Status: {}", exchange.getResponse().getStatusCode());
-        }));
+        return chain.filter(exchange).then(Mono.fromRunnable(() -> 
+            log.info("Response Status: {}", exchange.getResponse().getStatusCode())
+        ));
     }
     
     @Override

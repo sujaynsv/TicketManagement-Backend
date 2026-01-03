@@ -1,6 +1,5 @@
 package com.ticket.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,11 +19,32 @@ import java.util.UUID;
 @Service
 public class S3StorageService {
     
-    @Autowired
     private S3Client s3Client;
     
-    @Autowired
     private S3Presigner s3Presigner;
+
+    public S3StorageService( S3Client s3Client, S3Presigner s3Presigner){
+        this.s3Client=s3Client;
+        this.s3Presigner=s3Presigner;
+    }
+    
+    /**
+     * Custom exception for invalid file names.
+     */
+    class InvalidFileNameException extends RuntimeException {
+        public InvalidFileNameException(String message) {
+            super(message);
+        }
+    }
+
+    /**
+     * Custom exception for file size limit exceeded.
+     */
+    class FileSizeLimitExceededException extends RuntimeException {
+        public FileSizeLimitExceededException(String message) {
+            super(message);
+        }
+    }
     
     @Value("${aws.s3.bucket-name}")
     private String bucketName;
@@ -39,7 +59,7 @@ public class S3StorageService {
         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" // .xlsx
     );
     
-    private static final long MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
+    private static final long MAX_FILE_SIZE = 10L * 1024 * 1024; // 10 MB
     
     /**
      * Upload file to S3
@@ -50,10 +70,12 @@ public class S3StorageService {
         
         // Generate unique file name
         String originalFileName = file.getOriginalFilename();
+        if (originalFileName == null || !originalFileName.contains(".")) {
+            throw new InvalidFileNameException("Invalid file name: file name is null or does not contain an extension.");
+        }
         String fileExtension = originalFileName.substring(originalFileName.lastIndexOf("."));
         String uniqueFileName = UUID.randomUUID().toString() + fileExtension;
         
-        // S3 key: tickets/{ticketId}/{uniqueFileName}
         String s3Key = "tickets/" + ticketId + "/" + uniqueFileName;
         
         // Upload to S3
@@ -69,7 +91,16 @@ public class S3StorageService {
             
             return s3Key;
         } catch (S3Exception e) {
-            throw new RuntimeException("Failed to upload file to S3: " + e.getMessage());
+            throw new S3StorageException("Failed to upload file to S3: " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Custom exception for S3 storage errors.
+     */
+    public static class S3StorageException extends RuntimeException {
+        public S3StorageException(String message, Throwable cause) {
+            super(message, cause);
         }
     }
     
@@ -78,21 +109,19 @@ public class S3StorageService {
      */
     public String generatePresignedUrl(String s3Key) {
         try {
-            GetObjectRequest getObjectRequest = GetObjectRequest.builder()
-                    .bucket(bucketName)
-                    .key(s3Key)
-                    .build();
-            
             GetObjectPresignRequest presignRequest = GetObjectPresignRequest.builder()
                     .signatureDuration(Duration.ofMinutes(10))
-                    .getObjectRequest(getObjectRequest)
+                    .getObjectRequest(b -> b
+                        .bucket(bucketName)
+                        .key(s3Key)
+                    )
                     .build();
-            
+
             PresignedGetObjectRequest presignedRequest = s3Presigner.presignGetObject(presignRequest);
-            
+
             return presignedRequest.url().toString();
         } catch (S3Exception e) {
-            throw new RuntimeException("Failed to generate pre-signed URL: " + e.getMessage());
+            throw new S3StorageException("Failed to generate pre-signed URL: " + e.getMessage(), e);
         }
     }
     
@@ -108,7 +137,7 @@ public class S3StorageService {
             
             s3Client.deleteObject(deleteObjectRequest);
         } catch (S3Exception e) {
-            throw new RuntimeException("Failed to delete file from S3: " + e.getMessage());
+            throw new S3StorageException("Failed to delete file from S3: " + e.getMessage(), e);
         }
     }
     
@@ -117,16 +146,16 @@ public class S3StorageService {
      */
     private void validateFile(MultipartFile file) {
         if (file.isEmpty()) {
-            throw new RuntimeException("File is empty");
+            throw new InvalidFileNameException("File is empty");
         }
         
         if (file.getSize() > MAX_FILE_SIZE) {
-            throw new RuntimeException("File size exceeds maximum limit of 10 MB");
+            throw new FileSizeLimitExceededException("File size exceeds maximum limit of 10 MB");
         }
         
         String contentType = file.getContentType();
         if (contentType == null || !ALLOWED_FILE_TYPES.contains(contentType)) {
-            throw new RuntimeException("File type not allowed. Allowed types: PDF, PNG, JPG, TXT, DOCX, XLSX");
+            throw new InvalidFileNameException("File type not allowed. Allowed types: PDF, PNG, JPG, TXT, DOCX, XLSX");
         }
     }
 }

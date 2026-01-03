@@ -6,44 +6,57 @@ import com.assignment.dto.AssignmentDTO;
 import com.assignment.dto.ManualAssignmentRequest;
 import com.assignment.dto.UnassignedTicketDTO;
 import com.assignment.entity.*;
+import com.assignment.exception.AgentCapacityExceededException;
+import com.assignment.exception.AgentOfflineException;
+import com.assignment.exception.TicketAlreadyAssignedException;
+import com.assignment.exception.TicketAlreadyAssignedToAgentException;
+import com.assignment.exception.TicketNotAssignedException;
 import com.assignment.repository.AgentWorkloadRepository;
 import com.assignment.repository.AssignmentRepository;
 import com.assignment.repository.TicketCacheRepository;
 import com.ticket.event.TicketAssignedEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class AssignmentService {
     
     private static final Logger log = LoggerFactory.getLogger(AssignmentService.class);
-    
-    @Autowired
-    private TicketCacheRepository ticketCacheRepository;
 
-    @Autowired
-    private AuthServiceClient authServiceClient;
+    private static final String STATUS_ASSIGNED = "ASSIGNED";
     
-    @Autowired
-    private AssignmentRepository assignmentRepository;
-    
-    @Autowired
-    private AgentWorkloadRepository agentWorkloadRepository;
-    
-    @Autowired
-    private SlaService slaService;
-    
-    @Autowired
-    private EventPublisher eventPublisher;
+    private final TicketCacheRepository ticketCacheRepository;
+    private final AuthServiceClient authServiceClient;
+    private final AssignmentRepository assignmentRepository;
+    private final AgentWorkloadRepository agentWorkloadRepository;
+    private final SlaService slaService;
+    private final EventPublisher eventPublisher;
+    private final AssignmentService self; // Inject self for proxy-based transactional calls
+
+    public AssignmentService(
+            TicketCacheRepository ticketCacheRepository,
+            AuthServiceClient authServiceClient,
+            AssignmentRepository assignmentRepository,
+            AgentWorkloadRepository agentWorkloadRepository,
+            SlaService slaService,
+            EventPublisher eventPublisher,
+            AssignmentService self // Inject self
+    ) {
+        this.ticketCacheRepository = ticketCacheRepository;
+        this.authServiceClient = authServiceClient;
+        this.assignmentRepository = assignmentRepository;
+        this.agentWorkloadRepository = agentWorkloadRepository;
+        this.slaService = slaService;
+        this.eventPublisher = eventPublisher;
+        this.self = self;
+    }
+
     
     @Value("${assignment.auto-assign.enabled}")
     private Boolean autoAssignEnabled;
@@ -62,7 +75,7 @@ public class AssignmentService {
         
         return tickets.stream()
                 .map(this::convertToUnassignedTicketDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
     
     /**
@@ -74,7 +87,7 @@ public class AssignmentService {
         
         List<AgentWorkloadDTO> agentDTOs = agents.stream()
                 .map(this::convertToAgentWorkloadDTO)
-                .collect(Collectors.toList());
+                .toList();
         
         // Mark recommended agent (least loaded)
         if (!agentDTOs.isEmpty()) {
@@ -99,7 +112,7 @@ public class AssignmentService {
         
         // Check if already assigned
         if (ticket.getAssignedAgentId() != null) {
-            throw new RuntimeException("Ticket already assigned to " + ticket.getAssignedAgentUsername());
+            throw new TicketAlreadyAssignedException("Ticket already assigned to " + ticket.getAssignedAgentUsername());
         }
         
         // Update priority (manager sets it during assignment)
@@ -119,11 +132,11 @@ public class AssignmentService {
                 .orElseThrow(() -> new RuntimeException("Agent not found"));
         
         if (agent.getStatus() == AgentStatus.OFFLINE) {
-            throw new RuntimeException("Agent is currently offline");
+            throw new AgentOfflineException("Agent is currently offline");
         }
         
         if (agent.getActiveTickets() >= maxTicketsPerAgent) {
-            throw new RuntimeException("Agent has reached maximum ticket capacity");
+            throw new AgentCapacityExceededException("Agent has reached maximum ticket capacity");
         }
         
         // Create assignment record with ASSIGNED status
@@ -139,13 +152,13 @@ public class AssignmentService {
         assignment.setAssignmentStrategy("MANUAL");
         assignment.setAssignmentNotes(request.getAssignmentNote());
         assignment.setStatus(AssignmentStatus.ASSIGNED); // Set to ASSIGNED
-        assignment.setTicketStatus("ASSIGNED");
+        assignment.setTicketStatus(STATUS_ASSIGNED);
         Assignment savedAssignment = assignmentRepository.save(assignment);
         
         // Update ticket cache with assignment and priority
         ticket.setAssignedAgentId(agent.getAgentId());
         ticket.setAssignedAgentUsername(agent.getAgentUsername());
-        ticket.setStatus("ASSIGNED");
+        ticket.setStatus(STATUS_ASSIGNED);
         ticket.setUpdatedAt(LocalDateTime.now());
         ticketCacheRepository.save(ticket);
         
@@ -195,7 +208,7 @@ public class AssignmentService {
      */
     @Transactional
     public void autoAssignTicket(String ticketId) {
-        if (!autoAssignEnabled) {
+        if (autoAssignEnabled == null || !autoAssignEnabled) {
             log.info("Auto-assignment disabled, skipping ticket {}", ticketId);
             return;
         }
@@ -215,7 +228,7 @@ public class AssignmentService {
             return;
         }
 
-        syncAgentsFromAuthService();
+        self.syncAgentsFromAuthService();
         
         // Select best agent based on strategy
         AgentWorkload agent = selectBestAgent();
@@ -236,14 +249,14 @@ public class AssignmentService {
         );
         assignment.setAssignmentStrategy(assignmentStrategy);
         assignment.setStatus(AssignmentStatus.ASSIGNED);
-        assignment.setTicketStatus("ASSIGNED");
+        assignment.setTicketStatus(STATUS_ASSIGNED);
         
         assignmentRepository.save(assignment);
         
         // Update ticket cache
         ticket.setAssignedAgentId(agent.getAgentId());
         ticket.setAssignedAgentUsername(agent.getAgentUsername());
-        ticket.setStatus("ASSIGNED");
+        ticket.setStatus(STATUS_ASSIGNED);
         ticket.setUpdatedAt(LocalDateTime.now());
         ticketCacheRepository.save(ticket);
         
@@ -300,7 +313,7 @@ public class AssignmentService {
         
         return assignments.stream()
                 .map(this::convertToAssignmentDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
     
     /**
@@ -431,11 +444,11 @@ public class AssignmentService {
         String oldAgentId = ticket.getAssignedAgentId();
         
         if (oldAgentId == null) {
-            throw new RuntimeException("Ticket is not assigned. Use manual assignment instead.");
+            throw new TicketNotAssignedException("Ticket is not assigned. Use manual assignment instead.");
         }
         
         if (oldAgentId.equals(newAgentId)) {
-            throw new RuntimeException("Ticket is already assigned to this agent");
+            throw new TicketAlreadyAssignedToAgentException("Ticket is already assigned to this agent");
         }
         
         // Get old agent and decrement workload
@@ -494,7 +507,7 @@ public class AssignmentService {
         );
         newAssignment.setAssignmentStrategy("MANUAL_REASSIGN");
         newAssignment.setStatus(AssignmentStatus.ASSIGNED);
-        newAssignment.setTicketStatus("ASSIGNED");
+        newAssignment.setTicketStatus(STATUS_ASSIGNED);
         assignmentRepository.save(newAssignment);
         
         // Publish TicketAssignedEvent

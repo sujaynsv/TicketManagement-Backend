@@ -13,96 +13,49 @@ import com.ticket.event.TicketStatusChangedEvent;
 import com.ticket.repository.CommentRepository;
 import com.ticket.repository.TicketActivityRepository;
 import com.ticket.repository.TicketRepository;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
-import org.yaml.snakeyaml.events.CommentEvent;
-
 import com.ticket.entity.Comment;
 import com.ticket.event.CommentAddedEvent;
-
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import java.util.stream.Collectors;
-
 @Service
 public class TicketService {
     
-    @Autowired
+    public static class InvalidTicketStatusTransitionException extends RuntimeException {
+        public InvalidTicketStatusTransitionException(String message) {
+            super(message);
+        }
+    }
+    
     private TicketRepository ticketRepository;
     
-    @Autowired
     private TicketActivityRepository ticketActivityRepository;
     
-    @Autowired
     private EventPublisherService eventPublisher;
 
-    @Autowired
     private CommentRepository commentRepository;
 
     private static final Logger log = LoggerFactory.getLogger(TicketService.class);
 
+    private static final String TICKET_NOT_FOUND_MESSAGE = "Ticket not found";
 
-    
-    /**
-     * Create a new ticket
-     */
-    // @Transactional
-    // public TicketDTO createTicket(CreateTicketRequest request, String userId, String username) {
-    //     // Parse enums
-    //     TicketCategory category = TicketCategory.fromString(request.getCategory());
-    //     TicketPriority priority = TicketPriority.fromString(request.getPriority());
-        
-    //     // Create ticket
-    //     Ticket ticket = new Ticket();
-    //     ticket.setTicketNumber(generateTicketNumber());
-    //     ticket.setTitle(request.getTitle());
-    //     ticket.setDescription(request.getDescription());
-    //     ticket.setStatus(TicketStatus.OPEN);
-    //     ticket.setCategory(category);
-    //     ticket.setPriority(priority);
-    //     ticket.setCreatedByUserId(userId);
-    //     ticket.setCreatedByUsername(username);
-    //     ticket.setTags(request.getTags() != null ? request.getTags() : List.of());
-    //     ticket.setCreatedAt(LocalDateTime.now());
-    //     ticket.setUpdatedAt(LocalDateTime.now());
-    //     ticket.setCommentCount(0);
-    //     ticket.setAttachmentCount(0);
-        
-    //     // Save ticket
-    //     Ticket savedTicket = ticketRepository.save(ticket);
-        
-    //     // Log activity
-    //     logActivity(savedTicket.getTicketId(), "TICKET_CREATED", 
-    //                "Ticket created", userId, username);
-        
-    //     // Publish event to RabbitMQ
-    //     TicketCreatedEvent event = new TicketCreatedEvent(
-    //             savedTicket.getTicketId(),
-    //             savedTicket.getTicketNumber(),
-    //             savedTicket.getTitle(),
-    //             userId,
-    //             username,
-    //             category.name(),
-    //             priority.name(),
-    //             savedTicket.getCreatedAt()
-    //     );
-    //     eventPublisher.publishTicketCreated(event);
-        
-    //     return convertToDTO(savedTicket);
-    // }
+
+    public TicketService(CommentRepository commentRepository, EventPublisherService eventPublisher, TicketActivityRepository ticketActivityRepository, TicketRepository ticketRepository){
+        this.commentRepository=commentRepository;
+        this.eventPublisher=eventPublisher;
+        this.ticketActivityRepository=ticketActivityRepository;
+        this.ticketRepository=ticketRepository;
+    }
     
     /**
      * Get ticket by ID
      */
     public TicketDTO getTicketById(String ticketId) {
         Ticket ticket = ticketRepository.findById(ticketId)
-                .orElseThrow(() -> new RuntimeException("Ticket not found"));
+                .orElseThrow(() -> new RuntimeException(TICKET_NOT_FOUND_MESSAGE));
         return convertToDTO(ticket);
     }
     
@@ -111,7 +64,7 @@ public class TicketService {
      */
     public TicketDTO getTicketByNumber(String ticketNumber) {
         Ticket ticket = ticketRepository.findByTicketNumber(ticketNumber)
-                .orElseThrow(() -> new RuntimeException("Ticket not found"));
+                .orElseThrow(() -> new RuntimeException(TICKET_NOT_FOUND_MESSAGE));
         return convertToDTO(ticket);
     }
     
@@ -122,7 +75,7 @@ public class TicketService {
     public TicketDTO updateTicket(String ticketId, UpdateTicketRequest request, 
                                   String userId, String username) {
         Ticket ticket = ticketRepository.findById(ticketId)
-                .orElseThrow(() -> new RuntimeException("Ticket not found"));
+                .orElseThrow(() -> new RuntimeException(TICKET_NOT_FOUND_MESSAGE));
         
         // Update fields if provided
         if (request.title() != null) {
@@ -158,14 +111,14 @@ public class TicketService {
     public TicketDTO changeStatus(String ticketId, ChangeStatusRequest request, 
                                   String userId, String username) {
         Ticket ticket = ticketRepository.findById(ticketId)
-                .orElseThrow(() -> new RuntimeException("Ticket not found"));
+                .orElseThrow(() -> new RuntimeException(TICKET_NOT_FOUND_MESSAGE));
         
         TicketStatus oldStatus = ticket.getStatus();
         TicketStatus newStatus = TicketStatus.valueOf(request.status().toUpperCase());
         
         // Validate status transition
         if (!oldStatus.canTransitionTo(newStatus)) {
-            throw new RuntimeException("Cannot transition from " + oldStatus + " to " + newStatus);
+            throw new InvalidTicketStatusTransitionException("Cannot transition from " + oldStatus + " to " + newStatus);
         }
         
         // Update status
@@ -247,7 +200,7 @@ public class TicketService {
      */
     public List<TicketDTO> getMyTickets(String userId) {
         List<Ticket> tickets = ticketRepository.findByCreatedByUserId(userId);
-        return tickets.stream().map(this::convertToDTO).collect(Collectors.toList());
+        return tickets.stream().map(this::convertToDTO).toList();
     }
     
     /**
@@ -255,7 +208,7 @@ public class TicketService {
      */
     public List<TicketDTO> getAssignedTickets(String userId) {
         List<Ticket> tickets = ticketRepository.findByAssignedToUserId(userId);
-        return tickets.stream().map(this::convertToDTO).collect(Collectors.toList());
+        return tickets.stream().map(this::convertToDTO).toList();
     }
     
     /**
@@ -264,7 +217,7 @@ public class TicketService {
     public List<TicketDTO> getTicketsByStatus(String status) {
         TicketStatus ticketStatus = TicketStatus.valueOf(status.toUpperCase());
         List<Ticket> tickets = ticketRepository.findByStatus(ticketStatus);
-        return tickets.stream().map(this::convertToDTO).collect(Collectors.toList());
+        return tickets.stream().map(this::convertToDTO).toList();
     }
     
     /**
@@ -272,7 +225,7 @@ public class TicketService {
      */
     public List<TicketDTO> getAllTickets() {
         List<Ticket> tickets = ticketRepository.findAll();
-        return tickets.stream().map(this::convertToDTO).collect(Collectors.toList());
+        return tickets.stream().map(this::convertToDTO).toList();
     }
     
     /**
@@ -288,7 +241,7 @@ public class TicketService {
      */
     public void incrementCommentCount(String ticketId) {
         Ticket ticket = ticketRepository.findById(ticketId)
-                .orElseThrow(() -> new RuntimeException("Ticket not found"));
+                .orElseThrow(() -> new RuntimeException(TICKET_NOT_FOUND_MESSAGE));
         ticket.setCommentCount(ticket.getCommentCount() + 1);
         ticketRepository.save(ticket);
     }
@@ -298,7 +251,7 @@ public class TicketService {
      */
     public void incrementAttachmentCount(String ticketId) {
         Ticket ticket = ticketRepository.findById(ticketId)
-                .orElseThrow(() -> new RuntimeException("Ticket not found"));
+                .orElseThrow(() -> new RuntimeException(TICKET_NOT_FOUND_MESSAGE));
         ticket.setAttachmentCount(ticket.getAttachmentCount() + 1);
         ticketRepository.save(ticket);
     }
@@ -351,8 +304,6 @@ public class TicketService {
         );
     }
 
-    // @Autowired
-    // private AttachmentService attachmentService;
     //created circular dependency issue for me.
 
     /**
@@ -363,7 +314,6 @@ public class TicketService {
     public TicketDTO createTicket(CreateTicketRequest request, String userId, String username) {
         // Parse enums
         TicketCategory category = TicketCategory.fromString(request.getCategory());
-        // TicketPriority priority = TicketPriority.fromString(request.getPriority());
         
         // Create ticket
         Ticket ticket = new Ticket();
@@ -414,7 +364,7 @@ public class TicketService {
     @Transactional
     public void updateAttachmentCount(String ticketId, int count) {
         Ticket ticket = ticketRepository.findById(ticketId)
-                .orElseThrow(() -> new RuntimeException("Ticket not found"));
+                .orElseThrow(() -> new RuntimeException(TICKET_NOT_FOUND_MESSAGE));
         ticket.setAttachmentCount(count);
         ticketRepository.save(ticket);
     }
@@ -424,7 +374,7 @@ public class TicketService {
                                       String reason, String managerId, String managerUsername) {
     // Find ticket
     Ticket ticket = ticketRepository.findById(ticketId)
-            .orElseThrow(() -> new RuntimeException("Ticket not found"));
+            .orElseThrow(() -> new RuntimeException(TICKET_NOT_FOUND_MESSAGE));
     
     // Parse priority
     TicketPriority newPriority = TicketPriority.fromString(priorityStr);

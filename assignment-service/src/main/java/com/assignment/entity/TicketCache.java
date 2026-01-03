@@ -48,7 +48,9 @@ public class TicketCache {
     private LocalDateTime updatedAt;
     
     // Constructors
-    public TicketCache() {}
+    public TicketCache() {
+        //
+    }
     
     // Getters and Setters
     public String getTicketId() {

@@ -1,25 +1,31 @@
 package com.notification.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import com.notification.exception.EmailSendException;
+
 @Service
 @Slf4j
 public class EmailService {
     
-    @Autowired
-    private JavaMailSender mailSender;
+    private final JavaMailSender mailSender;
+    private final EmailService self;
+
+    public EmailService(JavaMailSender mailSender, EmailService self){
+        this.mailSender = mailSender;
+        this.self = self;
+    }
     
     @Value("${notification.email.from}")
     private String fromEmail;
     
     @Value("${notification.email.enabled:true}")
-    private Boolean emailEnabled;
+    private boolean emailEnabled;
     
     /**
      * Send simple text email
@@ -43,7 +49,7 @@ public class EmailService {
             
         } catch (Exception e) {
             log.error("Failed to send email to {}: {}", to, e.getMessage());
-            throw new RuntimeException("Failed to send email", e);
+            throw new EmailSendException("Failed to send email", e);
         }
     }
     
@@ -54,7 +60,7 @@ public class EmailService {
         int attempt = 0;
         while (attempt < maxRetries) {
             try {
-                sendEmail(to, subject, text);
+                self.sendEmail(to, subject, text);
                 return true;
             } catch (Exception e) {
                 attempt++;
@@ -62,7 +68,7 @@ public class EmailService {
                 
                 if (attempt < maxRetries) {
                     try {
-                        Thread.sleep(2000 * attempt); // Exponential backoff
+                        Thread.sleep(2000L * attempt); // Exponential backoff
                     } catch (InterruptedException ie) {
                         Thread.currentThread().interrupt();
                     }

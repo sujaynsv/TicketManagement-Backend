@@ -20,6 +20,8 @@ import java.time.LocalDateTime;
 @Slf4j
 public class TicketEventListener {
 
+    private static final String INVALID_TICKET_NUMBER_MSG = "Invalid event: ticketNumber is null";
+
     private final TicketCacheRepository ticketCacheRepository;
     private final SlaService slaService;
 
@@ -30,7 +32,7 @@ public class TicketEventListener {
         
         try {
             if (event.getTicketNumber() == null) {
-                log.error("Invalid event: ticketNumber is null");
+                log.error(INVALID_TICKET_NUMBER_MSG);
                 return;
             }
             
@@ -80,7 +82,7 @@ public class TicketEventListener {
         
         try {
             if (event.getTicketNumber() == null) {
-                log.error("Invalid event: ticketNumber is null");
+                log.error(INVALID_TICKET_NUMBER_MSG);
                 return;
             }
             
@@ -116,7 +118,7 @@ public class TicketEventListener {
         
         try {
             if (event.getTicketNumber() == null) {
-                log.error("Invalid event: ticketNumber is null");
+                log.error(INVALID_TICKET_NUMBER_MSG);
                 return;
             }
             
@@ -156,7 +158,7 @@ public class TicketEventListener {
         
         try {
             if (event.getTicketNumber() == null) {
-                log.error("Invalid event: ticketNumber is null");
+                log.error(INVALID_TICKET_NUMBER_MSG);
                 return;
             }
             

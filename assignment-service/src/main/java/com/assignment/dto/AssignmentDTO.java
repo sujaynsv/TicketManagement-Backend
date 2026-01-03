@@ -17,7 +17,9 @@ public class AssignmentDTO {
     private LocalDateTime completedAt;
     
     // Constructors
-    public AssignmentDTO() {}
+    public AssignmentDTO() {
+        //
+    }
     
     // Getters and Setters
     public String getAssignmentId() {

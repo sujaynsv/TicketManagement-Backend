@@ -4,30 +4,30 @@ import com.ticket.dto.AttachmentDTO;
 import com.ticket.entity.Attachment;
 import com.ticket.repository.AttachmentRepository;
 import com.ticket.repository.TicketRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class AttachmentService {
     
-    @Autowired
     private AttachmentRepository attachmentRepository;
     
-    @Autowired
     private TicketRepository ticketRepository;
     
-    @Autowired
     private S3StorageService s3StorageService;
     
-    @Autowired
     private TicketService ticketService;
+
+    public AttachmentService( AttachmentRepository attachmentRepository, TicketRepository ticketRepository, S3StorageService s3StorageService, TicketService ticketService){
+        this.attachmentRepository=attachmentRepository;
+        this.ticketRepository=ticketRepository;
+        this.s3StorageService=s3StorageService;
+        this.ticketService=ticketService;
+    }
     
     /**
      * Upload attachment
@@ -77,7 +77,7 @@ public class AttachmentService {
             String presignedUrl = s3StorageService.generatePresignedUrl(attachment.getS3Key());
             attachment.setS3Url(presignedUrl);
             return convertToDTO(attachment);
-        }).collect(Collectors.toList());
+        }).toList();
     }
     
     /**

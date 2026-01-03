@@ -3039,3 +3039,132 @@ java.lang.IllegalStateException: No micrometer registry present (or more than on
 2026-01-03T16:20:37.935+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
 2026-01-03T16:25:37.996+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
 2026-01-03T16:30:38.004+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T16:35:38.014+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T16:40:38.017+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T16:45:38.024+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T16:50:38.034+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T16:55:38.060+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T17:00:38.083+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T17:05:38.094+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T17:10:38.101+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T17:15:38.136+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T17:20:38.142+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T17:25:38.149+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T17:30:38.169+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T17:35:38.184+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T17:40:38.194+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T17:45:38.185+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T17:50:38.196+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T18:49:50.027+05:30  WARN 59213 --- [notification-service] [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=58m45s93ms).
+2026-01-03T18:53:53.243+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T18:58:53.246+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T19:03:53.253+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T19:08:53.286+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T19:13:53.295+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T19:18:53.299+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T19:23:53.304+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T19:28:53.313+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T19:32:37.452+05:30 DEBUG 59213 --- [notification-service] [pool-2-thread-9] o.s.a.r.listener.BlockingQueueConsumer   : Storing delivery for consumerTag: 'amq.ctag-KHw9-3fyauFGEeKRsmbyXw' with deliveryTag: '6' in Consumer@4d27716b: tags=[[amq.ctag-KHw9-3fyauFGEeKRsmbyXw]], channel=Cached Rabbit Channel: AMQChannel(amqp://guest@127.0.0.1:5672/,1), conn: Proxy@59d8de36 Shared Rabbit Connection: SimpleConnection@41f2320f [delegate=amqp://guest@127.0.0.1:5672/, localPort=52847], acknowledgeMode=AUTO local queue size=0
+2026-01-03T19:32:37.457+05:30 DEBUG 59213 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] o.s.a.r.listener.BlockingQueueConsumer   : Received message: (Body:'[B@1afbab90(byte[308])' MessageProperties [headers={__TypeId__=com.ticket.event.TicketCreatedEvent}, contentType=application/json, contentEncoding=UTF-8, contentLength=0, receivedDeliveryMode=PERSISTENT, priority=0, redelivered=false, receivedExchange=ticket.exchange, receivedRoutingKey=ticket.created, deliveryTag=6, consumerTag=amq.ctag-KHw9-3fyauFGEeKRsmbyXw, consumerQueue=notification.queue])
+2026-01-03T19:32:37.472+05:30 DEBUG 59213 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] .a.r.l.a.MessagingMessageListenerAdapter : Processing [GenericMessage [payload=com.ticket.event.TicketCreatedEvent@66d1640, headers={amqp_receivedDeliveryMode=PERSISTENT, amqp_receivedExchange=ticket.exchange, amqp_deliveryTag=6, amqp_consumerQueue=notification.queue, amqp_redelivered=false, amqp_receivedRoutingKey=ticket.created, amqp_contentEncoding=UTF-8, id=67077e28-18f4-9b17-b150-9d07a990f6b9, amqp_consumerTag=amq.ctag-KHw9-3fyauFGEeKRsmbyXw, amqp_lastInBatch=false, contentType=application/json, __TypeId__=com.ticket.event.TicketCreatedEvent, timestamp=1767448957472}]]
+2026-01-03T19:32:37.478+05:30  INFO 59213 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.notification.listener.EventListener    : Received TicketCreatedEvent: TKT-20260103-00077
+2026-01-03T19:32:37.512+05:30  INFO 59213 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.n.service.NotificationService          : Creating notification for user sujay: TICKET_CREATED
+2026-01-03T19:32:37.560+05:30  INFO 59213 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.n.service.NotificationService          : Email notification sent to nsvsujay04@gmail.com
+2026-01-03T19:32:37.567+05:30 DEBUG 59213 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] org.hibernate.SQL                        : 
+    insert 
+    into
+        notifications
+        (created_at, delivery_channel, error_message, event_type, is_read, message, notification_type, read_at, retry_count, sent_at, status, subject, ticket_id, ticket_number, updated_at, user_email, user_id, username, notification_id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-01-03T19:32:37.579+05:30 DEBUG 59213 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] org.hibernate.SQL                        : 
+    update
+        notifications 
+    set
+        created_at=?,
+        delivery_channel=?,
+        error_message=?,
+        event_type=?,
+        is_read=?,
+        message=?,
+        notification_type=?,
+        read_at=?,
+        retry_count=?,
+        sent_at=?,
+        status=?,
+        subject=?,
+        ticket_id=?,
+        ticket_number=?,
+        updated_at=?,
+        user_email=?,
+        user_id=?,
+        username=? 
+    where
+        notification_id=?
+2026-01-03T19:32:37.594+05:30  INFO 59213 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.n.service.NotificationService          : Creating notification for user sujay: TICKET_CREATED
+2026-01-03T19:32:37.601+05:30 DEBUG 59213 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] org.hibernate.SQL                        : 
+    insert 
+    into
+        notifications
+        (created_at, delivery_channel, error_message, event_type, is_read, message, notification_type, read_at, retry_count, sent_at, status, subject, ticket_id, ticket_number, updated_at, user_email, user_id, username, notification_id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-01-03T19:32:37.602+05:30 DEBUG 59213 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] org.hibernate.SQL                        : 
+    update
+        notifications 
+    set
+        created_at=?,
+        delivery_channel=?,
+        error_message=?,
+        event_type=?,
+        is_read=?,
+        message=?,
+        notification_type=?,
+        read_at=?,
+        retry_count=?,
+        sent_at=?,
+        status=?,
+        subject=?,
+        ticket_id=?,
+        ticket_number=?,
+        updated_at=?,
+        user_email=?,
+        user_id=?,
+        username=? 
+    where
+        notification_id=?
+2026-01-03T19:32:37.603+05:30  INFO 59213 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.notification.listener.EventListener    : Notifications sent for ticket creation: TKT-20260103-00077
+2026-01-03T19:32:41.395+05:30  INFO 59213 --- [notification-service] [task-7] com.notification.service.EmailService    : Email sent to nsvsujay04@gmail.com: Ticket Created: TKT-20260103-00077
+2026-01-03T19:33:53.323+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T19:38:53.336+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T19:43:53.346+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T19:48:53.355+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T19:53:53.363+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T19:58:53.368+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T20:03:53.378+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T20:08:53.384+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T20:13:53.367+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T20:18:53.374+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T20:23:53.382+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T20:28:53.391+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T20:33:53.396+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T20:38:53.403+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T20:43:53.388+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T20:48:53.397+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T20:53:53.403+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T21:17:36.067+05:30  WARN 59213 --- [notification-service] [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=19m15s26ms).
+2026-01-03T21:17:38.286+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T21:22:38.290+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T21:27:38.293+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T21:32:38.297+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T21:37:38.345+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T21:42:38.351+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T21:47:38.368+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T21:52:38.415+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T21:57:38.422+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T22:02:38.428+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T22:07:38.455+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T22:12:38.462+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T22:17:38.473+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T22:22:38.484+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T22:27:38.488+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration

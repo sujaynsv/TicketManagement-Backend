@@ -53,11 +53,11 @@ public class AuthServiceClient {
             
         } catch (Exception e) {
             log.error("Failed to fetch agents from Auth Service: {}", e.getMessage());
-            throw e; // Let circuit breaker handle it
+            throw new RuntimeException("Failed to fetch agents from Auth Service", e);
         }
     }
     
-    //    Fallback method
+    // ✅ Fallback method
     public List<AgentDTO> getAllAgentsFallback(Throwable throwable) {
         log.warn("Circuit breaker activated for getAllAgents(). Using fallback. Error: {}", 
                  throwable.getMessage());
@@ -80,11 +80,11 @@ public class AuthServiceClient {
             
         } catch (Exception e) {
             log.error("Failed to fetch user {} from Auth Service: {}", userId, e.getMessage());
-            throw e; // Let circuit breaker handle it
+            throw new RuntimeException("Failed to fetch user " + userId + " from Auth Service", e);
         }
     }
     
-    //    Fallback method
+    //  Fallback method
     public AgentDTO getUserByIdFallback(String userId, Throwable throwable) {
         log.warn("Circuit breaker activated for getUserById({}). Using fallback. Error: {}", 
                  userId, throwable.getMessage());
@@ -109,7 +109,8 @@ public class AuthServiceClient {
         private Boolean isActive;
         
         // Constructors
-        public AgentDTO() {}
+        public AgentDTO() { //empt
+            }
         
         // Getters and Setters (same as before)
         public String getUserId() { return userId; }

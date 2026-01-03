@@ -16,7 +16,6 @@ public class UnassignedTicketDTO {
     private String slaStatus;
     private String timeRemaining;
 
-    private Boolean prioritySet;
     
     // Constructors
     public UnassignedTicketDTO() {}
@@ -33,7 +32,6 @@ public class UnassignedTicketDTO {
         this.status = status;
         this.createdAt = createdAt;
         this.createdByUsername = createdByUsername;
-        this.prioritySet = (priority != null && !priority.isEmpty());
     }
 
     

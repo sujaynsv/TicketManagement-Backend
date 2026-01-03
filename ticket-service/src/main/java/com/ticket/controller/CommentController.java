@@ -4,7 +4,6 @@ import com.ticket.dto.CommentDTO;
 import com.ticket.dto.CreateCommentRequest;
 import com.ticket.service.CommentService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,8 +14,11 @@ import java.util.List;
 @RequestMapping("/tickets/{ticketId}/comments")
 public class CommentController {
     
-    @Autowired
     private CommentService commentService;
+
+    public CommentController(CommentService commentService){
+        this.commentService=commentService;
+    }
     
     /**
      * Add comment to ticket

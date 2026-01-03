@@ -3,8 +3,10 @@ package com.ticket.service;
 import com.ticket.dto.*;
 import com.ticket.entity.User;
 import com.ticket.enums.UserRole;
+import com.ticket.exception.EmailAlreadyExistsException;
+import com.ticket.exception.UsernameAlreadyExistsException;
+import com.ticket.exception.ManagerAssignmentException;
 import com.ticket.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -13,17 +15,18 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class AdminUserService {
     
-    @Autowired
+    private static final String USER_NOT_FOUND_MESSAGE = "User not found";
     private UserRepository userRepository;
+
+    public AdminUserService(UserRepository userRepository){
+        this.userRepository=userRepository;
+    }
     
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(12);
     
@@ -67,7 +70,7 @@ public class AdminUserService {
     public AdminUserDTO getUserById(String userId) {
         UUID uuid = UUID.fromString(userId);
         User user = userRepository.findById(uuid)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new RuntimeException(USER_NOT_FOUND_MESSAGE));
         return convertToAdminDTO(user);
     }
     
@@ -76,31 +79,10 @@ public class AdminUserService {
      */
     @Transactional
     public AdminUserDTO createUser(CreateUserRequest request) {
-        // Validate username
-        if (userRepository.existsByUsername(request.username())) {
-            throw new RuntimeException("Username already exists");
-        }
-        
-        // Validate email
-        if (userRepository.existsByEmail(request.email())) {
-            throw new RuntimeException("Email already exists");
-        }
-        
+        validateUsernameAndEmail(request);
         UserRole role = UserRole.fromString(request.role());
-        
-        // Validate manager assignment rules
-        if (request.managerId() != null && !request.managerId().isBlank()) {
-            // ADMIN and SUPPORT_MANAGER cannot have managers
-            if (role == UserRole.ADMIN || role == UserRole.SUPPORT_MANAGER) {
-                throw new RuntimeException("Admins and Managers cannot be assigned a manager");
-            }
-        }
-        
-        // SUPPORT_AGENT must have a manager
-        if (role == UserRole.SUPPORT_AGENT && (request.managerId() == null || request.managerId().isBlank())) {
-            throw new RuntimeException("Support Agents must be assigned a manager");
-        }
-        
+        validateManagerAssignmentRules(role, request.managerId());
+
         User newUser = new User();
         newUser.setUserId(UUID.randomUUID());
         newUser.setUsername(request.username());
@@ -110,27 +92,44 @@ public class AdminUserService {
         newUser.setLastName(request.lastName());
         newUser.setRole(role);
         newUser.setIsActive(true);
-        
-        // Set manager if provided and allowed
+
         if (request.managerId() != null && !request.managerId().isBlank()) {
-            User manager = userRepository.findById(UUID.fromString(request.managerId()))
-                    .orElseThrow(() -> new RuntimeException("Manager not found"));
-            
-            // Validate manager role
-            if (manager.getRole() != UserRole.SUPPORT_MANAGER && manager.getRole() != UserRole.ADMIN) {
-                throw new RuntimeException("Assigned manager must have SUPPORT_MANAGER or ADMIN role");
-            }
-            
-            // Validate manager is active
-            if (!manager.getIsActive()) {
-                throw new RuntimeException("Cannot assign an inactive manager");
-            }
-            
-            newUser.setManager(manager);
+            newUser.setManager(getAndValidateManager(request.managerId()));
         }
-        
+
         userRepository.save(newUser);
         return convertToAdminDTO(newUser);
+    }
+
+    private void validateUsernameAndEmail(CreateUserRequest request) {
+        if (userRepository.existsByUsername(request.username())) {
+            throw new UsernameAlreadyExistsException("Username already exists");
+        }
+        if (userRepository.existsByEmail(request.email())) {
+            throw new EmailAlreadyExistsException("Email already exists");
+        }
+    }
+
+    private void validateManagerAssignmentRules(UserRole role, String managerId) {
+        boolean hasManagerId = managerId != null && !managerId.isBlank();
+        if (hasManagerId && (role == UserRole.ADMIN || role == UserRole.SUPPORT_MANAGER)) {
+            throw new ManagerAssignmentException("Admins and Managers cannot be assigned a manager");
+        }
+        if (role == UserRole.SUPPORT_AGENT && !hasManagerId) {
+            throw new ManagerAssignmentException("Support Agents must be assigned a manager");
+        }
+    }
+
+    private User getAndValidateManager(String managerId) {
+        User manager = userRepository.findById(UUID.fromString(managerId))
+                .orElseThrow(() -> new RuntimeException("Manager not found"));
+        if (manager.getRole() != UserRole.SUPPORT_MANAGER && manager.getRole() != UserRole.ADMIN) {
+            throw new ManagerAssignmentException("Assigned manager must have SUPPORT_MANAGER or ADMIN role");
+        }
+        if (Boolean.FALSE.equals(manager.getIsActive())) {
+            throw new ManagerAssignmentException("Cannot assign an inactive manager");
+        }
+        return manager;
     }
 
     
@@ -141,12 +140,12 @@ public class AdminUserService {
     public AdminUserDTO updateUser(String userId, UpdateUserRequest request) {
         UUID uuid = UUID.fromString(userId);
         User user = userRepository.findById(uuid)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new RuntimeException(USER_NOT_FOUND_MESSAGE));
         
         // Update email if changed
         if (request.email() != null && !request.email().equals(user.getEmail())) {
             if (userRepository.existsByEmail(request.email())) {
-                throw new RuntimeException("Email already exists");
+                throw new EmailAlreadyExistsException("Email already exists");
             }
             user.setEmail(request.email());
         }
@@ -166,7 +165,7 @@ public class AdminUserService {
     public AdminUserDTO changeUserRole(String userId, String newRole) {
         UUID uuid = UUID.fromString(userId);
         User user = userRepository.findById(uuid)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new RuntimeException(USER_NOT_FOUND_MESSAGE));
         
         UserRole role = UserRole.fromString(newRole);
         user.setRole(role);
@@ -182,7 +181,7 @@ public class AdminUserService {
     public AdminUserDTO activateUser(String userId) {
         UUID uuid = UUID.fromString(userId);
         User user = userRepository.findById(uuid)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new RuntimeException(USER_NOT_FOUND_MESSAGE));
         
         user.setIsActive(true);
         userRepository.save(user);
@@ -196,7 +195,7 @@ public class AdminUserService {
     public AdminUserDTO deactivateUser(String userId) {
         UUID uuid = UUID.fromString(userId);
         User user = userRepository.findById(uuid)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new RuntimeException(USER_NOT_FOUND_MESSAGE));
         
         user.setIsActive(false);
         userRepository.save(user);
@@ -212,14 +211,14 @@ public class AdminUserService {
         UUID managerUuid = UUID.fromString(managerId);
         
         User user = userRepository.findById(userUuid)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new RuntimeException(USER_NOT_FOUND_MESSAGE));
         
         User manager = userRepository.findById(managerUuid)
                 .orElseThrow(() -> new RuntimeException("Manager not found"));
         
         // Validate manager role
         if (manager.getRole() != UserRole.SUPPORT_MANAGER && manager.getRole() != UserRole.ADMIN) {
-            throw new RuntimeException("Selected user is not a manager");
+            throw new ManagerAssignmentException("Selected user is not a manager");
         }
         
         user.setManager(manager);
@@ -234,7 +233,7 @@ public class AdminUserService {
     public String resetPassword(String userId, String newPassword) {
         UUID uuid = UUID.fromString(userId);
         User user = userRepository.findById(uuid)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new RuntimeException(USER_NOT_FOUND_MESSAGE));
         
         user.setPasswordHash(passwordEncoder.encode(newPassword));
         userRepository.save(user);
@@ -272,7 +271,7 @@ public class AdminUserService {
         return userRepository.findByRoleAndIsActive(UserRole.SUPPORT_AGENT, true)
                 .stream()
                 .map(this::convertToDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
     
     /**
@@ -282,7 +281,7 @@ public class AdminUserService {
         return userRepository.findByRoleAndIsActive(UserRole.SUPPORT_MANAGER, true)
                 .stream()
                 .map(this::convertToDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
     
     /**

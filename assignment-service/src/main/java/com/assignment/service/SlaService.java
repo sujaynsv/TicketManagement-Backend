@@ -7,12 +7,11 @@ import com.assignment.repository.SlaRuleRepository;
 import com.assignment.repository.SlaTrackingRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -21,12 +20,31 @@ import java.util.Optional;
 public class SlaService {
     
     private static final Logger log = LoggerFactory.getLogger(SlaService.class);
+
+    private static final String DEFAULT_PRIORITY = "MEDIUM";
+    private static final String BREACHED_LITERAL = "Breached";
     
-    @Autowired
     private SlaRuleRepository slaRuleRepository;
     
-    @Autowired
     private SlaTrackingRepository slaTrackingRepository;
+
+    // Inject self proxy for transactional method calls
+    private final SlaService self;
+
+    public SlaService(SlaTrackingRepository slaTrackingRepository, SlaRuleRepository slaRuleRepository, SlaService self){
+        this.slaRuleRepository = slaRuleRepository;
+        this.slaTrackingRepository = slaTrackingRepository;
+        this.self = self;
+    }
+
+    // For backward compatibility with Spring's proxy injection
+    @org.springframework.beans.factory.annotation.Autowired
+    public SlaService(SlaTrackingRepository slaTrackingRepository, SlaRuleRepository slaRuleRepository) {
+        this.slaRuleRepository = slaRuleRepository;
+        this.slaTrackingRepository = slaTrackingRepository;
+        this.self = this;
+    }
+    
     
     @Value("${sla.business-hours.enabled:false}")
     private Boolean businessHoursEnabled;
@@ -92,7 +110,7 @@ public class SlaService {
         }
         
         // Create new tracking
-        return createSlaTracking(ticketId, ticketNumber, priority, category);
+        return self.createSlaTracking(ticketId, ticketNumber, priority, category);
     }
     
     /**
@@ -100,7 +118,7 @@ public class SlaService {
      */
     private SlaRule getSlaRule(String priority, String category) {
         // Normalize priority
-        String normalizedPriority = priority != null ? priority.toUpperCase() : "MEDIUM";
+        String normalizedPriority = priority != null ? priority.toUpperCase() : DEFAULT_PRIORITY;
         
         // Try to find category-specific rule first
         if (category != null && !category.trim().isEmpty()) {
@@ -130,7 +148,7 @@ public class SlaService {
         SlaRule rule = new SlaRule();
         
         // Handle null priority - use MEDIUM as fallback
-        String effectivePriority = priority != null ? priority.toUpperCase() : "MEDIUM";
+        String effectivePriority = priority != null ? priority.toUpperCase() : DEFAULT_PRIORITY;
         rule.setPriority(effectivePriority);
         rule.setCategory(category);
         
@@ -144,7 +162,7 @@ public class SlaService {
                 rule.setResponseTimeMinutes(60);
                 rule.setResolutionTimeHours(8);
                 break;
-            case "MEDIUM":
+            case DEFAULT_PRIORITY:
                 rule.setResponseTimeMinutes(240);
                 rule.setResolutionTimeHours(24);
                 break;
@@ -234,7 +252,7 @@ public class SlaService {
         
         // Calculate resolution time in hours
         long minutes = Duration.between(tracking.getSlaStartTime(), now).toMinutes();
-        BigDecimal hours = BigDecimal.valueOf(minutes).divide(BigDecimal.valueOf(60), 2, BigDecimal.ROUND_HALF_UP);
+        BigDecimal hours = BigDecimal.valueOf(minutes).divide(BigDecimal.valueOf(60), 2, RoundingMode.HALF_UP);
         tracking.setResolutionTimeHours(hours);
         
         // Check if breached
@@ -307,7 +325,7 @@ public class SlaService {
         if (tracking.getFirstResponseAt() == null) {
             long minutesRemaining = Duration.between(now, tracking.getResponseDueAt()).toMinutes();
             if (minutesRemaining < 0) {
-                return "Breached";
+                return BREACHED_LITERAL;
             }
             return formatTimeRemaining(minutesRemaining);
         }
@@ -315,7 +333,7 @@ public class SlaService {
         // Check resolution SLA
         long minutesRemaining = Duration.between(now, tracking.getResolutionDueAt()).toMinutes();
         if (minutesRemaining < 0) {
-            return "Breached";
+            return BREACHED_LITERAL;
         }
         return formatTimeRemaining(minutesRemaining);
     }
@@ -325,7 +343,7 @@ public class SlaService {
      */
     private String formatTimeRemaining(long minutes) {
         if (minutes < 0) {
-            return "Breached";
+            return BREACHED_LITERAL;
         } else if (minutes < 60) {
             return minutes + " minutes";
         } else if (minutes < 1440) {
@@ -335,8 +353,9 @@ public class SlaService {
         } else {
             long days = minutes / 1440;
             long hours = (minutes % 1440) / 60;
+            String hourPlural = hours > 1 ? "s" : "";
             return days + " day" + (days > 1 ? "s" : "") + 
-                   (hours > 0 ? " " + hours + " hour" + (hours > 1 ? "s" : "") : "");
+                   (hours > 0 ? " " + hours + " hour" + hourPlural : "");
         }
     }
 }

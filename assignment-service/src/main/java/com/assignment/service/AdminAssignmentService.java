@@ -2,13 +2,16 @@ package com.assignment.service;
 
 import com.assignment.dto.*;
 import com.assignment.entity.*;
+import com.assignment.exception.AgentCapacityExceededException;
+import com.assignment.exception.AgentOfflineException;
+import com.assignment.exception.AssignmentNotFoundException;
+import com.assignment.exception.AssignmentStatusException;
 import com.assignment.repository.AgentWorkloadRepository;
 import com.assignment.repository.AssignmentRepository;
 import com.assignment.repository.TicketCacheRepository;
 import com.ticket.event.TicketAssignedEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,30 +20,50 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class AdminAssignmentService {
     
     private static final Logger log = LoggerFactory.getLogger(AdminAssignmentService.class);
+
+    private static final String ASSIGNMENT_NOT_FOUND_MSG = "Assignment not found";
     
-    @Autowired
     private AssignmentRepository assignmentRepository;
     
-    @Autowired
     private TicketCacheRepository ticketCacheRepository;
     
-    @Autowired
     private AgentWorkloadRepository agentWorkloadRepository;
     
-    @Autowired
     private EventPublisher eventPublisher;
     
-    @Autowired
     private SlaService slaService;
+
+    // Self-injection for transactional proxy
+    private final AdminAssignmentService self;
+
+    public AdminAssignmentService(SlaService slaService, EventPublisher eventPublisher, AgentWorkloadRepository agentWorkloadRepository, TicketCacheRepository ticketCacheRepository, AssignmentRepository assignmentRepository, AdminAssignmentService self){
+        this.slaService=slaService;
+        this.eventPublisher=eventPublisher;
+        this.agentWorkloadRepository=agentWorkloadRepository;
+        this.ticketCacheRepository=ticketCacheRepository;
+        this.assignmentRepository=assignmentRepository;
+        this.self = self;
+    }
+
+    // For Spring to inject self-reference
+    @org.springframework.beans.factory.annotation.Autowired
+    public AdminAssignmentService setSelf(AdminAssignmentService self) {
+        return new AdminAssignmentService(
+            this.slaService,
+            this.eventPublisher,
+            this.agentWorkloadRepository,
+            this.ticketCacheRepository,
+            this.assignmentRepository,
+            self
+        );
+    }
     
     @Value("${assignment.max-tickets-per-agent}")
     private Integer maxTicketsPerAgent;
@@ -95,7 +118,7 @@ public class AdminAssignmentService {
      */
     public AdminAssignmentDTO getAssignmentById(String assignmentId) {
         Assignment assignment = assignmentRepository.findById(assignmentId)
-                .orElseThrow(() -> new RuntimeException("Assignment not found"));
+                .orElseThrow(() -> new RuntimeException(ASSIGNMENT_NOT_FOUND_MSG));
         return convertToAdminDTO(assignment);
     }
     
@@ -108,18 +131,18 @@ public class AdminAssignmentService {
         log.info("Admin {} force reassigning assignment {}", adminUsername, assignmentId);
         
         Assignment oldAssignment = assignmentRepository.findById(assignmentId)
-                .orElseThrow(() -> new RuntimeException("Assignment not found"));
+                .orElseThrow(() -> new RuntimeException(ASSIGNMENT_NOT_FOUND_MSG));
         
         // Validate new agent
         AgentWorkload newAgent = agentWorkloadRepository.findById(request.newAgentId())
                 .orElseThrow(() -> new RuntimeException("New agent not found"));
         
         if (newAgent.getStatus() == AgentStatus.OFFLINE) {
-            throw new RuntimeException("Cannot assign to offline agent");
+            throw new AgentOfflineException("Cannot assign to offline agent");
         }
         
         if (newAgent.getActiveTickets() >= maxTicketsPerAgent) {
-            throw new RuntimeException("Agent has reached maximum capacity");
+            throw new AgentCapacityExceededException("Agent has reached maximum capacity");
         }
         
         // Get ticket
@@ -211,12 +234,12 @@ public class AdminAssignmentService {
         log.info("Admin {} unassigning assignment {}", adminUsername, assignmentId);
         
         Assignment assignment = assignmentRepository.findById(assignmentId)
-                .orElseThrow(() -> new RuntimeException("Assignment not found"));
+                .orElseThrow(() -> new RuntimeException(ASSIGNMENT_NOT_FOUND_MSG));
         
         // Allow unassigning ASSIGNED or REASSIGNED
         if (assignment.getStatus() != AssignmentStatus.ASSIGNED && 
             assignment.getStatus() != AssignmentStatus.REASSIGNED) {
-            throw new RuntimeException("Assignment status is " + assignment.getStatus() + 
+            throw new AssignmentStatusException("Assignment status is " + assignment.getStatus() + 
                     ". Only ASSIGNED or REASSIGNED tickets can be unassigned.");
         }
         
@@ -228,11 +251,11 @@ public class AdminAssignmentService {
                     .findByTicketIdAndStatus(assignment.getTicketId(), AssignmentStatus.ASSIGNED);
             
             if (currentAssignment.isEmpty()) {
-                throw new RuntimeException("This is a historical assignment. No current assignment found for this ticket.");
+                throw new AssignmentNotFoundException("This is a historical assignment. No current assignment found for this ticket.");
             }
             
             // Recursively unassign the current one
-            return unassignTicket(currentAssignment.get().getAssignmentId(), 
+            return self.unassignTicket(currentAssignment.get().getAssignmentId(), 
                                 "Unassigned via historical assignment: " + reason, 
                                 adminId, adminUsername);
         }
@@ -276,11 +299,11 @@ public class AdminAssignmentService {
         log.warn("Admin {} deleting assignment {}", adminUsername, assignmentId);
         
         Assignment assignment = assignmentRepository.findById(assignmentId)
-                .orElseThrow(() -> new RuntimeException("Assignment not found"));
+                .orElseThrow(() -> new RuntimeException(ASSIGNMENT_NOT_FOUND_MSG));
         
         // Only allow deletion of REASSIGNED or NOT_ASSIGNED
         if (assignment.getStatus() == AssignmentStatus.ASSIGNED) {
-            throw new RuntimeException("Cannot delete active assignment. Unassign it first.");
+            throw new AssignmentStatusException("Cannot delete active assignment. Unassign it first.");
         }
         
         assignmentRepository.delete(assignment);
@@ -350,7 +373,7 @@ public class AdminAssignmentService {
                 completedAssignments,
                 activeAssignments.stream()
                         .map(this::convertToAdminDTO)
-                        .collect(Collectors.toList())
+                        .toList()
         );
     }
     
@@ -363,7 +386,7 @@ public class AdminAssignmentService {
         
         return assignments.stream()
                 .map(this::convertToAdminDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
     
     /**
@@ -374,7 +397,7 @@ public class AdminAssignmentService {
         
         return tickets.stream()
                 .map(this::convertToUnassignedDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
     
     /**
@@ -385,7 +408,7 @@ public class AdminAssignmentService {
         
         return assignments.stream()
                 .map(this::convertToAdminDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
     
     /**
@@ -401,7 +424,7 @@ public class AdminAssignmentService {
                 .orElseThrow(() -> new RuntimeException("Target agent not found"));
         
         if (toAgent.getStatus() == AgentStatus.OFFLINE) {
-            throw new RuntimeException("Cannot assign to offline agent");
+            throw new AgentOfflineException("Cannot assign to offline agent");
         }
         
         // Get active assignments
@@ -427,7 +450,7 @@ public class AdminAssignmentService {
                         request.reason()
                 );
                 
-                forceReassign(assignment.getAssignmentId(), reassignRequest, adminId, adminUsername);
+                self.forceReassign(assignment.getAssignmentId(), reassignRequest, adminId, adminUsername);
                 successCount++;
                 
             } catch (Exception e) {

@@ -2,7 +2,6 @@ package com.ticket.controller;
 
 import com.ticket.dto.UserDTO;
 import com.ticket.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,8 +11,11 @@ import java.util.List;
 @RequestMapping("/users")
 public class UserController {
     
-    @Autowired
     private UserService userService;
+
+    public UserController(UserService userService){
+        this.userService=userService;
+    }
     
     /**
      * Get all agents (for Assignment Service)

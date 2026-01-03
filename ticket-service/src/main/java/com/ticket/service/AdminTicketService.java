@@ -11,7 +11,6 @@ import com.ticket.repository.TicketActivityRepository;
 import com.ticket.repository.TicketRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -32,83 +31,36 @@ public class AdminTicketService {
     
     private static final Logger log = LoggerFactory.getLogger(AdminTicketService.class);
     
-    @Autowired
-    private TicketRepository ticketRepository;
+    private final TicketRepository ticketRepository;
+    private final TicketActivityRepository ticketActivityRepository;
+    private final EventPublisherService eventPublisher;
+    private final MongoTemplate mongoTemplate;
+
+    private static final String TICKETNOTFOUNDMESSAGE="Ticket Not Found!";
     
-    @Autowired
-    private TicketActivityRepository ticketActivityRepository;
-    
-    @Autowired
-    private EventPublisherService eventPublisher;
-    
-    @Autowired
-    private MongoTemplate mongoTemplate;
+    //     FIX 1: Constructor injection instead of field injection
+    public AdminTicketService(TicketRepository ticketRepository,
+                             TicketActivityRepository ticketActivityRepository,
+                             EventPublisherService eventPublisher,
+                             MongoTemplate mongoTemplate) {
+        this.ticketRepository = ticketRepository;
+        this.ticketActivityRepository = ticketActivityRepository;
+        this.eventPublisher = eventPublisher;
+        this.mongoTemplate = mongoTemplate;
+    }
     
     /**
      * Get all tickets with pagination and filtering
+     *     FIX 2 & 3: Reduced parameters by using TicketFilterRequest DTO
      */
-    public Page<AdminTicketDTO> getAllTickets(int page, int size, String status, String priority,
-                                              String category, String assignedToUserId, 
-                                              String createdByUserId, String search) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+    public Page<AdminTicketDTO> getAllTickets(TicketFilterRequest filterRequest) {
+        Pageable pageable = PageRequest.of(
+            filterRequest.page(), 
+            filterRequest.size(), 
+            Sort.by("createdAt").descending()
+        );
         
-        Query query = new Query();
-        List<Criteria> criteria = new ArrayList<>();
-        
-        // Filter by status
-        if (status != null && !status.isBlank()) {
-            try {
-                TicketStatus ticketStatus = TicketStatus.valueOf(status.toUpperCase());
-                criteria.add(Criteria.where("status").is(ticketStatus));
-            } catch (IllegalArgumentException e) {
-                log.warn("Invalid status: {}", status);
-            }
-        }
-        
-        // Filter by priority
-        if (priority != null && !priority.isBlank()) {
-            try {
-                TicketPriority ticketPriority = TicketPriority.valueOf(priority.toUpperCase());
-                criteria.add(Criteria.where("priority").is(ticketPriority));
-            } catch (IllegalArgumentException e) {
-                log.warn("Invalid priority: {}", priority);
-            }
-        }
-        
-        // Filter by category
-        if (category != null && !category.isBlank()) {
-            try {
-                TicketCategory ticketCategory = TicketCategory.valueOf(category.toUpperCase());
-                criteria.add(Criteria.where("category").is(ticketCategory));
-            } catch (IllegalArgumentException e) {
-                log.warn("Invalid category: {}", category);
-            }
-        }
-        
-        // Filter by assigned user
-        if (assignedToUserId != null && !assignedToUserId.isBlank()) {
-            criteria.add(Criteria.where("assignedToUserId").is(assignedToUserId));
-        }
-        
-        // Filter by creator
-        if (createdByUserId != null && !createdByUserId.isBlank()) {
-            criteria.add(Criteria.where("createdByUserId").is(createdByUserId));
-        }
-        
-        // Search by ticket number, title, or description
-        if (search != null && !search.isBlank()) {
-            Criteria searchCriteria = new Criteria().orOperator(
-                    Criteria.where("ticketNumber").regex(search, "i"),
-                    Criteria.where("title").regex(search, "i"),
-                    Criteria.where("description").regex(search, "i")
-            );
-            criteria.add(searchCriteria);
-        }
-        
-        if (!criteria.isEmpty()) {
-            query.addCriteria(new Criteria().andOperator(criteria.toArray(new Criteria[0])));
-        }
-        
+        Query query = buildTicketQuery(filterRequest);
         query.with(pageable);
         
         List<Ticket> tickets = mongoTemplate.find(query, Ticket.class);
@@ -120,11 +72,108 @@ public class AdminTicketService {
     }
     
     /**
+     *     FIX 2: Extracted method to reduce cognitive complexity
+     * Build MongoDB query from filter request
+     */
+    private Query buildTicketQuery(TicketFilterRequest filterRequest) {
+        Query query = new Query();
+        List<Criteria> criteria = new ArrayList<>();
+        
+        addStatusCriteria(criteria, filterRequest.status());
+        addPriorityCriteria(criteria, filterRequest.priority());
+        addCategoryCriteria(criteria, filterRequest.category());
+        addAssignedUserCriteria(criteria, filterRequest.assignedToUserId());
+        addCreatedByCriteria(criteria, filterRequest.createdByUserId());
+        addSearchCriteria(criteria, filterRequest.search());
+        
+        if (!criteria.isEmpty()) {
+            query.addCriteria(new Criteria().andOperator(criteria.toArray(new Criteria[0])));
+        }
+        
+        return query;
+    }
+    
+    /**
+     * Add status filter criteria
+     */
+    private void addStatusCriteria(List<Criteria> criteria, String status) {
+        if (status != null && !status.isBlank()) {
+            try {
+                TicketStatus ticketStatus = TicketStatus.valueOf(status.toUpperCase());
+                criteria.add(Criteria.where("status").is(ticketStatus));
+            } catch (IllegalArgumentException e) {
+                log.warn("Invalid status: {}", status);
+            }
+        }
+    }
+    
+    /**
+     * Add priority filter criteria
+     */
+    private void addPriorityCriteria(List<Criteria> criteria, String priority) {
+        if (priority != null && !priority.isBlank()) {
+            try {
+                TicketPriority ticketPriority = TicketPriority.valueOf(priority.toUpperCase());
+                criteria.add(Criteria.where("priority").is(ticketPriority));
+            } catch (IllegalArgumentException e) {
+                log.warn("Invalid priority: {}", priority);
+            }
+        }
+    }
+    
+    /**
+     * Add category filter criteria
+     */
+    private void addCategoryCriteria(List<Criteria> criteria, String category) {
+        if (category != null && !category.isBlank()) {
+            try {
+                TicketCategory ticketCategory = TicketCategory.valueOf(category.toUpperCase());
+                criteria.add(Criteria.where("category").is(ticketCategory));
+            } catch (IllegalArgumentException e) {
+                log.warn("Invalid category: {}", category);
+            }
+        }
+    }
+    
+    /**
+     * Add assigned user filter criteria
+     */
+    private void addAssignedUserCriteria(List<Criteria> criteria, String assignedToUserId) {
+        if (assignedToUserId != null && !assignedToUserId.isBlank()) {
+            criteria.add(Criteria.where("assignedToUserId").is(assignedToUserId));
+        }
+    }
+    
+    /**
+     * Add created by filter criteria
+     */
+    private void addCreatedByCriteria(List<Criteria> criteria, String createdByUserId) {
+        if (createdByUserId != null && !createdByUserId.isBlank()) {
+            criteria.add(Criteria.where("createdByUserId").is(createdByUserId));
+        }
+    }
+    
+    /**
+     * Add search criteria
+     */
+    private void addSearchCriteria(List<Criteria> criteria, String search) {
+        if (search != null && !search.isBlank()) {
+            Criteria searchCriteria = new Criteria().orOperator(
+                    Criteria.where("ticketNumber").regex(search, "i"),
+                    Criteria.where("title").regex(search, "i"),
+                    Criteria.where("description").regex(search, "i")
+            );
+            criteria.add(searchCriteria);
+        }
+    }
+    
+    /**
      * Get ticket by ID
      */
+    
     public AdminTicketDTO getTicketById(String ticketId) {
         Ticket ticket = ticketRepository.findById(ticketId)
-                .orElseThrow(() -> new RuntimeException("Ticket not found"));
+                .orElseThrow(() -> new RuntimeException(TICKETNOTFOUNDMESSAGE));
         return convertToAdminDTO(ticket);
     }
     
@@ -138,7 +187,7 @@ public class AdminTicketService {
                 adminUsername, ticketId, request.priority());
         
         Ticket ticket = ticketRepository.findById(ticketId)
-                .orElseThrow(() -> new RuntimeException("Ticket not found"));
+                .orElseThrow(() -> new RuntimeException(TICKETNOTFOUNDMESSAGE));
         
         TicketPriority oldPriority = ticket.getPriority();
         TicketPriority newPriority = TicketPriority.fromString(request.priority());
@@ -149,11 +198,7 @@ public class AdminTicketService {
         Ticket updatedTicket = ticketRepository.save(ticket);
         
         // Log activity
-        String activityMessage = oldPriority == null 
-                ? String.format("Priority set to %s by admin. Reason: %s", 
-                        newPriority.name(), request.reason())
-                : String.format("Priority changed from %s to %s by admin. Reason: %s", 
-                        oldPriority.name(), newPriority.name(), request.reason());
+        String activityMessage = buildPriorityChangeMessage(oldPriority, newPriority, request.reason());
         
         logActivity(ticketId, "PRIORITY_CHANGED", activityMessage, adminId, adminUsername);
         
@@ -161,6 +206,20 @@ public class AdminTicketService {
                 ticket.getTicketNumber(), oldPriority, newPriority);
         
         return convertToAdminDTO(updatedTicket);
+    }
+    
+    /**
+     * Build priority change message
+     */
+    private String buildPriorityChangeMessage(TicketPriority oldPriority, 
+                                              TicketPriority newPriority, 
+                                              String reason) {
+        if (oldPriority == null) {
+            return String.format("Priority set to %s by admin. Reason: %s", 
+                    newPriority.name(), reason);
+        }
+        return String.format("Priority changed from %s to %s by admin. Reason: %s", 
+                oldPriority.name(), newPriority.name(), reason);
     }
     
     /**
@@ -173,7 +232,7 @@ public class AdminTicketService {
                 adminUsername, ticketId, request.category());
         
         Ticket ticket = ticketRepository.findById(ticketId)
-                .orElseThrow(() -> new RuntimeException("Ticket not found"));
+                .orElseThrow(() -> new RuntimeException(TICKETNOTFOUNDMESSAGE));
         
         TicketCategory oldCategory = ticket.getCategory();
         TicketCategory newCategory = TicketCategory.fromString(request.category());
@@ -205,7 +264,7 @@ public class AdminTicketService {
                 adminUsername, ticketId, request.status());
         
         Ticket ticket = ticketRepository.findById(ticketId)
-                .orElseThrow(() -> new RuntimeException("Ticket not found"));
+                .orElseThrow(() -> new RuntimeException(TICKETNOTFOUNDMESSAGE));
         
         TicketStatus oldStatus = ticket.getStatus();
         TicketStatus newStatus = TicketStatus.valueOf(request.status().toUpperCase());
@@ -214,16 +273,7 @@ public class AdminTicketService {
         ticket.setStatus(newStatus);
         ticket.setUpdatedAt(LocalDateTime.now());
         
-        // Update timestamps based on status
-        if (newStatus == TicketStatus.ASSIGNED && ticket.getAssignedAt() == null) {
-            ticket.setAssignedAt(LocalDateTime.now());
-        }
-        if (newStatus == TicketStatus.RESOLVED) {
-            ticket.setResolvedAt(LocalDateTime.now());
-        }
-        if (newStatus == TicketStatus.CLOSED) {
-            ticket.setClosedAt(LocalDateTime.now());
-        }
+        updateTicketTimestamps(ticket, newStatus);
         
         Ticket updatedTicket = ticketRepository.save(ticket);
         
@@ -234,17 +284,7 @@ public class AdminTicketService {
         logActivity(ticketId, "STATUS_FORCE_CHANGED", activityMessage, adminId, adminUsername);
         
         // Publish event
-        TicketStatusChangedEvent event = new TicketStatusChangedEvent(
-                ticketId,
-                ticket.getTicketNumber(),
-                oldStatus.name(),
-                newStatus.name(),
-                adminId,
-                adminUsername,
-                "Admin force changed: " + request.reason(),
-                LocalDateTime.now()
-        );
-        eventPublisher.publishTicketStatusChanged(event);
+        publishStatusChangedEvent(ticket, oldStatus, newStatus, adminId, adminUsername, request.reason());
         
         log.info("Status force changed for ticket {}: {} -> {}", 
                 ticket.getTicketNumber(), oldStatus, newStatus);
@@ -253,31 +293,76 @@ public class AdminTicketService {
     }
     
     /**
+     * Update ticket timestamps based on status
+     */
+    private void updateTicketTimestamps(Ticket ticket, TicketStatus newStatus) {
+        if (newStatus == TicketStatus.ASSIGNED && ticket.getAssignedAt() == null) {
+            ticket.setAssignedAt(LocalDateTime.now());
+        }
+        if (newStatus == TicketStatus.RESOLVED) {
+            ticket.setResolvedAt(LocalDateTime.now());
+        }
+        if (newStatus == TicketStatus.CLOSED) {
+            ticket.setClosedAt(LocalDateTime.now());
+        }
+    }
+    
+    /**
+     * Publish ticket status changed event
+     */
+    private void publishStatusChangedEvent(Ticket ticket, TicketStatus oldStatus, 
+                                          TicketStatus newStatus, String adminId, 
+                                          String adminUsername, String reason) {
+        TicketStatusChangedEvent event = new TicketStatusChangedEvent(
+                ticket.getTicketId(),
+                ticket.getTicketNumber(),
+                oldStatus.name(),
+                newStatus.name(),
+                adminId,
+                adminUsername,
+                "Admin force changed: " + reason,
+                LocalDateTime.now()
+        );
+        eventPublisher.publishTicketStatusChanged(event);
+    }
+    
+    /**
      * Delete ticket
      */
     @Transactional
     public String deleteTicket(String ticketId, boolean hardDelete, String adminId, String adminUsername) {
         Ticket ticket = ticketRepository.findById(ticketId)
-                .orElseThrow(() -> new RuntimeException("Ticket not found"));
+                .orElseThrow(() -> new RuntimeException(TICKETNOTFOUNDMESSAGE));
         
         if (hardDelete) {
-            // Hard delete - permanently remove from database
-            ticketRepository.delete(ticket);
-            log.warn("Admin {} hard deleted ticket {}", adminUsername, ticket.getTicketNumber());
-            return "Ticket permanently deleted";
-        } else {
-            // Soft delete - change status to CLOSED
-            ticket.setStatus(TicketStatus.CLOSED);
-            ticket.setClosedAt(LocalDateTime.now());
-            ticket.setUpdatedAt(LocalDateTime.now());
-            ticketRepository.save(ticket);
-            
-            logActivity(ticketId, "TICKET_DELETED", 
-                    "Ticket soft deleted by admin", adminId, adminUsername);
-            
-            log.info("Admin {} soft deleted ticket {}", adminUsername, ticket.getTicketNumber());
-            return "Ticket closed (soft delete)";
+            return performHardDelete(ticket, adminUsername);
         }
+        return performSoftDelete(ticket, ticketId, adminId, adminUsername);
+    }
+    
+    /**
+     * Perform hard delete
+     */
+    private String performHardDelete(Ticket ticket, String adminUsername) {
+        ticketRepository.delete(ticket);
+        log.warn("Admin {} hard deleted ticket {}", adminUsername, ticket.getTicketNumber());
+        return "Ticket permanently deleted";
+    }
+    
+    /**
+     * Perform soft delete
+     */
+    private String performSoftDelete(Ticket ticket, String ticketId, String adminId, String adminUsername) {
+        ticket.setStatus(TicketStatus.CLOSED);
+        ticket.setClosedAt(LocalDateTime.now());
+        ticket.setUpdatedAt(LocalDateTime.now());
+        ticketRepository.save(ticket);
+        
+        logActivity(ticketId, "TICKET_DELETED", 
+                "Ticket soft deleted by admin", adminId, adminUsername);
+        
+        log.info("Admin {} soft deleted ticket {}", adminUsername, ticket.getTicketNumber());
+        return "Ticket closed (soft delete)";
     }
     
     /**
@@ -293,17 +378,11 @@ public class AdminTicketService {
         long escalatedTickets = ticketRepository.countByStatus(TicketStatus.ESCALATED);
         
         // Count by priority
-        Query criticalQuery = new Query(Criteria.where("priority").is(TicketPriority.CRITICAL));
-        Query highQuery = new Query(Criteria.where("priority").is(TicketPriority.HIGH));
-        Query mediumQuery = new Query(Criteria.where("priority").is(TicketPriority.MEDIUM));
-        Query lowQuery = new Query(Criteria.where("priority").is(TicketPriority.LOW));
-        Query noPriorityQuery = new Query(Criteria.where("priority").is(null));
-        
-        long criticalTickets = mongoTemplate.count(criticalQuery, Ticket.class);
-        long highPriorityTickets = mongoTemplate.count(highQuery, Ticket.class);
-        long mediumPriorityTickets = mongoTemplate.count(mediumQuery, Ticket.class);
-        long lowPriorityTickets = mongoTemplate.count(lowQuery, Ticket.class);
-        long noPriorityTickets = mongoTemplate.count(noPriorityQuery, Ticket.class);
+        long criticalTickets = countTicketsByPriority(TicketPriority.CRITICAL);
+        long highPriorityTickets = countTicketsByPriority(TicketPriority.HIGH);
+        long mediumPriorityTickets = countTicketsByPriority(TicketPriority.MEDIUM);
+        long lowPriorityTickets = countTicketsByPriority(TicketPriority.LOW);
+        long noPriorityTickets = countTicketsByPriority(null);
         
         return new TicketStatsDTO(
                 totalTickets,
@@ -319,6 +398,14 @@ public class AdminTicketService {
                 lowPriorityTickets,
                 noPriorityTickets
         );
+    }
+    
+    /**
+     * Count tickets by priority
+     */
+    private long countTicketsByPriority(TicketPriority priority) {
+        Query query = new Query(Criteria.where("priority").is(priority));
+        return mongoTemplate.count(query, Ticket.class);
     }
     
     /**

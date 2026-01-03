@@ -1,7 +1,6 @@
 package com.ticket.dto;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 
 import java.util.List;
 
@@ -19,7 +18,6 @@ public class CreateTicketRequest {
     private String category;
     
     // @NotBlank(message = "Priority is required")
-    // private String priority;
     
     private List<String> tags;
     
@@ -31,7 +29,6 @@ public class CreateTicketRequest {
         this.title = title;
         this.description = description;
         this.category = category;
-        // this.priority = priority;
         this.tags = tags;
     }
     
@@ -59,14 +56,6 @@ public class CreateTicketRequest {
     public void setCategory(String category) {
         this.category = category;
     }
-    
-    // public String getPriority() {
-    //     return priority;
-    // }
-    
-    // public void setPriority(String priority) {
-    //     this.priority = priority;
-    // }
     
     public List<String> getTags() {
         return tags;

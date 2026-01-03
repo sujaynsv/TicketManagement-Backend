@@ -5,8 +5,6 @@ import com.assignment.entity.AgentWorkload;
 import com.assignment.repository.AgentWorkloadRepository;
 import com.assignment.service.AssignmentService;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,11 +15,14 @@ import java.util.List;
 @RequestMapping("/agents")
 public class AgentController {
     
-    @Autowired
     private AgentWorkloadRepository agentWorkloadRepository;
 
-    @Autowired
     private AssignmentService assignmentService;
+
+    public AgentController(AgentWorkloadRepository agentWorkloadRepository, AssignmentService assignmentService){
+        this.assignmentService=assignmentService;
+        this.agentWorkloadRepository=agentWorkloadRepository;
+    }
     
     /**
      * Getting agents from the auth service

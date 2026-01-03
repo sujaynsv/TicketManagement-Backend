@@ -2,7 +2,6 @@ package com.assignment.controller;
 
 import com.assignment.dto.*;
 import com.assignment.service.AnalyticsService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,8 +9,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/admin/analytics")
 public class AnalyticsController {
     
-    @Autowired
     private AnalyticsService analyticsService;
+
+    public AnalyticsController(AnalyticsService analyticsService){
+        this.analyticsService=analyticsService;
+    }
     
     /**
      * Get system overview dashboard

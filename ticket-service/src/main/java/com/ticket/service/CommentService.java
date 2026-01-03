@@ -7,28 +7,30 @@ import com.ticket.entity.Ticket;
 import com.ticket.event.CommentAddedEvent;
 import com.ticket.repository.CommentRepository;
 import com.ticket.repository.TicketRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class CommentService {
     
-    @Autowired
     private CommentRepository commentRepository;
     
-    @Autowired
     private TicketRepository ticketRepository;
     
-    @Autowired
     private TicketService ticketService;
     
-    @Autowired
-    private EventPublisherService eventPublisher;
+    private EventPublisherService eventPublisherService;
+
+    public CommentService(EventPublisherService eventPublisherService, TicketService ticketService, TicketRepository ticketRepository, CommentRepository commentRepository){
+        this.eventPublisherService=eventPublisherService;
+        this.ticketService=ticketService;
+        this.ticketRepository=ticketRepository;
+        this.commentRepository=commentRepository;
+    }
+    
     
     /**
      * Add comment to ticket
@@ -46,7 +48,7 @@ public class CommentService {
         comment.setUserId(userId);
         comment.setUsername(username);
         comment.setCommentText(request.commentText());
-        comment.setIsInternal(request.isInternal() != null ? request.isInternal() : false);
+        comment.setIsInternal(Boolean.TRUE.equals(request.isInternal()));
         comment.setCreatedAt(LocalDateTime.now());
         comment.setUpdatedAt(LocalDateTime.now());
         
@@ -66,7 +68,7 @@ public class CommentService {
                 savedComment.getIsInternal(),
                 savedComment.getCreatedAt()
         );
-        eventPublisher.publishCommentAdded(event);
+        eventPublisherService.publishCommentAdded(event);
         
         return convertToDTO(savedComment);
     }
@@ -81,7 +83,7 @@ public class CommentService {
         } else {
             comments = commentRepository.findByTicketIdAndIsInternalFalseOrderByCreatedAtDesc(ticketId);
         }
-        return comments.stream().map(this::convertToDTO).collect(Collectors.toList());
+        return comments.stream().map(this::convertToDTO).toList();
     }
     
     /**

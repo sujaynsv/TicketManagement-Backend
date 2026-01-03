@@ -3,7 +3,6 @@ package com.gateway.filter;
 import com.gateway.util.JwtUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.http.HttpHeaders;
@@ -24,11 +23,24 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
     
     private static final Logger log = LoggerFactory.getLogger(AuthenticationFilter.class);
     
-    @Autowired
-    private JwtUtil jwtUtil;
-    
+    private final JwtUtil jwtUtil;
     private final WebClient webClient;
     
+    /**
+     * Permission constants
+     */
+    private static final String PERMISSION_LOGOUT = "POST:/auth/logout";
+    private static final String PERMISSION_GET_TICKETS_MY = "GET:/tickets/my";
+    private static final String PERMISSION_GET_TICKETS_NUMBER = "GET:/tickets/number/";
+    private static final String PERMISSION_DELETE_TICKETS = "DELETE:/tickets/";
+    private static final String PERMISSION_GET_TICKETS = "GET:/tickets/";
+    private static final String PERMISSION_PATCH_TICKETS = "PATCH:/tickets/";
+    private static final String PERMISSION_PUT_TICKETS = "PUT:/tickets/";
+    private static final String PERMISSION_POST_TICKETS = "POST:/tickets/";
+    private static final String PERMISSION_GET_NOTIFICATIONS_USERS = "GET:/notifications/users/";
+    private static final String PERMISSION_PATCH_NOTIFICATIONS = "PATCH:/notifications/";
+    private static final String PERMISSION_GET_USERS = "GET:/users/";
+
     /**
      * Complete Role-Based Access Control Map
      */
@@ -39,31 +51,31 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
             // =========================================
             "END_USER", Arrays.asList(
                     // Ticket Management
-                    "POST:/auth/logout",
+                    PERMISSION_LOGOUT,
                     "POST:/tickets",                          // Create ticket
-                    "GET:/tickets/my",                        // View my tickets
-                    "GET:/tickets/number/",                   // View ticket by number
-                    "GET:/tickets/",                          // View specific ticket (by ID)
-                    "PATCH:/tickets/",                        // Update own ticket
-                    "PUT:/tickets/",                          // Update own ticket
+                    PERMISSION_GET_TICKETS_MY,                // View my tickets
+                    PERMISSION_GET_TICKETS_NUMBER,            // View ticket by number
+                    PERMISSION_GET_TICKETS,                   // View specific ticket (by ID)
+                    PERMISSION_PATCH_TICKETS,                 // Update own ticket
+                    PERMISSION_PUT_TICKETS,                   // Update own ticket
                     
                     // Comments
-                    "POST:/tickets/",                         // Add comment to ticket
-                    "GET:/tickets/",                          // View comments
+                    PERMISSION_POST_TICKETS,                  // Add comment to ticket
+                    PERMISSION_GET_TICKETS,                   // View comments
                     
                     // Attachments
-                    "POST:/tickets/",                         // Upload attachment
-                    "GET:/tickets/",                          // View attachments
+                    PERMISSION_POST_TICKETS,                  // Upload attachment
+                    PERMISSION_GET_TICKETS,                   // View attachments
                     
                     // Activities
-                    "GET:/tickets/",                          // View ticket activities
+                    PERMISSION_GET_TICKETS,                   // View ticket activities
                     
                     // Notifications
-                    "GET:/notifications/users/",              // View own notifications
-                    "PATCH:/notifications/",                  // Mark as read
+                    PERMISSION_GET_NOTIFICATIONS_USERS,       // View own notifications
+                    PERMISSION_PATCH_NOTIFICATIONS,           // Mark as read
                     
                     // User Info
-                    "GET:/users/"                             // View user info
+                    PERMISSION_GET_USERS                      // View user info
             ),
             
             // =========================================
@@ -71,27 +83,27 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
             // =========================================
             "SUPPORT_AGENT", Arrays.asList(
                     // Ticket Management
-                    "POST:/auth/logout",
+                    PERMISSION_LOGOUT,
                     "GET:/tickets",                           // View all tickets
-                    "GET:/tickets/",                          // View any ticket
+                    PERMISSION_GET_TICKETS,                   // View any ticket
                     "GET:/tickets/assigned",                  // View assigned tickets
-                    "GET:/tickets/my",                        // View created tickets
+                    PERMISSION_GET_TICKETS_MY,                // View created tickets
                     "GET:/tickets/status/",                   // View by status
-                    "GET:/tickets/number/",                   // View by number
-                    "PUT:/tickets/",                          // Update tickets
-                    "PATCH:/tickets/",                        // Change status/priority
+                    PERMISSION_GET_TICKETS_NUMBER,            // View by number
+                    PERMISSION_PUT_TICKETS,                   // Update tickets
+                    PERMISSION_PATCH_TICKETS,                 // Change status/priority
                     
                     // Comments
-                    "POST:/tickets/",                         // Add comments (including internal)
-                    "GET:/tickets/",                          // View comments
+                    PERMISSION_POST_TICKETS,                  // Add comments (including internal)
+                    PERMISSION_GET_TICKETS,                   // View comments
                     
                     // Attachments
-                    "POST:/tickets/",                         // Upload attachments
-                    "GET:/tickets/",                          // View attachments
-                    "DELETE:/tickets/",                       // Delete attachments
+                    PERMISSION_POST_TICKETS,                  // Upload attachments
+                    PERMISSION_GET_TICKETS,                   // View attachments
+                    PERMISSION_DELETE_TICKETS,                // Delete attachments
                     
                     // Activities
-                    "GET:/tickets/",                          // View activities
+                    PERMISSION_GET_TICKETS,                   // View activities
                     
                     // Assignment
                     "GET:/assignments/ticket/",               // View assignment info
@@ -108,12 +120,12 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                     "GET:/sla/warnings",                      // View warnings
                     
                     // Notifications
-                    "GET:/notifications/users/",              // View own notifications
-                    "PATCH:/notifications/",                  // Mark as read
+                    PERMISSION_GET_NOTIFICATIONS_USERS,       // View own notifications
+                    PERMISSION_PATCH_NOTIFICATIONS,           // Mark as read
                     
                     // Users
                     "GET:/users/agents",                      // View agents
-                    "GET:/users/"                             // View user info
+                    PERMISSION_GET_USERS                      // View user info
             ),
             
             // =========================================
@@ -121,32 +133,32 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
             // =========================================
             "SUPPORT_MANAGER", Arrays.asList(
                     // Ticket Management (Full Access)
-                    "POST:/auth/logout",
+                    PERMISSION_LOGOUT,
                     "GET:/tickets",                           // View all tickets
-                    "GET:/tickets/",                          // View any ticket
+                    PERMISSION_GET_TICKETS,                   // View any ticket
                     "GET:/tickets/assigned",                  // View assigned
-                    "GET:/tickets/my",                        // View own
+                    PERMISSION_GET_TICKETS_MY,                // View own
                     "GET:/tickets/status/",                   // View by status
-                    "GET:/tickets/number/",                   // View by number
+                    PERMISSION_GET_TICKETS_NUMBER,            // View by number
                     "POST:/tickets",                          // Create tickets
-                    "PUT:/tickets/",                          // Update any ticket
-                    "PATCH:/tickets/",                        // Change status/priority
-                    "DELETE:/tickets/",                       // Delete tickets
+                    PERMISSION_PUT_TICKETS,                   // Update any ticket
+                    PERMISSION_PATCH_TICKETS,                 // Change status/priority
+                    PERMISSION_DELETE_TICKETS,                // Delete tickets
                     
                     // Escalation
-                    "POST:/tickets/",                         // Escalate tickets
+                    PERMISSION_POST_TICKETS,                  // Escalate tickets
                     
                     // Comments (All)
-                    "POST:/tickets/",                         // Add any comment
-                    "GET:/tickets/",                          // View all comments
+                    PERMISSION_POST_TICKETS,                  // Add any comment
+                    PERMISSION_GET_TICKETS,                   // View all comments
                     
                     // Attachments
-                    "POST:/tickets/",                         // Upload
-                    "GET:/tickets/",                          // View
-                    "DELETE:/tickets/",                       // Delete
+                    PERMISSION_POST_TICKETS,                  // Upload
+                    PERMISSION_GET_TICKETS,                   // View
+                    PERMISSION_DELETE_TICKETS,                // Delete
                     
                     // Activities
-                    "GET:/tickets/",                          // View activities
+                    PERMISSION_GET_TICKETS,                   // View activities
                     
                     // Assignment Management
                     "POST:/assignments/manual",               //   Manually assign
@@ -174,13 +186,13 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                     "GET:/sla/warnings",                      // View warnings
                     
                     // Notifications
-                    "GET:/notifications/users/",              // View notifications
-                    "PATCH:/notifications/",                  // Mark as read
+                    PERMISSION_GET_NOTIFICATIONS_USERS,       // View notifications
+                    PERMISSION_PATCH_NOTIFICATIONS,           // Mark as read
                     
                     // Users
                     "GET:/users/agents",                      // View agents
                     "GET:/users/managers",                    // View managers
-                    "GET:/users/"                             // View user info
+                    PERMISSION_GET_USERS                      // View user info
             ),
             
             // =========================================
@@ -192,7 +204,7 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                     
                     // Explicitly listed for clarity:
                     // Admin Tickets
-                    "POST:/auth/logout",
+                    PERMISSION_LOGOUT,
                     "GET:/admin/tickets",
                     "GET:/admin/tickets/",
                     "PUT:/admin/tickets/",
@@ -233,8 +245,9 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
             )
     );
     
-    public AuthenticationFilter(WebClient.Builder webClientBuilder) {
+    public AuthenticationFilter(JwtUtil jwtUtil, WebClient.Builder webClientBuilder) {
         super(Config.class);
+        this.jwtUtil = jwtUtil;
         this.webClient = webClientBuilder.build();
     }
     
@@ -263,7 +276,7 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
             
             try {
                 // Basic JWT validation (expiration check)
-                if (!jwtUtil.validateToken(token)) {
+                if (!Boolean.TRUE.equals(jwtUtil.validateToken(token))) {
                     log.warn("Invalid or expired token for: {}", request.getPath());
                     return onError(exchange, "Invalid or expired token", HttpStatus.UNAUTHORIZED);
                 }
@@ -271,7 +284,7 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                 // Validate token version with auth-service
                 return validateTokenWithAuthService(token)
                         .flatMap(isValid -> {
-                            if (!isValid) {
+                            if (!Boolean.TRUE.equals(isValid)) {
                                 log.warn("Token invalidated (logged out) for: {}", request.getPath());
                                 return onError(exchange, "Token has been invalidated. Please login again.", 
                                         HttpStatus.UNAUTHORIZED);
@@ -319,48 +332,59 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
      */
     private boolean hasPermission(String role, String method, String path) {
         List<String> permissions = ROLE_PERMISSIONS.getOrDefault(role, List.of());
-        
+
         // Check for wildcard permission (ADMIN)
         if (permissions.contains("*")) {
             return true;
         }
-        
+
         String requiredPermission = method + ":" + path;
-        
+
         for (String permission : permissions) {
-            String[] parts = permission.split(":", 2);
-            if (parts.length != 2) continue;
-            
-            String permMethod = parts[0];
-            String permPath = parts[1];
-            
-            // Method must match (or be wildcard)
-            if (!permMethod.equals(method) && !permMethod.equals("*")) {
-                continue;
-            }
-            
-            // Exact path match
-            if (permPath.equals(path)) {
+            if (permissionMatches(permission, method, path)) {
                 return true;
-            }
-            
-            // Prefix match (e.g., "/tickets/" matches "/tickets/123")
-            if (permPath.endsWith("/") && path.startsWith(permPath)) {
-                return true;
-            }
-            
-            // Pattern match for paths with IDs
-            // "/tickets/" matches "/tickets/abc123"
-            // "/tickets/" matches "/tickets/abc123/comments"
-            if (permPath.endsWith("/")) {
-                String basePath = permPath.substring(0, permPath.length() - 1);
-                if (path.equals(basePath) || path.startsWith(permPath)) {
-                    return true;
-                }
             }
         }
-        
+
         log.debug("Permission denied: role={}, required={}", role, requiredPermission);
+        return false;
+    }
+
+    /**
+     * Helper method to check if a permission string matches the method and path.
+     */
+    private boolean permissionMatches(String permission, String method, String path) {
+        String[] parts = permission.split(":", 2);
+        if (parts.length != 2) return false;
+
+        String permMethod = parts[0];
+        String permPath = parts[1];
+
+        // Method must match (or be wildcard)
+        if (!permMethod.equals(method) && !permMethod.equals("*")) {
+            return false;
+        }
+
+        // Exact path match
+        if (permPath.equals(path)) {
+            return true;
+        }
+
+        // Prefix match (e.g., "/tickets/" matches "/tickets/123")
+        if (permPath.endsWith("/") && path.startsWith(permPath)) {
+            return true;
+        }
+
+        // Pattern match for paths with IDs
+        // "/tickets/" matches "/tickets/abc123"
+        // "/tickets/" matches "/tickets/abc123/comments"
+        if (permPath.endsWith("/")) {
+            String basePath = permPath.substring(0, permPath.length() - 1);
+            if (path.equals(basePath) || path.startsWith(permPath)) {
+                return true;
+            }
+        }
+
         return false;
     }
     
@@ -394,7 +418,7 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
         );
     }
     
-    public static class Config {
-        // Empty config class
+    public interface Config {
+        // Marker interface for configuration
     }
 }

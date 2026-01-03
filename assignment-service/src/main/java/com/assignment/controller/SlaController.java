@@ -5,12 +5,7 @@ import com.assignment.entity.SlaStatus;
 import com.assignment.entity.SlaTracking;
 import com.assignment.repository.SlaTrackingRepository;
 import com.assignment.service.SlaService;
-
 import java.util.List;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,11 +13,14 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/sla")
 public class SlaController {
     
-    @Autowired
     private SlaService slaService;
 
-    @Autowired
     private SlaTrackingRepository slaTrackingRepository;
+
+    public SlaController(SlaService slaService, SlaTrackingRepository slaTrackingRepository){
+        this.slaService=slaService;
+        this.slaTrackingRepository=slaTrackingRepository;
+    }
     
     /**
      * Get SLA tracking for a ticket
@@ -44,7 +42,7 @@ public class SlaController {
         List<SlaTracking> breached=slaTrackingRepository.findBySlaStatus(SlaStatus.BREACHED);
         List<SlaTrackingDTO> dtos=breached.stream()
             .map(this::convertToDTO)
-            .collect(Collectors.toList());
+            .toList();
         return ResponseEntity.ok(dtos);
     }
 
@@ -56,7 +54,7 @@ public class SlaController {
         List<SlaTracking> active = slaTrackingRepository.findByResolvedAtIsNull();
         List<SlaTrackingDTO> dtos=active.stream()
             .map(this::convertToDTO)
-            .collect(Collectors.toList());
+            .toList();
         return ResponseEntity.ok(dtos);
     }
 
@@ -68,7 +66,7 @@ public class SlaController {
         List<SlaTracking> warnings=slaTrackingRepository.findBySlaStatus(SlaStatus.WARNING);
         List<SlaTrackingDTO> dtos=warnings.stream()
             .map(this::convertToDTO)
-            .collect(Collectors.toList());
+            .toList();
         return ResponseEntity.ok(dtos);
     }
     
