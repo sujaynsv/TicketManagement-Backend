@@ -7,7 +7,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 @FeignClient(
     name = "auth-service",
-    url = "${services.auth-service.url:http://localhost:8081}"
+    url = "${services.auth-service.url:http://localhost:8081}",
+    fallback=UserServiceClientFallback.class
 )
 public interface UserServiceClient {
     

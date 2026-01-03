@@ -8,7 +8,8 @@ import com.ticket.dto.AssignmentDTO;
 
 @FeignClient(
     name = "assignment-service",
-    url = "${services.assignment-service.url:http://localhost:8083}"
+    url = "${services.assignment-service.url:http://localhost:8083}",
+    fallback = AssignmentServiceClientFallback.class
 )
 public interface AssignmentServiceClient {
     
