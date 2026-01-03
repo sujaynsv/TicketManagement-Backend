@@ -60,7 +60,7 @@ public LoginResponse login(LoginRequest request) {
     user.setLastLogin(LocalDateTime.now());
     userRepository.save(user);
     
-    // ✅ Get role name from enum
+    //   Get role name from enum
     String roleName = user.getRole().name();  // Returns "ADMIN", "SUPPORT_AGENT", etc.
     
     String token = jwtUtil.generateToken(
@@ -136,7 +136,7 @@ public LoginResponse login(LoginRequest request) {
         User user = userRepository.findById(userUuid)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         
-        // ✅ Increment token version (invalidates all existing tokens)
+        //   Increment token version (invalidates all existing tokens)
         user.setTokenVersion(user.getTokenVersion() + 1);
         userRepository.save(user);
         

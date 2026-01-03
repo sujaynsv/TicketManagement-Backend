@@ -68,7 +68,7 @@ public class SlaService {
         tracking.setSlaStartTime(now);
         tracking.setResponseDueAt(responseDueAt);
         tracking.setResolutionDueAt(resolutionDueAt);
-        tracking.setSlaStatus(SlaStatus.ON_TIME); // ✅ Changed from OK
+        tracking.setSlaStatus(SlaStatus.ON_TIME); //   Changed from OK
         
         SlaTracking savedTracking = slaTrackingRepository.save(tracking);
         
@@ -193,7 +193,7 @@ public class SlaService {
         // Check if breached
         if (now.isAfter(tracking.getResponseDueAt())) {
             tracking.setResponseBreached(true);
-            tracking.setSlaStatus(SlaStatus.BREACHED); // ✅ Stays same
+            tracking.setSlaStatus(SlaStatus.BREACHED); //   Stays same
             tracking.setBreachedAt(now);
             tracking.setBreachReason("First response exceeded SLA time");
             log.warn("Response SLA breached for ticket {}: {} minutes (due in {} minutes)", 
@@ -240,7 +240,7 @@ public class SlaService {
         // Check if breached
         if (now.isAfter(tracking.getResolutionDueAt())) {
             tracking.setResolutionBreached(true);
-            tracking.setSlaStatus(SlaStatus.BREACHED); // ✅ Stays same
+            tracking.setSlaStatus(SlaStatus.BREACHED); //   Stays same
             if (tracking.getBreachedAt() == null) {
                 tracking.setBreachedAt(now);
             }
@@ -248,9 +248,9 @@ public class SlaService {
             log.warn("Resolution SLA breached for ticket {}: {} hours", 
                      tracking.getTicketNumber(), hours);
         } else {
-            // ✅ Mark as MET if not breached
+            //   Mark as MET if not breached
             if (tracking.getSlaStatus() != SlaStatus.BREACHED) {
-                tracking.setSlaStatus(SlaStatus.MET); // ✅ Changed from OK to MET
+                tracking.setSlaStatus(SlaStatus.MET); //   Changed from OK to MET
             }
             log.info("Ticket {} resolved within SLA: {} hours", 
                      tracking.getTicketNumber(), hours);
@@ -275,9 +275,9 @@ public class SlaService {
         if (remainingMinutes < 0) {
             tracking.setSlaStatus(SlaStatus.BREACHED);
         } else if (remainingMinutes < totalMinutes * 0.2) { // Less than 20% time remaining
-            tracking.setSlaStatus(SlaStatus.WARNING); // ✅ Set WARNING
+            tracking.setSlaStatus(SlaStatus.WARNING); //   Set WARNING
         } else {
-            tracking.setSlaStatus(SlaStatus.ON_TIME); // ✅ ON_TIME
+            tracking.setSlaStatus(SlaStatus.ON_TIME); //   ON_TIME
         }
     }
     
