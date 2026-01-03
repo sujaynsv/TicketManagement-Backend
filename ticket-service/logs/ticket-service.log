@@ -2590,3 +2590,9 @@ java.lang.RuntimeException: RabbitMQ connection failed
 2026-01-03T22:32:21.273+05:30  INFO 59119 --- [ticket-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
 2026-01-03T22:37:21.281+05:30  INFO 59119 --- [ticket-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
 2026-01-03T22:42:21.301+05:30  INFO 59119 --- [ticket-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T22:47:21.312+05:30  INFO 59119 --- [ticket-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T22:52:21.323+05:30  INFO 59119 --- [ticket-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T22:57:21.313+05:30  INFO 59119 --- [ticket-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T23:02:21.326+05:30  INFO 59119 --- [ticket-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T23:07:21.332+05:30  INFO 59119 --- [ticket-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T23:12:21.331+05:30  INFO 59119 --- [ticket-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
