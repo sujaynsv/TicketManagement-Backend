@@ -2870,3 +2870,172 @@ java.lang.IllegalStateException: No micrometer registry present (or more than on
 2026-01-03T14:36:06.051+05:30  INFO 59213 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.notification.listener.EventListener    : Escalation notifications sent for ticket: TKT-20260103-00076
 2026-01-03T14:36:09.771+05:30  INFO 59213 --- [notification-service] [task-3] com.notification.service.EmailService    : Email sent to nsvsujay@gmail.com: Ticket Escalated to You: TKT-20260103-00076
 2026-01-03T14:36:09.928+05:30  INFO 59213 --- [notification-service] [task-4] com.notification.service.EmailService    : Email sent to sujaynsv@gmail.com: Ticket Escalated: TKT-20260103-00076
+2026-01-03T14:40:37.878+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T14:45:37.884+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T14:45:44.192+05:30 DEBUG 59213 --- [notification-service] [pool-2-thread-7] o.s.a.r.listener.BlockingQueueConsumer   : Storing delivery for consumerTag: 'amq.ctag-KHw9-3fyauFGEeKRsmbyXw' with deliveryTag: '4' in Consumer@4d27716b: tags=[[amq.ctag-KHw9-3fyauFGEeKRsmbyXw]], channel=Cached Rabbit Channel: AMQChannel(amqp://guest@127.0.0.1:5672/,1), conn: Proxy@59d8de36 Shared Rabbit Connection: SimpleConnection@41f2320f [delegate=amqp://guest@127.0.0.1:5672/, localPort=52847], acknowledgeMode=AUTO local queue size=0
+2026-01-03T14:45:44.192+05:30 DEBUG 59213 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] o.s.a.r.listener.BlockingQueueConsumer   : Received message: (Body:'[B@e1bb471(byte[450])' MessageProperties [headers={__TypeId__=com.ticket.event.SlaWarningEvent}, contentType=application/json, contentEncoding=UTF-8, contentLength=0, receivedDeliveryMode=PERSISTENT, priority=0, redelivered=false, receivedExchange=ticket.exchange, receivedRoutingKey=sla.warning, deliveryTag=4, consumerTag=amq.ctag-KHw9-3fyauFGEeKRsmbyXw, consumerQueue=notification.queue])
+2026-01-03T14:45:44.195+05:30 DEBUG 59213 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] .a.r.l.a.MessagingMessageListenerAdapter : Processing [GenericMessage [payload=com.ticket.event.SlaWarningEvent@292753ff, headers={amqp_receivedDeliveryMode=PERSISTENT, amqp_receivedExchange=ticket.exchange, amqp_deliveryTag=4, amqp_consumerQueue=notification.queue, amqp_redelivered=false, amqp_receivedRoutingKey=sla.warning, amqp_contentEncoding=UTF-8, id=8210969d-4f9a-fcd3-d74b-e18a1927a358, amqp_consumerTag=amq.ctag-KHw9-3fyauFGEeKRsmbyXw, amqp_lastInBatch=false, contentType=application/json, __TypeId__=com.ticket.event.SlaWarningEvent, timestamp=1767431744195}]]
+2026-01-03T14:45:44.196+05:30  INFO 59213 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.notification.listener.EventListener    : Received SlaWarningEvent: TKT-20260103-00076 - RESPONSE warning
+2026-01-03T14:45:44.199+05:30  INFO 59213 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.n.service.NotificationService          : Creating notification for user sujaynsv: SLA_WARNING
+2026-01-03T14:45:44.201+05:30 ERROR 59213 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] com.notification.service.UserService     : Failed to fetch user 74d1b90e-ddcd-4dd8-9e2a-f51fb14cc225 from auth-service: I/O error on GET request for "http://localhost:8081/users/74d1b90e-ddcd-4dd8-9e2a-f51fb14cc225": Connection refused
+2026-01-03T14:45:44.203+05:30  INFO 59213 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.n.service.NotificationService          : Email notification sent to sujaynsv@example.com
+2026-01-03T14:45:44.203+05:30 DEBUG 59213 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] org.hibernate.SQL                        : 
+    insert 
+    into
+        notifications
+        (created_at, delivery_channel, error_message, event_type, is_read, message, notification_type, read_at, retry_count, sent_at, status, subject, ticket_id, ticket_number, updated_at, user_email, user_id, username, notification_id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-01-03T14:45:44.205+05:30 DEBUG 59213 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] org.hibernate.SQL                        : 
+    update
+        notifications 
+    set
+        created_at=?,
+        delivery_channel=?,
+        error_message=?,
+        event_type=?,
+        is_read=?,
+        message=?,
+        notification_type=?,
+        read_at=?,
+        retry_count=?,
+        sent_at=?,
+        status=?,
+        subject=?,
+        ticket_id=?,
+        ticket_number=?,
+        updated_at=?,
+        user_email=?,
+        user_id=?,
+        username=? 
+    where
+        notification_id=?
+2026-01-03T14:45:44.207+05:30  INFO 59213 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.n.service.NotificationService          : Creating notification for user sujaynsv: SLA_WARNING
+2026-01-03T14:45:44.207+05:30 ERROR 59213 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] com.notification.service.UserService     : Failed to fetch user 74d1b90e-ddcd-4dd8-9e2a-f51fb14cc225 from auth-service: I/O error on GET request for "http://localhost:8081/users/74d1b90e-ddcd-4dd8-9e2a-f51fb14cc225": Connection refused
+2026-01-03T14:45:44.208+05:30 DEBUG 59213 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] org.hibernate.SQL                        : 
+    insert 
+    into
+        notifications
+        (created_at, delivery_channel, error_message, event_type, is_read, message, notification_type, read_at, retry_count, sent_at, status, subject, ticket_id, ticket_number, updated_at, user_email, user_id, username, notification_id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-01-03T14:45:44.209+05:30 DEBUG 59213 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] org.hibernate.SQL                        : 
+    update
+        notifications 
+    set
+        created_at=?,
+        delivery_channel=?,
+        error_message=?,
+        event_type=?,
+        is_read=?,
+        message=?,
+        notification_type=?,
+        read_at=?,
+        retry_count=?,
+        sent_at=?,
+        status=?,
+        subject=?,
+        ticket_id=?,
+        ticket_number=?,
+        updated_at=?,
+        user_email=?,
+        user_id=?,
+        username=? 
+    where
+        notification_id=?
+2026-01-03T14:45:44.209+05:30  INFO 59213 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.notification.listener.EventListener    : SLA warning notification sent for ticket: TKT-20260103-00076
+2026-01-03T14:45:47.646+05:30  INFO 59213 --- [notification-service] [task-5] com.notification.service.EmailService    : Email sent to sujaynsv@example.com: SLA Warning: Ticket TKT-20260103-00076 (RESPONSE)
+2026-01-03T14:48:44.251+05:30 DEBUG 59213 --- [notification-service] [pool-2-thread-8] o.s.a.r.listener.BlockingQueueConsumer   : Storing delivery for consumerTag: 'amq.ctag-KHw9-3fyauFGEeKRsmbyXw' with deliveryTag: '5' in Consumer@4d27716b: tags=[[amq.ctag-KHw9-3fyauFGEeKRsmbyXw]], channel=Cached Rabbit Channel: AMQChannel(amqp://guest@127.0.0.1:5672/,1), conn: Proxy@59d8de36 Shared Rabbit Connection: SimpleConnection@41f2320f [delegate=amqp://guest@127.0.0.1:5672/, localPort=52847], acknowledgeMode=AUTO local queue size=0
+2026-01-03T14:48:44.252+05:30 DEBUG 59213 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] o.s.a.r.listener.BlockingQueueConsumer   : Received message: (Body:'[B@6395a5fb(byte[510])' MessageProperties [headers={__TypeId__=com.ticket.event.SlaBreachEvent}, contentType=application/json, contentEncoding=UTF-8, contentLength=0, receivedDeliveryMode=PERSISTENT, priority=0, redelivered=false, receivedExchange=ticket.exchange, receivedRoutingKey=sla.breach, deliveryTag=5, consumerTag=amq.ctag-KHw9-3fyauFGEeKRsmbyXw, consumerQueue=notification.queue])
+2026-01-03T14:48:44.254+05:30 DEBUG 59213 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] .a.r.l.a.MessagingMessageListenerAdapter : Processing [GenericMessage [payload=com.ticket.event.SlaBreachEvent@6d18b4b8, headers={amqp_receivedDeliveryMode=PERSISTENT, amqp_receivedExchange=ticket.exchange, amqp_deliveryTag=5, amqp_consumerQueue=notification.queue, amqp_redelivered=false, amqp_receivedRoutingKey=sla.breach, amqp_contentEncoding=UTF-8, id=298d4231-ea62-39ff-ed6d-ace8fd2cad77, amqp_consumerTag=amq.ctag-KHw9-3fyauFGEeKRsmbyXw, amqp_lastInBatch=false, contentType=application/json, __TypeId__=com.ticket.event.SlaBreachEvent, timestamp=1767431924254}]]
+2026-01-03T14:48:44.255+05:30  INFO 59213 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.notification.listener.EventListener    : Received SlaBreachEvent: TKT-20260103-00076 - RESPONSE breach
+2026-01-03T14:48:44.256+05:30  INFO 59213 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.n.service.NotificationService          : Creating notification for user sujaynsv: SLA_BREACH
+2026-01-03T14:48:44.258+05:30 ERROR 59213 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] com.notification.service.UserService     : Failed to fetch user 74d1b90e-ddcd-4dd8-9e2a-f51fb14cc225 from auth-service: I/O error on GET request for "http://localhost:8081/users/74d1b90e-ddcd-4dd8-9e2a-f51fb14cc225": Connection refused
+2026-01-03T14:48:44.259+05:30  INFO 59213 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.n.service.NotificationService          : Email notification sent to sujaynsv@example.com
+2026-01-03T14:48:44.260+05:30 DEBUG 59213 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] org.hibernate.SQL                        : 
+    insert 
+    into
+        notifications
+        (created_at, delivery_channel, error_message, event_type, is_read, message, notification_type, read_at, retry_count, sent_at, status, subject, ticket_id, ticket_number, updated_at, user_email, user_id, username, notification_id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-01-03T14:48:44.262+05:30 DEBUG 59213 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] org.hibernate.SQL                        : 
+    update
+        notifications 
+    set
+        created_at=?,
+        delivery_channel=?,
+        error_message=?,
+        event_type=?,
+        is_read=?,
+        message=?,
+        notification_type=?,
+        read_at=?,
+        retry_count=?,
+        sent_at=?,
+        status=?,
+        subject=?,
+        ticket_id=?,
+        ticket_number=?,
+        updated_at=?,
+        user_email=?,
+        user_id=?,
+        username=? 
+    where
+        notification_id=?
+2026-01-03T14:48:44.264+05:30  INFO 59213 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.n.service.NotificationService          : Creating notification for user sujaynsv: SLA_BREACH
+2026-01-03T14:48:44.265+05:30 ERROR 59213 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] com.notification.service.UserService     : Failed to fetch user 74d1b90e-ddcd-4dd8-9e2a-f51fb14cc225 from auth-service: I/O error on GET request for "http://localhost:8081/users/74d1b90e-ddcd-4dd8-9e2a-f51fb14cc225": Connection refused
+2026-01-03T14:48:44.266+05:30 DEBUG 59213 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] org.hibernate.SQL                        : 
+    insert 
+    into
+        notifications
+        (created_at, delivery_channel, error_message, event_type, is_read, message, notification_type, read_at, retry_count, sent_at, status, subject, ticket_id, ticket_number, updated_at, user_email, user_id, username, notification_id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-01-03T14:48:44.267+05:30 DEBUG 59213 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] org.hibernate.SQL                        : 
+    update
+        notifications 
+    set
+        created_at=?,
+        delivery_channel=?,
+        error_message=?,
+        event_type=?,
+        is_read=?,
+        message=?,
+        notification_type=?,
+        read_at=?,
+        retry_count=?,
+        sent_at=?,
+        status=?,
+        subject=?,
+        ticket_id=?,
+        ticket_number=?,
+        updated_at=?,
+        user_email=?,
+        user_id=?,
+        username=? 
+    where
+        notification_id=?
+2026-01-03T14:48:44.268+05:30  INFO 59213 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.notification.listener.EventListener    : SLA breach notification sent for ticket: TKT-20260103-00076
+2026-01-03T14:48:48.459+05:30  INFO 59213 --- [notification-service] [task-6] com.notification.service.EmailService    : Email sent to sujaynsv@example.com: SLA BREACHED: Ticket TKT-20260103-00076 (RESPONSE)
+2026-01-03T14:50:37.910+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T14:55:37.916+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T15:00:37.924+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T15:05:37.882+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T15:10:37.888+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T15:15:37.890+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T15:20:37.920+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T15:25:37.927+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T15:30:37.936+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T15:35:37.937+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T15:40:37.938+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T15:45:37.941+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T15:50:37.945+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T15:55:37.921+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T16:00:37.926+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T16:05:37.932+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T16:10:37.932+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T16:15:37.933+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T16:20:37.935+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T16:25:37.996+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T16:30:38.004+05:30  INFO 59213 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration

@@ -2209,3 +2209,26 @@ java.lang.IllegalStateException: No micrometer registry present (or more than on
 2026-01-03T14:36:05.971+05:30 DEBUG 59119 --- [ticket-service] [http-nio-8082-exec-5] o.s.amqp.rabbit.core.RabbitTemplate      : Publishing message [(Body:'[B@5b0699c0(byte[742])' MessageProperties [headers={__TypeId__=com.ticket.event.TicketEscalatedEvent}, contentType=application/json, contentEncoding=UTF-8, contentLength=742, deliveryMode=PERSISTENT, priority=0, deliveryTag=0])] on exchange [ticket.exchange], routingKey = [ticket.escalated]
 2026-01-03T14:36:05.971+05:30  INFO 59119 --- [ticket-service] [http-nio-8082-exec-5] c.ticket.service.EventPublisherService   : TicketEscalatedEvent published successfully for: TKT-20260103-00076
 2026-01-03T14:36:05.972+05:30  INFO 59119 --- [ticket-service] [http-nio-8082-exec-5] com.ticket.service.EscalationService     : Ticket TKT-20260103-00076 escalated to manager: sujaynsv
+2026-01-03T14:40:20.620+05:30  INFO 59119 --- [ticket-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T14:45:20.626+05:30  INFO 59119 --- [ticket-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T14:50:20.653+05:30  INFO 59119 --- [ticket-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T14:55:20.662+05:30  INFO 59119 --- [ticket-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T15:00:20.666+05:30  INFO 59119 --- [ticket-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T15:05:20.621+05:30  INFO 59119 --- [ticket-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T15:10:20.626+05:30  INFO 59119 --- [ticket-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T15:15:20.632+05:30  INFO 59119 --- [ticket-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T15:20:20.660+05:30  INFO 59119 --- [ticket-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T15:25:20.668+05:30  INFO 59119 --- [ticket-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T15:30:20.673+05:30  INFO 59119 --- [ticket-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T15:35:20.688+05:30  INFO 59119 --- [ticket-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T15:40:20.687+05:30  INFO 59119 --- [ticket-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T15:45:20.690+05:30  INFO 59119 --- [ticket-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T15:50:20.694+05:30  INFO 59119 --- [ticket-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T15:55:20.670+05:30  INFO 59119 --- [ticket-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T16:00:20.676+05:30  INFO 59119 --- [ticket-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T16:05:20.682+05:30  INFO 59119 --- [ticket-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T16:10:20.687+05:30  INFO 59119 --- [ticket-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T16:15:20.692+05:30  INFO 59119 --- [ticket-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T16:20:20.695+05:30  INFO 59119 --- [ticket-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T16:25:20.755+05:30  INFO 59119 --- [ticket-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-03T16:30:20.765+05:30  INFO 59119 --- [ticket-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
