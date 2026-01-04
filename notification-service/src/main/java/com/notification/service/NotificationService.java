@@ -4,8 +4,8 @@ import com.notification.dto.NotificationDTO;
 import com.notification.dto.UserDTO;
 import com.notification.entity.*;
 import com.notification.repository.NotificationRepository;
-import com.ticket.event.CommentAddedEvent;
 
+import org.springframework.context.annotation.Lazy;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -24,7 +24,7 @@ public class NotificationService {
     
     private UserService userService;
 
-    public NotificationService(UserService usersService, EmailService emailService, NotificationRepository notificationRepository){
+    public NotificationService(UserService usersService, @Lazy EmailService emailService, NotificationRepository notificationRepository){
         this.userService=usersService;
         this.emailService=emailService;
         this.notificationRepository=notificationRepository;
@@ -169,11 +169,6 @@ public class NotificationService {
         });
         
         notificationRepository.saveAll(notifications);
-    }
-
-    @Transactional
-    public void handleCommentAdded(CommentAddedEvent event){
-        log.info("Processing Comment added : {}", event.getTicketNumber());
     }
     
     /**

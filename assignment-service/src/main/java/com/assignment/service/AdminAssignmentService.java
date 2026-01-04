@@ -21,6 +21,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
+import org.springframework.context.annotation.Lazy;
 import java.util.*;
 
 @Service
@@ -30,20 +31,20 @@ public class AdminAssignmentService {
 
     private static final String ASSIGNMENT_NOT_FOUND_MSG = "Assignment not found";
     
-    private AssignmentRepository assignmentRepository;
+    private final AssignmentRepository assignmentRepository;
     
-    private TicketCacheRepository ticketCacheRepository;
+    private final TicketCacheRepository ticketCacheRepository;
     
-    private AgentWorkloadRepository agentWorkloadRepository;
+    private final AgentWorkloadRepository agentWorkloadRepository;
     
-    private EventPublisher eventPublisher;
+    private final EventPublisher eventPublisher;
     
-    private SlaService slaService;
+    private final SlaService slaService;
 
     // Self-injection for transactional proxy
     private final AdminAssignmentService self;
 
-    public AdminAssignmentService(SlaService slaService, EventPublisher eventPublisher, AgentWorkloadRepository agentWorkloadRepository, TicketCacheRepository ticketCacheRepository, AssignmentRepository assignmentRepository, AdminAssignmentService self){
+    public AdminAssignmentService(SlaService slaService, EventPublisher eventPublisher, AgentWorkloadRepository agentWorkloadRepository, TicketCacheRepository ticketCacheRepository, AssignmentRepository assignmentRepository, @Lazy AdminAssignmentService self){
         this.slaService=slaService;
         this.eventPublisher=eventPublisher;
         this.agentWorkloadRepository=agentWorkloadRepository;
@@ -53,17 +54,6 @@ public class AdminAssignmentService {
     }
 
     // For Spring to inject self-reference
-    @org.springframework.beans.factory.annotation.Autowired
-    public AdminAssignmentService setSelf(AdminAssignmentService self) {
-        return new AdminAssignmentService(
-            this.slaService,
-            this.eventPublisher,
-            this.agentWorkloadRepository,
-            this.ticketCacheRepository,
-            this.assignmentRepository,
-            self
-        );
-    }
     
     @Value("${assignment.max-tickets-per-agent}")
     private Integer maxTicketsPerAgent;

@@ -14,11 +14,10 @@ import com.notification.exception.EmailSendException;
 public class EmailService {
     
     private final JavaMailSender mailSender;
-    private final EmailService self;
 
-    public EmailService(JavaMailSender mailSender, EmailService self){
+    // ✅ REMOVE self-injection - just keep JavaMailSender
+    public EmailService(JavaMailSender mailSender) {
         this.mailSender = mailSender;
-        this.self = self;
     }
     
     @Value("${notification.email.from}")
@@ -55,12 +54,14 @@ public class EmailService {
     
     /**
      * Send email with retry logic
+     * ✅ REMOVE self reference - just call sendEmail() directly
      */
     public boolean sendEmailWithRetry(String to, String subject, String text, int maxRetries) {
         int attempt = 0;
         while (attempt < maxRetries) {
             try {
-                self.sendEmail(to, subject, text);
+                // ✅ Just call the method directly (no self.)
+                sendEmail(to, subject, text);
                 return true;
             } catch (Exception e) {
                 attempt++;

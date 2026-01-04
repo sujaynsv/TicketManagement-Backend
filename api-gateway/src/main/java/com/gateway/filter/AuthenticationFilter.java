@@ -41,6 +41,7 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
     private static final String PERMISSION_PATCH_NOTIFICATIONS = "PATCH:/notifications/";
     private static final String PERMISSION_GET_USERS = "GET:/users/";
 
+
     /**
      * Complete Role-Based Access Control Map
      */
@@ -408,17 +409,26 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                 });
     }
     
+    /**
+     * Add CORS headers to error responses
+     */
     private Mono<Void> onError(ServerWebExchange exchange, String error, HttpStatus httpStatus) {
         exchange.getResponse().setStatusCode(httpStatus);
         exchange.getResponse().getHeaders().add("Content-Type", "application/json");
+        
+        // Add CORS headers
+        exchange.getResponse().getHeaders().add("Access-Control-Allow-Origin", "http://localhost:4200");
+        exchange.getResponse().getHeaders().add("Access-Control-Allow-Credentials", "true");
+        
         String errorResponse = String.format("{\"error\": \"%s\", \"status\": %d}", 
                 error, httpStatus.value());
         return exchange.getResponse().writeWith(
                 Mono.just(exchange.getResponse().bufferFactory().wrap(errorResponse.getBytes()))
         );
     }
+
     
-    public interface Config {
+    public static class Config {
         // Marker interface for configuration
     }
 }

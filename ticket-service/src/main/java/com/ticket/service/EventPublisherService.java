@@ -4,7 +4,6 @@ import com.ticket.event.CommentAddedEvent;
 import com.ticket.event.TicketCreatedEvent;
 import com.ticket.event.TicketEscalatedEvent;
 import com.ticket.event.TicketStatusChangedEvent;
-import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -12,7 +11,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
 public class EventPublisherService {
     
     private static final Logger log = LoggerFactory.getLogger(EventPublisherService.class);
