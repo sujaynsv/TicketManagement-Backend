@@ -42,7 +42,6 @@ public class Assignment {
 
     @Column(name = "assignment_notes", length = 500)
     private String assignmentNotes;
-
     
     @Column(name = "previous_agent_username", length = 100)
     private String previousAgentUsername;
@@ -60,23 +59,44 @@ public class Assignment {
     @Column(name = "status", nullable = false, length = 20)
     private AssignmentStatus status;
 
-    @Column(name="ticket_status", nullable = false, length = 20)
+    @Column(name = "ticket_status", length = 20)
     private String ticketStatus;
     
-    public void setTicketStatus(String ticketStatus){
-        this.ticketStatus=ticketStatus;
-    }
-
-    public String getTicketStatus(){
-        return ticketStatus;
-    }
-
-
+    // ============================================
+    // ADD THESE NEW TICKET FIELDS ↓
+    // ============================================
+    
+    @Column(name = "ticket_title", length = 200)
+    private String ticketTitle;
+    
+    @Column(name = "ticket_description", length = 2000)
+    private String ticketDescription;
+    
+    @Column(name = "ticket_priority", length = 20)
+    private String ticketPriority;
+    
+    @Column(name = "ticket_category", length = 50)
+    private String ticketCategory;
+    
+    @Column(name = "created_by_username", length = 100)
+    private String createdByUsername;
+    
+    @Column(name = "comment_count")
+    private Integer commentCount;
+    
+    @Column(name = "attachment_count")
+    private Integer attachmentCount;
+    
+    // ============================================
     // Constructors
+    // ============================================
+    
     public Assignment() {
         this.assignmentId = UUID.randomUUID().toString();
         this.assignedAt = LocalDateTime.now();
         this.status = AssignmentStatus.NOT_ASSIGNED;
+        this.commentCount = 0;
+        this.attachmentCount = 0;
     }
     
     public Assignment(String ticketId, String ticketNumber, String agentId, 
@@ -92,7 +112,10 @@ public class Assignment {
         this.assignmentType = assignmentType;
     }
     
-    // Getters and Setters
+    // ============================================
+    // Existing Getters and Setters
+    // ============================================
+    
     public String getAssignmentId() {
         return assignmentId;
     }
@@ -219,5 +242,73 @@ public class Assignment {
     
     public void setStatus(AssignmentStatus status) {
         this.status = status;
+    }
+    
+    public String getTicketStatus() {
+        return ticketStatus;
+    }
+    
+    public void setTicketStatus(String ticketStatus) {
+        this.ticketStatus = ticketStatus;
+    }
+    
+    // ============================================
+    // NEW GETTERS AND SETTERS FOR TICKET FIELDS ↓
+    // ============================================
+    
+    public String getTicketTitle() {
+        return ticketTitle;
+    }
+    
+    public void setTicketTitle(String ticketTitle) {
+        this.ticketTitle = ticketTitle;
+    }
+    
+    public String getTicketDescription() {
+        return ticketDescription;
+    }
+    
+    public void setTicketDescription(String ticketDescription) {
+        this.ticketDescription = ticketDescription;
+    }
+    
+    public String getTicketPriority() {
+        return ticketPriority;
+    }
+    
+    public void setTicketPriority(String ticketPriority) {
+        this.ticketPriority = ticketPriority;
+    }
+    
+    public String getTicketCategory() {
+        return ticketCategory;
+    }
+    
+    public void setTicketCategory(String ticketCategory) {
+        this.ticketCategory = ticketCategory;
+    }
+    
+    public String getCreatedByUsername() {
+        return createdByUsername;
+    }
+    
+    public void setCreatedByUsername(String createdByUsername) {
+        this.createdByUsername = createdByUsername;
+    }
+    
+    public Integer getCommentCount() {
+        return commentCount;
+    }
+    
+    public void setCommentCount(Integer commentCount) {
+        this.commentCount = commentCount;
+    }
+    
+    public Integer getAttachmentCount() {
+        return attachmentCount;
+    }
+    
+    public void setAttachmentCount(Integer attachmentCount) {
+        this.attachmentCount = attachmentCount;
     }
 }

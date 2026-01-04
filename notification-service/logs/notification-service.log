@@ -1238,3 +1238,530 @@ java.lang.IllegalStateException: No micrometer registry present (or more than on
 2026-01-04T12:20:30.672+05:30  INFO 37433 --- [notification-service] [main] c.n.NotificationServiceApplication       : Started NotificationServiceApplication in 5.171 seconds (process running for 5.389)
 2026-01-04T12:25:30.414+05:30  INFO 37433 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
 2026-01-04T12:30:30.424+05:30  INFO 37433 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-04T12:35:30.437+05:30  INFO 37433 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-04T12:40:30.418+05:30  INFO 37433 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-04T12:45:30.425+05:30  INFO 37433 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-04T12:50:30.429+05:30  INFO 37433 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-04T12:55:30.414+05:30  INFO 37433 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-04T13:00:30.421+05:30  INFO 37433 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-04T13:05:30.426+05:30  INFO 37433 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-04T13:10:30.471+05:30  INFO 37433 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-04T13:15:30.480+05:30  INFO 37433 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-04T13:20:30.490+05:30  INFO 37433 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-04T13:25:30.491+05:30  INFO 37433 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-04T13:30:30.494+05:30  INFO 37433 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-04T13:35:30.499+05:30  INFO 37433 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-04T13:40:30.509+05:30  INFO 37433 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-04T13:45:30.534+05:30  INFO 37433 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-04T13:50:30.544+05:30  INFO 37433 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-04T13:50:44.007+05:30 DEBUG 37433 --- [notification-service] [pool-2-thread-4] o.s.a.r.listener.BlockingQueueConsumer   : Storing delivery for consumerTag: 'amq.ctag-0GSWEMC_vYkf_cosTCSUbw' with deliveryTag: '1' in Consumer@4d27716b: tags=[[amq.ctag-0GSWEMC_vYkf_cosTCSUbw]], channel=Cached Rabbit Channel: AMQChannel(amqp://guest@127.0.0.1:5672/,1), conn: Proxy@59d8de36 Shared Rabbit Connection: SimpleConnection@41f2320f [delegate=amqp://guest@127.0.0.1:5672/, localPort=49894], acknowledgeMode=AUTO local queue size=0
+2026-01-04T13:50:44.072+05:30 DEBUG 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] o.s.a.r.listener.BlockingQueueConsumer   : Received message: (Body:'[B@6ed50c(byte[418])' MessageProperties [headers={__TypeId__=com.ticket.event.TicketCreatedEvent}, contentType=application/json, contentEncoding=UTF-8, contentLength=0, receivedDeliveryMode=PERSISTENT, priority=0, redelivered=false, receivedExchange=ticket.exchange, receivedRoutingKey=ticket.created, deliveryTag=1, consumerTag=amq.ctag-0GSWEMC_vYkf_cosTCSUbw, consumerQueue=notification.queue])
+2026-01-04T13:50:44.194+05:30 DEBUG 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] .a.r.l.a.MessagingMessageListenerAdapter : Processing [GenericMessage [payload=com.ticket.event.TicketCreatedEvent@3f3de9a5, headers={amqp_receivedDeliveryMode=PERSISTENT, amqp_receivedExchange=ticket.exchange, amqp_deliveryTag=1, amqp_consumerQueue=notification.queue, amqp_redelivered=false, amqp_receivedRoutingKey=ticket.created, amqp_contentEncoding=UTF-8, id=4bbba331-9836-a9f9-7f27-7dc6a2b41a88, amqp_consumerTag=amq.ctag-0GSWEMC_vYkf_cosTCSUbw, amqp_lastInBatch=false, contentType=application/json, __TypeId__=com.ticket.event.TicketCreatedEvent, timestamp=1767514844193}]]
+2026-01-04T13:50:44.211+05:30  INFO 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.notification.listener.EventListener    : Received TicketCreatedEvent: TKT-20260104-00080
+2026-01-04T13:50:44.331+05:30  INFO 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.n.service.NotificationService          : Creating notification for user sujay: TICKET_CREATED
+2026-01-04T13:50:44.464+05:30  INFO 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.n.service.NotificationService          : Email notification sent to nsvsujay04@gmail.com
+2026-01-04T13:50:44.524+05:30 DEBUG 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] org.hibernate.SQL                        : 
+    insert 
+    into
+        notifications
+        (created_at, delivery_channel, error_message, event_type, is_read, message, notification_type, read_at, retry_count, sent_at, status, subject, ticket_id, ticket_number, updated_at, user_email, user_id, username, notification_id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-01-04T13:50:44.550+05:30 DEBUG 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] org.hibernate.SQL                        : 
+    update
+        notifications 
+    set
+        created_at=?,
+        delivery_channel=?,
+        error_message=?,
+        event_type=?,
+        is_read=?,
+        message=?,
+        notification_type=?,
+        read_at=?,
+        retry_count=?,
+        sent_at=?,
+        status=?,
+        subject=?,
+        ticket_id=?,
+        ticket_number=?,
+        updated_at=?,
+        user_email=?,
+        user_id=?,
+        username=? 
+    where
+        notification_id=?
+2026-01-04T13:50:44.561+05:30  INFO 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.n.service.NotificationService          : Creating notification for user sujay: TICKET_CREATED
+2026-01-04T13:50:44.570+05:30 DEBUG 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] org.hibernate.SQL                        : 
+    insert 
+    into
+        notifications
+        (created_at, delivery_channel, error_message, event_type, is_read, message, notification_type, read_at, retry_count, sent_at, status, subject, ticket_id, ticket_number, updated_at, user_email, user_id, username, notification_id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-01-04T13:50:44.572+05:30 DEBUG 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] org.hibernate.SQL                        : 
+    update
+        notifications 
+    set
+        created_at=?,
+        delivery_channel=?,
+        error_message=?,
+        event_type=?,
+        is_read=?,
+        message=?,
+        notification_type=?,
+        read_at=?,
+        retry_count=?,
+        sent_at=?,
+        status=?,
+        subject=?,
+        ticket_id=?,
+        ticket_number=?,
+        updated_at=?,
+        user_email=?,
+        user_id=?,
+        username=? 
+    where
+        notification_id=?
+2026-01-04T13:50:44.573+05:30  INFO 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.notification.listener.EventListener    : Notifications sent for ticket creation: TKT-20260104-00080
+2026-01-04T13:50:50.780+05:30  INFO 37433 --- [notification-service] [task-1] com.notification.service.EmailService    : Email sent to nsvsujay04@gmail.com: Ticket Created: TKT-20260104-00080
+2026-01-04T13:56:32.366+05:30  WARN 37433 --- [notification-service] [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=5m3s335ms).
+2026-01-04T14:32:25.737+05:30  WARN 37433 --- [notification-service] [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=35m23s354ms).
+2026-01-04T14:34:57.244+05:30  INFO 37433 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-04T14:39:57.253+05:30  INFO 37433 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-04T14:44:57.261+05:30  INFO 37433 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-04T14:49:57.263+05:30  INFO 37433 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-04T14:50:28.577+05:30 DEBUG 37433 --- [notification-service] [pool-2-thread-5] o.s.a.r.listener.BlockingQueueConsumer   : Storing delivery for consumerTag: 'amq.ctag-0GSWEMC_vYkf_cosTCSUbw' with deliveryTag: '2' in Consumer@4d27716b: tags=[[amq.ctag-0GSWEMC_vYkf_cosTCSUbw]], channel=Cached Rabbit Channel: AMQChannel(amqp://guest@127.0.0.1:5672/,1), conn: Proxy@59d8de36 Shared Rabbit Connection: SimpleConnection@41f2320f [delegate=amqp://guest@127.0.0.1:5672/, localPort=49894], acknowledgeMode=AUTO local queue size=0
+2026-01-04T14:50:28.580+05:30 DEBUG 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] o.s.a.r.listener.BlockingQueueConsumer   : Received message: (Body:'[B@45acbf96(byte[272])' MessageProperties [headers={__TypeId__=com.ticket.event.CommentAddedEvent}, contentType=application/json, contentEncoding=UTF-8, contentLength=0, receivedDeliveryMode=PERSISTENT, priority=0, redelivered=false, receivedExchange=ticket.exchange, receivedRoutingKey=comment.added, deliveryTag=2, consumerTag=amq.ctag-0GSWEMC_vYkf_cosTCSUbw, consumerQueue=notification.queue])
+2026-01-04T14:50:28.604+05:30 DEBUG 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] .a.r.l.a.MessagingMessageListenerAdapter : Processing [GenericMessage [payload=com.ticket.event.CommentAddedEvent@136d4fab, headers={amqp_receivedDeliveryMode=PERSISTENT, amqp_receivedExchange=ticket.exchange, amqp_deliveryTag=2, amqp_consumerQueue=notification.queue, amqp_redelivered=false, amqp_receivedRoutingKey=comment.added, amqp_contentEncoding=UTF-8, id=f1fe84dd-4b7f-b752-6712-faf30d0249df, amqp_consumerTag=amq.ctag-0GSWEMC_vYkf_cosTCSUbw, amqp_lastInBatch=false, contentType=application/json, __TypeId__=com.ticket.event.CommentAddedEvent, timestamp=1767518428604}]]
+2026-01-04T14:50:28.606+05:30  INFO 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.notification.listener.EventListener    : Received CommentAddedEvent: TKT-20251229-00001 by sujay
+2026-01-04T14:50:28.618+05:30 DEBUG 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] feign.template.Template                  : Explicit slash decoding specified, decoding all slashes in uri
+2026-01-04T14:50:28.665+05:30  INFO 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.notification.listener.EventListener    : Comment notifications processed for ticket: TKT-20251229-00001
+2026-01-04T14:54:57.268+05:30  INFO 37433 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-04T14:55:30.188+05:30 DEBUG 37433 --- [notification-service] [pool-2-thread-6] o.s.a.r.listener.BlockingQueueConsumer   : Storing delivery for consumerTag: 'amq.ctag-0GSWEMC_vYkf_cosTCSUbw' with deliveryTag: '3' in Consumer@4d27716b: tags=[[amq.ctag-0GSWEMC_vYkf_cosTCSUbw]], channel=Cached Rabbit Channel: AMQChannel(amqp://guest@127.0.0.1:5672/,1), conn: Proxy@59d8de36 Shared Rabbit Connection: SimpleConnection@41f2320f [delegate=amqp://guest@127.0.0.1:5672/, localPort=49894], acknowledgeMode=AUTO local queue size=0
+2026-01-04T14:55:30.191+05:30 DEBUG 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] o.s.a.r.listener.BlockingQueueConsumer   : Received message: (Body:'[B@32245bd7(byte[289])' MessageProperties [headers={__TypeId__=com.ticket.event.CommentAddedEvent}, contentType=application/json, contentEncoding=UTF-8, contentLength=0, receivedDeliveryMode=PERSISTENT, priority=0, redelivered=false, receivedExchange=ticket.exchange, receivedRoutingKey=comment.added, deliveryTag=3, consumerTag=amq.ctag-0GSWEMC_vYkf_cosTCSUbw, consumerQueue=notification.queue])
+2026-01-04T14:55:30.200+05:30 DEBUG 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] .a.r.l.a.MessagingMessageListenerAdapter : Processing [GenericMessage [payload=com.ticket.event.CommentAddedEvent@a3d1606, headers={amqp_receivedDeliveryMode=PERSISTENT, amqp_receivedExchange=ticket.exchange, amqp_deliveryTag=3, amqp_consumerQueue=notification.queue, amqp_redelivered=false, amqp_receivedRoutingKey=comment.added, amqp_contentEncoding=UTF-8, id=a79f58cf-16f1-6221-3ea2-a89c8980556c, amqp_consumerTag=amq.ctag-0GSWEMC_vYkf_cosTCSUbw, amqp_lastInBatch=false, contentType=application/json, __TypeId__=com.ticket.event.CommentAddedEvent, timestamp=1767518730199}]]
+2026-01-04T14:55:30.201+05:30  INFO 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.notification.listener.EventListener    : Received CommentAddedEvent: TKT-20260104-00080 by sujay
+2026-01-04T14:55:30.202+05:30 DEBUG 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] feign.template.Template                  : Explicit slash decoding specified, decoding all slashes in uri
+2026-01-04T14:55:30.223+05:30  INFO 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.notification.listener.EventListener    : Comment notifications processed for ticket: TKT-20260104-00080
+2026-01-04T14:59:57.277+05:30  INFO 37433 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-04T15:04:57.289+05:30  INFO 37433 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-04T15:09:57.302+05:30  INFO 37433 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-04T15:14:57.314+05:30  INFO 37433 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-04T15:19:57.320+05:30  INFO 37433 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-04T15:24:57.331+05:30  INFO 37433 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-04T15:29:57.343+05:30  INFO 37433 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-04T15:34:57.355+05:30  INFO 37433 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-04T15:39:57.341+05:30  INFO 37433 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-04T15:44:57.356+05:30  INFO 37433 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-04T15:49:57.362+05:30  INFO 37433 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-04T15:54:57.375+05:30  INFO 37433 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-04T15:59:57.384+05:30  INFO 37433 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-04T16:04:57.394+05:30  INFO 37433 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-04T16:09:57.398+05:30  INFO 37433 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-04T16:14:57.402+05:30  INFO 37433 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-04T16:19:57.410+05:30  INFO 37433 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-04T16:24:57.421+05:30  INFO 37433 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-04T16:29:57.415+05:30  INFO 37433 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-04T16:34:57.424+05:30  INFO 37433 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-04T16:39:57.436+05:30  INFO 37433 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-04T16:44:57.456+05:30  INFO 37433 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-04T16:49:57.463+05:30  INFO 37433 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-04T16:54:57.471+05:30  INFO 37433 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-04T16:59:57.478+05:30  INFO 37433 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-04T17:04:57.487+05:30  INFO 37433 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-04T17:09:57.497+05:30  INFO 37433 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-04T17:14:57.513+05:30  INFO 37433 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-04T17:19:57.529+05:30  INFO 37433 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-04T17:24:57.541+05:30  INFO 37433 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-04T17:29:57.552+05:30  INFO 37433 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-04T17:34:57.570+05:30  INFO 37433 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-04T17:39:57.580+05:30  INFO 37433 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-04T17:44:57.589+05:30  INFO 37433 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-04T17:49:57.550+05:30  INFO 37433 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-04T17:54:57.556+05:30  INFO 37433 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-04T17:59:57.563+05:30  INFO 37433 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-04T18:04:57.549+05:30  INFO 37433 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-04T18:09:57.556+05:30  INFO 37433 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-04T18:14:57.558+05:30  INFO 37433 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-04T18:19:57.558+05:30  INFO 37433 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-04T18:24:57.561+05:30  INFO 37433 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-04T18:29:57.568+05:30  INFO 37433 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-04T18:34:57.569+05:30  INFO 37433 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-04T18:37:02.736+05:30 DEBUG 37433 --- [notification-service] [pool-2-thread-7] o.s.a.r.listener.BlockingQueueConsumer   : Storing delivery for consumerTag: 'amq.ctag-0GSWEMC_vYkf_cosTCSUbw' with deliveryTag: '4' in Consumer@4d27716b: tags=[[amq.ctag-0GSWEMC_vYkf_cosTCSUbw]], channel=Cached Rabbit Channel: AMQChannel(amqp://guest@127.0.0.1:5672/,1), conn: Proxy@59d8de36 Shared Rabbit Connection: SimpleConnection@41f2320f [delegate=amqp://guest@127.0.0.1:5672/, localPort=49894], acknowledgeMode=AUTO local queue size=0
+2026-01-04T18:37:02.750+05:30 DEBUG 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] o.s.a.r.listener.BlockingQueueConsumer   : Received message: (Body:'[B@1667f44b(byte[259])' MessageProperties [headers={__TypeId__=com.ticket.event.TicketStatusChangedEvent}, contentType=application/json, contentEncoding=UTF-8, contentLength=0, receivedDeliveryMode=PERSISTENT, priority=0, redelivered=false, receivedExchange=ticket.exchange, receivedRoutingKey=ticket.status.changed, deliveryTag=4, consumerTag=amq.ctag-0GSWEMC_vYkf_cosTCSUbw, consumerQueue=notification.queue])
+2026-01-04T18:37:02.889+05:30 DEBUG 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] .a.r.l.a.MessagingMessageListenerAdapter : Processing [GenericMessage [payload=com.ticket.event.TicketStatusChangedEvent@49682243, headers={amqp_receivedDeliveryMode=PERSISTENT, amqp_receivedExchange=ticket.exchange, amqp_deliveryTag=4, amqp_consumerQueue=notification.queue, amqp_redelivered=false, amqp_receivedRoutingKey=ticket.status.changed, amqp_contentEncoding=UTF-8, id=1a3b3273-1413-6cf5-e455-b9c20c9fcab2, amqp_consumerTag=amq.ctag-0GSWEMC_vYkf_cosTCSUbw, amqp_lastInBatch=false, contentType=application/json, __TypeId__=com.ticket.event.TicketStatusChangedEvent, timestamp=1767532022888}]]
+2026-01-04T18:37:02.909+05:30  INFO 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.notification.listener.EventListener    : Received TicketStatusChangedEvent: TKT-20260103-00076 changed from ESCALATED to IN_PROGRESS
+2026-01-04T18:37:02.967+05:30  INFO 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.n.service.NotificationService          : Creating notification for user Sujay: TICKET_STATUS_CHANGED
+2026-01-04T18:37:03.134+05:30 DEBUG 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] org.hibernate.SQL                        : 
+    insert 
+    into
+        notifications
+        (created_at, delivery_channel, error_message, event_type, is_read, message, notification_type, read_at, retry_count, sent_at, status, subject, ticket_id, ticket_number, updated_at, user_email, user_id, username, notification_id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-01-04T18:37:03.161+05:30 DEBUG 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] org.hibernate.SQL                        : 
+    update
+        notifications 
+    set
+        created_at=?,
+        delivery_channel=?,
+        error_message=?,
+        event_type=?,
+        is_read=?,
+        message=?,
+        notification_type=?,
+        read_at=?,
+        retry_count=?,
+        sent_at=?,
+        status=?,
+        subject=?,
+        ticket_id=?,
+        ticket_number=?,
+        updated_at=?,
+        user_email=?,
+        user_id=?,
+        username=? 
+    where
+        notification_id=?
+2026-01-04T18:37:03.169+05:30  INFO 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.notification.listener.EventListener    : Status change notification sent for ticket: TKT-20260103-00076
+2026-01-04T18:39:31.515+05:30  WARN 37433 --- [notification-service] [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=2m3s901ms).
+2026-01-04T19:15:49.821+05:30  WARN 37433 --- [notification-service] [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=35m48s296ms).
+2026-01-04T19:16:49.750+05:30  INFO 37433 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-04T19:18:39.567+05:30 DEBUG 37433 --- [notification-service] [pool-2-thread-8] o.s.a.r.listener.BlockingQueueConsumer   : Storing delivery for consumerTag: 'amq.ctag-0GSWEMC_vYkf_cosTCSUbw' with deliveryTag: '5' in Consumer@4d27716b: tags=[[amq.ctag-0GSWEMC_vYkf_cosTCSUbw]], channel=Cached Rabbit Channel: AMQChannel(amqp://guest@127.0.0.1:5672/,1), conn: Proxy@59d8de36 Shared Rabbit Connection: SimpleConnection@41f2320f [delegate=amqp://guest@127.0.0.1:5672/, localPort=49894], acknowledgeMode=AUTO local queue size=0
+2026-01-04T19:18:39.569+05:30 DEBUG 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] o.s.a.r.listener.BlockingQueueConsumer   : Received message: (Body:'[B@3092e80d(byte[258])' MessageProperties [headers={__TypeId__=com.ticket.event.TicketStatusChangedEvent}, contentType=application/json, contentEncoding=UTF-8, contentLength=0, receivedDeliveryMode=PERSISTENT, priority=0, redelivered=false, receivedExchange=ticket.exchange, receivedRoutingKey=ticket.status.changed, deliveryTag=5, consumerTag=amq.ctag-0GSWEMC_vYkf_cosTCSUbw, consumerQueue=notification.queue])
+2026-01-04T19:18:39.574+05:30 DEBUG 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] .a.r.l.a.MessagingMessageListenerAdapter : Processing [GenericMessage [payload=com.ticket.event.TicketStatusChangedEvent@b84c44b, headers={amqp_receivedDeliveryMode=PERSISTENT, amqp_receivedExchange=ticket.exchange, amqp_deliveryTag=5, amqp_consumerQueue=notification.queue, amqp_redelivered=false, amqp_receivedRoutingKey=ticket.status.changed, amqp_contentEncoding=UTF-8, id=2eba2526-8229-34ab-8c8c-eb0753c80329, amqp_consumerTag=amq.ctag-0GSWEMC_vYkf_cosTCSUbw, amqp_lastInBatch=false, contentType=application/json, __TypeId__=com.ticket.event.TicketStatusChangedEvent, timestamp=1767534519574}]]
+2026-01-04T19:18:39.575+05:30  INFO 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.notification.listener.EventListener    : Received TicketStatusChangedEvent: TKT-20260102-00062 changed from ASSIGNED to IN_PROGRESS
+2026-01-04T19:18:39.579+05:30  INFO 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.n.service.NotificationService          : Creating notification for user Sujay: TICKET_STATUS_CHANGED
+2026-01-04T19:18:39.593+05:30 DEBUG 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] org.hibernate.SQL                        : 
+    insert 
+    into
+        notifications
+        (created_at, delivery_channel, error_message, event_type, is_read, message, notification_type, read_at, retry_count, sent_at, status, subject, ticket_id, ticket_number, updated_at, user_email, user_id, username, notification_id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-01-04T19:18:39.606+05:30 DEBUG 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] org.hibernate.SQL                        : 
+    update
+        notifications 
+    set
+        created_at=?,
+        delivery_channel=?,
+        error_message=?,
+        event_type=?,
+        is_read=?,
+        message=?,
+        notification_type=?,
+        read_at=?,
+        retry_count=?,
+        sent_at=?,
+        status=?,
+        subject=?,
+        ticket_id=?,
+        ticket_number=?,
+        updated_at=?,
+        user_email=?,
+        user_id=?,
+        username=? 
+    where
+        notification_id=?
+2026-01-04T19:18:39.607+05:30  INFO 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.notification.listener.EventListener    : Status change notification sent for ticket: TKT-20260102-00062
+2026-01-04T19:18:53.153+05:30 DEBUG 37433 --- [notification-service] [pool-2-thread-9] o.s.a.r.listener.BlockingQueueConsumer   : Storing delivery for consumerTag: 'amq.ctag-0GSWEMC_vYkf_cosTCSUbw' with deliveryTag: '6' in Consumer@4d27716b: tags=[[amq.ctag-0GSWEMC_vYkf_cosTCSUbw]], channel=Cached Rabbit Channel: AMQChannel(amqp://guest@127.0.0.1:5672/,1), conn: Proxy@59d8de36 Shared Rabbit Connection: SimpleConnection@41f2320f [delegate=amqp://guest@127.0.0.1:5672/, localPort=49894], acknowledgeMode=AUTO local queue size=0
+2026-01-04T19:18:53.153+05:30 DEBUG 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] o.s.a.r.listener.BlockingQueueConsumer   : Received message: (Body:'[B@de12c24(byte[263])' MessageProperties [headers={__TypeId__=com.ticket.event.CommentAddedEvent}, contentType=application/json, contentEncoding=UTF-8, contentLength=0, receivedDeliveryMode=PERSISTENT, priority=0, redelivered=false, receivedExchange=ticket.exchange, receivedRoutingKey=comment.added, deliveryTag=6, consumerTag=amq.ctag-0GSWEMC_vYkf_cosTCSUbw, consumerQueue=notification.queue])
+2026-01-04T19:18:53.154+05:30 DEBUG 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] .a.r.l.a.MessagingMessageListenerAdapter : Processing [GenericMessage [payload=com.ticket.event.CommentAddedEvent@1eccabb9, headers={amqp_receivedDeliveryMode=PERSISTENT, amqp_receivedExchange=ticket.exchange, amqp_deliveryTag=6, amqp_consumerQueue=notification.queue, amqp_redelivered=false, amqp_receivedRoutingKey=comment.added, amqp_contentEncoding=UTF-8, id=7a038aaf-4436-8287-3ebc-e1f45b97ff7d, amqp_consumerTag=amq.ctag-0GSWEMC_vYkf_cosTCSUbw, amqp_lastInBatch=false, contentType=application/json, __TypeId__=com.ticket.event.CommentAddedEvent, timestamp=1767534533154}]]
+2026-01-04T19:18:53.155+05:30  INFO 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.notification.listener.EventListener    : Received CommentAddedEvent: TKT-20260102-00062 by Sujay
+2026-01-04T19:18:53.165+05:30 DEBUG 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] feign.template.Template                  : Explicit slash decoding specified, decoding all slashes in uri
+2026-01-04T19:18:53.210+05:30  INFO 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.n.service.NotificationService          : Creating notification for user sujay-1: COMMENT_ADDED
+2026-01-04T19:18:53.227+05:30  INFO 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.n.service.NotificationService          : Email notification sent to nsvsujay04@gmail.com
+2026-01-04T19:18:53.228+05:30 DEBUG 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] org.hibernate.SQL                        : 
+    insert 
+    into
+        notifications
+        (created_at, delivery_channel, error_message, event_type, is_read, message, notification_type, read_at, retry_count, sent_at, status, subject, ticket_id, ticket_number, updated_at, user_email, user_id, username, notification_id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-01-04T19:18:53.230+05:30 DEBUG 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] org.hibernate.SQL                        : 
+    update
+        notifications 
+    set
+        created_at=?,
+        delivery_channel=?,
+        error_message=?,
+        event_type=?,
+        is_read=?,
+        message=?,
+        notification_type=?,
+        read_at=?,
+        retry_count=?,
+        sent_at=?,
+        status=?,
+        subject=?,
+        ticket_id=?,
+        ticket_number=?,
+        updated_at=?,
+        user_email=?,
+        user_id=?,
+        username=? 
+    where
+        notification_id=?
+2026-01-04T19:18:53.231+05:30  INFO 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.n.service.NotificationService          : Creating notification for user sujay-1: COMMENT_ADDED
+2026-01-04T19:18:53.244+05:30 DEBUG 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] org.hibernate.SQL                        : 
+    insert 
+    into
+        notifications
+        (created_at, delivery_channel, error_message, event_type, is_read, message, notification_type, read_at, retry_count, sent_at, status, subject, ticket_id, ticket_number, updated_at, user_email, user_id, username, notification_id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-01-04T19:18:53.245+05:30 DEBUG 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] org.hibernate.SQL                        : 
+    update
+        notifications 
+    set
+        created_at=?,
+        delivery_channel=?,
+        error_message=?,
+        event_type=?,
+        is_read=?,
+        message=?,
+        notification_type=?,
+        read_at=?,
+        retry_count=?,
+        sent_at=?,
+        status=?,
+        subject=?,
+        ticket_id=?,
+        ticket_number=?,
+        updated_at=?,
+        user_email=?,
+        user_id=?,
+        username=? 
+    where
+        notification_id=?
+2026-01-04T19:18:53.246+05:30  INFO 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.notification.listener.EventListener    : Comment notification sent to ticket creator: sujay-1
+2026-01-04T19:18:53.246+05:30  INFO 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.notification.listener.EventListener    : Comment notifications processed for ticket: TKT-20260102-00062
+2026-01-04T19:18:57.323+05:30  INFO 37433 --- [notification-service] [task-2] com.notification.service.EmailService    : Email sent to nsvsujay04@gmail.com: New Comment on Ticket: TKT-20260102-00062
+2026-01-04T19:20:49.328+05:30 DEBUG 37433 --- [notification-service] [pool-2-thread-10] o.s.a.r.listener.BlockingQueueConsumer   : Storing delivery for consumerTag: 'amq.ctag-0GSWEMC_vYkf_cosTCSUbw' with deliveryTag: '7' in Consumer@4d27716b: tags=[[amq.ctag-0GSWEMC_vYkf_cosTCSUbw]], channel=Cached Rabbit Channel: AMQChannel(amqp://guest@127.0.0.1:5672/,1), conn: Proxy@59d8de36 Shared Rabbit Connection: SimpleConnection@41f2320f [delegate=amqp://guest@127.0.0.1:5672/, localPort=49894], acknowledgeMode=AUTO local queue size=0
+2026-01-04T19:20:49.330+05:30 DEBUG 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] o.s.a.r.listener.BlockingQueueConsumer   : Received message: (Body:'[B@13ea23ff(byte[258])' MessageProperties [headers={__TypeId__=com.ticket.event.TicketStatusChangedEvent}, contentType=application/json, contentEncoding=UTF-8, contentLength=0, receivedDeliveryMode=PERSISTENT, priority=0, redelivered=false, receivedExchange=ticket.exchange, receivedRoutingKey=ticket.status.changed, deliveryTag=7, consumerTag=amq.ctag-0GSWEMC_vYkf_cosTCSUbw, consumerQueue=notification.queue])
+2026-01-04T19:20:49.331+05:30 DEBUG 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] .a.r.l.a.MessagingMessageListenerAdapter : Processing [GenericMessage [payload=com.ticket.event.TicketStatusChangedEvent@674db6d, headers={amqp_receivedDeliveryMode=PERSISTENT, amqp_receivedExchange=ticket.exchange, amqp_deliveryTag=7, amqp_consumerQueue=notification.queue, amqp_redelivered=false, amqp_receivedRoutingKey=ticket.status.changed, amqp_contentEncoding=UTF-8, id=c77def9b-5f89-b7b9-56f8-55d9e91b943e, amqp_consumerTag=amq.ctag-0GSWEMC_vYkf_cosTCSUbw, amqp_lastInBatch=false, contentType=application/json, __TypeId__=com.ticket.event.TicketStatusChangedEvent, timestamp=1767534649330}]]
+2026-01-04T19:20:49.331+05:30  INFO 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.notification.listener.EventListener    : Received TicketStatusChangedEvent: TKT-20260102-00061 changed from ASSIGNED to IN_PROGRESS
+2026-01-04T19:20:49.332+05:30  INFO 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.n.service.NotificationService          : Creating notification for user Sujay: TICKET_STATUS_CHANGED
+2026-01-04T19:20:49.339+05:30 DEBUG 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] org.hibernate.SQL                        : 
+    insert 
+    into
+        notifications
+        (created_at, delivery_channel, error_message, event_type, is_read, message, notification_type, read_at, retry_count, sent_at, status, subject, ticket_id, ticket_number, updated_at, user_email, user_id, username, notification_id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-01-04T19:20:49.347+05:30 DEBUG 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] org.hibernate.SQL                        : 
+    update
+        notifications 
+    set
+        created_at=?,
+        delivery_channel=?,
+        error_message=?,
+        event_type=?,
+        is_read=?,
+        message=?,
+        notification_type=?,
+        read_at=?,
+        retry_count=?,
+        sent_at=?,
+        status=?,
+        subject=?,
+        ticket_id=?,
+        ticket_number=?,
+        updated_at=?,
+        user_email=?,
+        user_id=?,
+        username=? 
+    where
+        notification_id=?
+2026-01-04T19:20:49.350+05:30  INFO 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.notification.listener.EventListener    : Status change notification sent for ticket: TKT-20260102-00061
+2026-01-04T19:21:49.753+05:30  INFO 37433 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-04T19:24:22.054+05:30 DEBUG 37433 --- [notification-service] [pool-2-thread-11] o.s.a.r.listener.BlockingQueueConsumer   : Storing delivery for consumerTag: 'amq.ctag-0GSWEMC_vYkf_cosTCSUbw' with deliveryTag: '8' in Consumer@4d27716b: tags=[[amq.ctag-0GSWEMC_vYkf_cosTCSUbw]], channel=Cached Rabbit Channel: AMQChannel(amqp://guest@127.0.0.1:5672/,1), conn: Proxy@59d8de36 Shared Rabbit Connection: SimpleConnection@41f2320f [delegate=amqp://guest@127.0.0.1:5672/, localPort=49894], acknowledgeMode=AUTO local queue size=0
+2026-01-04T19:24:22.056+05:30 DEBUG 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] o.s.a.r.listener.BlockingQueueConsumer   : Received message: (Body:'[B@57cc8270(byte[258])' MessageProperties [headers={__TypeId__=com.ticket.event.TicketStatusChangedEvent}, contentType=application/json, contentEncoding=UTF-8, contentLength=0, receivedDeliveryMode=PERSISTENT, priority=0, redelivered=false, receivedExchange=ticket.exchange, receivedRoutingKey=ticket.status.changed, deliveryTag=8, consumerTag=amq.ctag-0GSWEMC_vYkf_cosTCSUbw, consumerQueue=notification.queue])
+2026-01-04T19:24:22.058+05:30 DEBUG 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] .a.r.l.a.MessagingMessageListenerAdapter : Processing [GenericMessage [payload=com.ticket.event.TicketStatusChangedEvent@5cd18cdc, headers={amqp_receivedDeliveryMode=PERSISTENT, amqp_receivedExchange=ticket.exchange, amqp_deliveryTag=8, amqp_consumerQueue=notification.queue, amqp_redelivered=false, amqp_receivedRoutingKey=ticket.status.changed, amqp_contentEncoding=UTF-8, id=9462746e-7de1-d52c-03c8-e842032f37fe, amqp_consumerTag=amq.ctag-0GSWEMC_vYkf_cosTCSUbw, amqp_lastInBatch=false, contentType=application/json, __TypeId__=com.ticket.event.TicketStatusChangedEvent, timestamp=1767534862058}]]
+2026-01-04T19:24:22.059+05:30  INFO 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.notification.listener.EventListener    : Received TicketStatusChangedEvent: TKT-20251231-00022 changed from ASSIGNED to IN_PROGRESS
+2026-01-04T19:24:22.063+05:30  INFO 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.n.service.NotificationService          : Creating notification for user Sujay: TICKET_STATUS_CHANGED
+2026-01-04T19:24:22.079+05:30 DEBUG 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] org.hibernate.SQL                        : 
+    insert 
+    into
+        notifications
+        (created_at, delivery_channel, error_message, event_type, is_read, message, notification_type, read_at, retry_count, sent_at, status, subject, ticket_id, ticket_number, updated_at, user_email, user_id, username, notification_id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-01-04T19:24:22.087+05:30 DEBUG 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] org.hibernate.SQL                        : 
+    update
+        notifications 
+    set
+        created_at=?,
+        delivery_channel=?,
+        error_message=?,
+        event_type=?,
+        is_read=?,
+        message=?,
+        notification_type=?,
+        read_at=?,
+        retry_count=?,
+        sent_at=?,
+        status=?,
+        subject=?,
+        ticket_id=?,
+        ticket_number=?,
+        updated_at=?,
+        user_email=?,
+        user_id=?,
+        username=? 
+    where
+        notification_id=?
+2026-01-04T19:24:22.089+05:30  INFO 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.notification.listener.EventListener    : Status change notification sent for ticket: TKT-20251231-00022
+2026-01-04T19:26:49.754+05:30  INFO 37433 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-04T19:31:49.829+05:30  INFO 37433 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-04T19:36:49.831+05:30  INFO 37433 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-04T19:41:49.839+05:30  INFO 37433 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-04T19:42:54.725+05:30 DEBUG 37433 --- [notification-service] [pool-2-thread-12] o.s.a.r.listener.BlockingQueueConsumer   : Storing delivery for consumerTag: 'amq.ctag-0GSWEMC_vYkf_cosTCSUbw' with deliveryTag: '9' in Consumer@4d27716b: tags=[[amq.ctag-0GSWEMC_vYkf_cosTCSUbw]], channel=Cached Rabbit Channel: AMQChannel(amqp://guest@127.0.0.1:5672/,1), conn: Proxy@59d8de36 Shared Rabbit Connection: SimpleConnection@41f2320f [delegate=amqp://guest@127.0.0.1:5672/, localPort=49894], acknowledgeMode=AUTO local queue size=0
+2026-01-04T19:42:54.737+05:30 DEBUG 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] o.s.a.r.listener.BlockingQueueConsumer   : Received message: (Body:'[B@756fca91(byte[258])' MessageProperties [headers={__TypeId__=com.ticket.event.TicketStatusChangedEvent}, contentType=application/json, contentEncoding=UTF-8, contentLength=0, receivedDeliveryMode=PERSISTENT, priority=0, redelivered=false, receivedExchange=ticket.exchange, receivedRoutingKey=ticket.status.changed, deliveryTag=9, consumerTag=amq.ctag-0GSWEMC_vYkf_cosTCSUbw, consumerQueue=notification.queue])
+2026-01-04T19:42:54.786+05:30 DEBUG 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] .a.r.l.a.MessagingMessageListenerAdapter : Processing [GenericMessage [payload=com.ticket.event.TicketStatusChangedEvent@29857ac4, headers={amqp_receivedDeliveryMode=PERSISTENT, amqp_receivedExchange=ticket.exchange, amqp_deliveryTag=9, amqp_consumerQueue=notification.queue, amqp_redelivered=false, amqp_receivedRoutingKey=ticket.status.changed, amqp_contentEncoding=UTF-8, id=95e060c8-6c1c-f979-c94c-844575d7ccbb, amqp_consumerTag=amq.ctag-0GSWEMC_vYkf_cosTCSUbw, amqp_lastInBatch=false, contentType=application/json, __TypeId__=com.ticket.event.TicketStatusChangedEvent, timestamp=1767535974786}]]
+2026-01-04T19:42:54.787+05:30  INFO 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.notification.listener.EventListener    : Received TicketStatusChangedEvent: TKT-20260102-00051 changed from ASSIGNED to IN_PROGRESS
+2026-01-04T19:42:54.792+05:30  INFO 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.n.service.NotificationService          : Creating notification for user Sujay: TICKET_STATUS_CHANGED
+2026-01-04T19:42:54.814+05:30 DEBUG 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] org.hibernate.SQL                        : 
+    insert 
+    into
+        notifications
+        (created_at, delivery_channel, error_message, event_type, is_read, message, notification_type, read_at, retry_count, sent_at, status, subject, ticket_id, ticket_number, updated_at, user_email, user_id, username, notification_id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-01-04T19:42:54.818+05:30 DEBUG 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] org.hibernate.SQL                        : 
+    update
+        notifications 
+    set
+        created_at=?,
+        delivery_channel=?,
+        error_message=?,
+        event_type=?,
+        is_read=?,
+        message=?,
+        notification_type=?,
+        read_at=?,
+        retry_count=?,
+        sent_at=?,
+        status=?,
+        subject=?,
+        ticket_id=?,
+        ticket_number=?,
+        updated_at=?,
+        user_email=?,
+        user_id=?,
+        username=? 
+    where
+        notification_id=?
+2026-01-04T19:42:54.824+05:30  INFO 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.notification.listener.EventListener    : Status change notification sent for ticket: TKT-20260102-00051
+2026-01-04T19:43:44.707+05:30 DEBUG 37433 --- [notification-service] [pool-2-thread-3] o.s.a.r.listener.BlockingQueueConsumer   : Storing delivery for consumerTag: 'amq.ctag-0GSWEMC_vYkf_cosTCSUbw' with deliveryTag: '10' in Consumer@4d27716b: tags=[[amq.ctag-0GSWEMC_vYkf_cosTCSUbw]], channel=Cached Rabbit Channel: AMQChannel(amqp://guest@127.0.0.1:5672/,1), conn: Proxy@59d8de36 Shared Rabbit Connection: SimpleConnection@41f2320f [delegate=amqp://guest@127.0.0.1:5672/, localPort=49894], acknowledgeMode=AUTO local queue size=0
+2026-01-04T19:43:44.707+05:30 DEBUG 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] o.s.a.r.listener.BlockingQueueConsumer   : Received message: (Body:'[B@4beecf4f(byte[258])' MessageProperties [headers={__TypeId__=com.ticket.event.TicketStatusChangedEvent}, contentType=application/json, contentEncoding=UTF-8, contentLength=0, receivedDeliveryMode=PERSISTENT, priority=0, redelivered=false, receivedExchange=ticket.exchange, receivedRoutingKey=ticket.status.changed, deliveryTag=10, consumerTag=amq.ctag-0GSWEMC_vYkf_cosTCSUbw, consumerQueue=notification.queue])
+2026-01-04T19:43:44.708+05:30 DEBUG 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] .a.r.l.a.MessagingMessageListenerAdapter : Processing [GenericMessage [payload=com.ticket.event.TicketStatusChangedEvent@6f1be26, headers={amqp_receivedDeliveryMode=PERSISTENT, amqp_receivedExchange=ticket.exchange, amqp_deliveryTag=10, amqp_consumerQueue=notification.queue, amqp_redelivered=false, amqp_receivedRoutingKey=ticket.status.changed, amqp_contentEncoding=UTF-8, id=300e35fa-9f77-26c1-ffb8-8d754ebe2d17, amqp_consumerTag=amq.ctag-0GSWEMC_vYkf_cosTCSUbw, amqp_lastInBatch=false, contentType=application/json, __TypeId__=com.ticket.event.TicketStatusChangedEvent, timestamp=1767536024708}]]
+2026-01-04T19:43:44.708+05:30  INFO 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.notification.listener.EventListener    : Received TicketStatusChangedEvent: TKT-20251231-00023 changed from ASSIGNED to IN_PROGRESS
+2026-01-04T19:43:44.709+05:30  INFO 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.n.service.NotificationService          : Creating notification for user Sujay: TICKET_STATUS_CHANGED
+2026-01-04T19:43:44.728+05:30 DEBUG 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] org.hibernate.SQL                        : 
+    insert 
+    into
+        notifications
+        (created_at, delivery_channel, error_message, event_type, is_read, message, notification_type, read_at, retry_count, sent_at, status, subject, ticket_id, ticket_number, updated_at, user_email, user_id, username, notification_id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-01-04T19:43:44.813+05:30 DEBUG 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] org.hibernate.SQL                        : 
+    update
+        notifications 
+    set
+        created_at=?,
+        delivery_channel=?,
+        error_message=?,
+        event_type=?,
+        is_read=?,
+        message=?,
+        notification_type=?,
+        read_at=?,
+        retry_count=?,
+        sent_at=?,
+        status=?,
+        subject=?,
+        ticket_id=?,
+        ticket_number=?,
+        updated_at=?,
+        user_email=?,
+        user_id=?,
+        username=? 
+    where
+        notification_id=?
+2026-01-04T19:43:44.820+05:30  INFO 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.notification.listener.EventListener    : Status change notification sent for ticket: TKT-20251231-00023
+2026-01-04T19:44:29.413+05:30 DEBUG 37433 --- [notification-service] [pool-2-thread-4] o.s.a.r.listener.BlockingQueueConsumer   : Storing delivery for consumerTag: 'amq.ctag-0GSWEMC_vYkf_cosTCSUbw' with deliveryTag: '11' in Consumer@4d27716b: tags=[[amq.ctag-0GSWEMC_vYkf_cosTCSUbw]], channel=Cached Rabbit Channel: AMQChannel(amqp://guest@127.0.0.1:5672/,1), conn: Proxy@59d8de36 Shared Rabbit Connection: SimpleConnection@41f2320f [delegate=amqp://guest@127.0.0.1:5672/, localPort=49894], acknowledgeMode=AUTO local queue size=0
+2026-01-04T19:44:29.417+05:30 DEBUG 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] o.s.a.r.listener.BlockingQueueConsumer   : Received message: (Body:'[B@7d9913b8(byte[258])' MessageProperties [headers={__TypeId__=com.ticket.event.TicketStatusChangedEvent}, contentType=application/json, contentEncoding=UTF-8, contentLength=0, receivedDeliveryMode=PERSISTENT, priority=0, redelivered=false, receivedExchange=ticket.exchange, receivedRoutingKey=ticket.status.changed, deliveryTag=11, consumerTag=amq.ctag-0GSWEMC_vYkf_cosTCSUbw, consumerQueue=notification.queue])
+2026-01-04T19:44:29.431+05:30 DEBUG 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] .a.r.l.a.MessagingMessageListenerAdapter : Processing [GenericMessage [payload=com.ticket.event.TicketStatusChangedEvent@620abd3c, headers={amqp_receivedDeliveryMode=PERSISTENT, amqp_receivedExchange=ticket.exchange, amqp_deliveryTag=11, amqp_consumerQueue=notification.queue, amqp_redelivered=false, amqp_receivedRoutingKey=ticket.status.changed, amqp_contentEncoding=UTF-8, id=feab92ec-ab60-9327-5216-5f8160b35710, amqp_consumerTag=amq.ctag-0GSWEMC_vYkf_cosTCSUbw, amqp_lastInBatch=false, contentType=application/json, __TypeId__=com.ticket.event.TicketStatusChangedEvent, timestamp=1767536069431}]]
+2026-01-04T19:44:29.434+05:30  INFO 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.notification.listener.EventListener    : Received TicketStatusChangedEvent: TKT-20260102-00051 changed from IN_PROGRESS to RESOLVED
+2026-01-04T19:44:29.480+05:30  INFO 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.n.service.NotificationService          : Creating notification for user Sujay: TICKET_RESOLVED
+2026-01-04T19:44:29.503+05:30 DEBUG 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] org.hibernate.SQL                        : 
+    insert 
+    into
+        notifications
+        (created_at, delivery_channel, error_message, event_type, is_read, message, notification_type, read_at, retry_count, sent_at, status, subject, ticket_id, ticket_number, updated_at, user_email, user_id, username, notification_id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-01-04T19:44:29.514+05:30 DEBUG 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] org.hibernate.SQL                        : 
+    update
+        notifications 
+    set
+        created_at=?,
+        delivery_channel=?,
+        error_message=?,
+        event_type=?,
+        is_read=?,
+        message=?,
+        notification_type=?,
+        read_at=?,
+        retry_count=?,
+        sent_at=?,
+        status=?,
+        subject=?,
+        ticket_id=?,
+        ticket_number=?,
+        updated_at=?,
+        user_email=?,
+        user_id=?,
+        username=? 
+    where
+        notification_id=?
+2026-01-04T19:44:29.519+05:30  INFO 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.n.service.NotificationService          : Creating notification for user Sujay: TICKET_RESOLVED
+2026-01-04T19:44:29.526+05:30  INFO 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.n.service.NotificationService          : Email notification sent to sujaynsv@gmail.com
+2026-01-04T19:44:29.527+05:30 DEBUG 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] org.hibernate.SQL                        : 
+    insert 
+    into
+        notifications
+        (created_at, delivery_channel, error_message, event_type, is_read, message, notification_type, read_at, retry_count, sent_at, status, subject, ticket_id, ticket_number, updated_at, user_email, user_id, username, notification_id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-01-04T19:44:29.530+05:30 DEBUG 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] org.hibernate.SQL                        : 
+    update
+        notifications 
+    set
+        created_at=?,
+        delivery_channel=?,
+        error_message=?,
+        event_type=?,
+        is_read=?,
+        message=?,
+        notification_type=?,
+        read_at=?,
+        retry_count=?,
+        sent_at=?,
+        status=?,
+        subject=?,
+        ticket_id=?,
+        ticket_number=?,
+        updated_at=?,
+        user_email=?,
+        user_id=?,
+        username=? 
+    where
+        notification_id=?
+2026-01-04T19:44:29.532+05:30  INFO 37433 --- [notification-service] [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-1] c.notification.listener.EventListener    : Status change notification sent for ticket: TKT-20260102-00051
+2026-01-04T19:44:33.279+05:30  INFO 37433 --- [notification-service] [task-3] com.notification.service.EmailService    : Email sent to sujaynsv@gmail.com: Ticket Status Updated: TKT-20260102-00051
+2026-01-04T19:46:49.846+05:30  INFO 37433 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-04T19:51:49.894+05:30  INFO 37433 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-01-04T19:56:49.905+05:30  INFO 37433 --- [notification-service] [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration

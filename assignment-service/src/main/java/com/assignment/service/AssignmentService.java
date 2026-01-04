@@ -154,6 +154,14 @@ public class AssignmentService {
         assignment.setAssignmentNotes(request.getAssignmentNote());
         assignment.setStatus(AssignmentStatus.ASSIGNED); // Set to ASSIGNED
         assignment.setTicketStatus(STATUS_ASSIGNED);
+
+        assignment.setTicketTitle(ticket.getTitle());
+        assignment.setTicketDescription(ticket.getDescription());
+        assignment.setTicketPriority(request.getPriority());
+        assignment.setTicketCategory(ticket.getCategory());
+        assignment.setCreatedByUsername(ticket.getCreatedByUsername());
+        assignment.setCommentCount(0);
+        assignment.setAttachmentCount(0);
         Assignment savedAssignment = assignmentRepository.save(assignment);
         
         // Update ticket cache with assignment and priority
@@ -251,6 +259,14 @@ public class AssignmentService {
         assignment.setAssignmentStrategy(assignmentStrategy);
         assignment.setStatus(AssignmentStatus.ASSIGNED);
         assignment.setTicketStatus(STATUS_ASSIGNED);
+        assignment.setTicketTitle(ticket.getTitle());
+        assignment.setTicketDescription(ticket.getDescription());
+        assignment.setTicketPriority(ticket.getPriority());
+        assignment.setTicketCategory(ticket.getCategory());
+        assignment.setCreatedByUsername(ticket.getCreatedByUsername());
+        assignment.setCommentCount(0);
+        assignment.setAttachmentCount(0);
+
         
         assignmentRepository.save(assignment);
         
@@ -404,6 +420,12 @@ public class AssignmentService {
         dto.setStatus(assignment.getStatus().name());
         dto.setAssignedAt(assignment.getAssignedAt());
         dto.setCompletedAt(assignment.getCompletedAt());
+        dto.setTitle(assignment.getTicketTitle());
+        dto.setDescription(assignment.getTicketDescription());
+        dto.setTicketStatus(assignment.getTicketStatus());
+        dto.setTicketPriority(assignment.getTicketPriority());
+        dto.setTicketCategory(assignment.getTicketCategory());
+        dto.setCreatedByUsername(assignment.getCreatedByUsername());
         return dto;
     }
 
@@ -509,6 +531,14 @@ public class AssignmentService {
         newAssignment.setAssignmentStrategy("MANUAL_REASSIGN");
         newAssignment.setStatus(AssignmentStatus.ASSIGNED);
         newAssignment.setTicketStatus(STATUS_ASSIGNED);
+
+        newAssignment.setTicketTitle(ticket.getTitle());
+        newAssignment.setTicketDescription(ticket.getDescription());
+        newAssignment.setTicketPriority(ticket.getPriority());
+        newAssignment.setTicketCategory(ticket.getCategory());
+        newAssignment.setCreatedByUsername(ticket.getCreatedByUsername());
+        newAssignment.setCommentCount(0);
+        newAssignment.setAttachmentCount(0);
         assignmentRepository.save(newAssignment);
         
         // Publish TicketAssignedEvent
@@ -527,4 +557,66 @@ public class AssignmentService {
         log.info("Ticket {} reassigned from {} to {} by {}", 
                 ticket.getTicketNumber(), oldAgentId, newAgent.getAgentUsername(), managerUsername);
     }
+
+        private AssignmentDTO mapToResponseDTOWithLiveData(Assignment assignment) {
+        AssignmentDTO dto = new AssignmentDTO();
+        
+        // Assignment data
+        dto.setAssignmentId(assignment.getAssignmentId());
+        dto.setTicketId(assignment.getTicketId());
+        dto.setTicketNumber(assignment.getTicketNumber());
+        dto.setAgentId(assignment.getAgentId());
+        dto.setAgentUsername(assignment.getAgentUsername());
+        dto.setAssignedBy(assignment.getAssignedBy());
+        dto.setAssignedByUsername(assignment.getAssignedByUsername());
+        dto.setAssignmentType(assignment.getAssignmentType().name());
+        dto.setStatus(assignment.getStatus().name());
+        dto.setAssignedAt(assignment.getAssignedAt());
+        dto.setCompletedAt(assignment.getCompletedAt());
+        
+        //  Fetch LIVE ticket data from TicketCache
+        try {
+            TicketCache ticket = ticketCacheRepository
+                    .findByTicketNumber(assignment.getTicketNumber())
+                    .orElse(null);
+            
+            if (ticket != null) {
+                dto.setTitle(ticket.getTitle());
+                dto.setDescription(ticket.getDescription());
+                dto.setTicketStatus(ticket.getStatus()); // ← LIVE STATUS!
+                dto.setTicketPriority(ticket.getPriority());
+                dto.setTicketCategory(ticket.getCategory());
+                dto.setCreatedByUsername(ticket.getCreatedByUsername());
+                
+                log.debug("Enriched assignment {} with live ticket data. Status: {}", 
+                         assignment.getTicketNumber(), ticket.getStatus());
+            } else {
+                log.warn("TicketCache not found for ticket: {}", assignment.getTicketNumber());
+                dto.setTicketStatus("UNKNOWN");
+            }
+            
+        } catch (Exception e) {
+            log.error("Error fetching ticket cache for {}: {}", 
+                     assignment.getTicketNumber(), e.getMessage());
+            dto.setTicketStatus("ERROR");
+        }
+        
+        return dto;
+    }
+
+        /**
+     * Get all assignments for an agent WITH LIVE ticket data from TicketCache
+     */
+    public List<AssignmentDTO> getAgentAssignments(String agentId) {
+        log.info("Fetching assignments for agent: {}", agentId);
+        
+        List<Assignment> assignments = assignmentRepository
+                .findByAgentIdOrderByAssignedAtDesc(agentId);
+        
+        return assignments.stream()
+                .map(this::mapToResponseDTOWithLiveData) // ← Use AssignmentDTO
+                .toList();
+    }
+
+
 }

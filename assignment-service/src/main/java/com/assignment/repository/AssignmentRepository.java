@@ -18,6 +18,8 @@ public interface AssignmentRepository extends JpaRepository<Assignment, String>,
     List<Assignment> findByAgentIdAndStatus(String agentId, AssignmentStatus status);
     List<Assignment> findByTicketIdOrderByAssignedAtDesc(String ticketId);
     Long countByAgentIdAndStatus(String agentId, AssignmentStatus status);
+
+    List<Assignment> findByAgentIdAndStatusOrderByAssignedAtDesc(String agentId, AssignmentStatus status);
     
     // New methods for admin
     long countByStatus(AssignmentStatus status);
@@ -30,5 +32,8 @@ public interface AssignmentRepository extends JpaRepository<Assignment, String>,
     long countByAssignedAtBetween(LocalDateTime start, LocalDateTime end);
     List<Assignment> findByAgentIdAndCompletedAtIsNotNull(String agentId);
     List<Assignment> findByAgentId(String agentId);
+
+    List<Assignment> findByAgentIdOrderByAssignedAtDesc(String agentId);
+
 
 }

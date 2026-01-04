@@ -41,7 +41,6 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
     private static final String PERMISSION_PATCH_NOTIFICATIONS = "PATCH:/notifications/";
     private static final String PERMISSION_GET_USERS = "GET:/users/";
 
-
     /**
      * Complete Role-Based Access Control Map
      */
@@ -59,6 +58,11 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                     PERMISSION_GET_TICKETS,                   // View specific ticket (by ID)
                     PERMISSION_PATCH_TICKETS,                 // Update own ticket
                     PERMISSION_PUT_TICKETS,                   // Update own ticket
+
+                    "GET:/users/me",                          // View own Profile
+                    "PUT:/users/me",                          // Update own Profile
+                    "GET:/users/profile",                     // View profile
+                    "PUT:/users/profile",                     // Update profile
                     
                     // Comments
                     PERMISSION_POST_TICKETS,                  // Add comment to ticket
@@ -106,13 +110,16 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                     // Activities
                     PERMISSION_GET_TICKETS,                   // View activities
                     
-                    // Assignment
+                    // Assignment - UPDATED ↓
+                    "GET:/assignments/my",                    // View my assignments
                     "GET:/assignments/ticket/",               // View assignment info
-                    "PUT:/assignments/",                      // Accept assignment
+                    "POST:/assignments/",                     // Accept/reject assignment
+                    "PUT:/assignments/",                      // Update assignment
                     
-                    // Agents
+                    // Agents - UPDATED ↓
                     "GET:/agents",                            // View agents
                     "GET:/agents/",                           // View agent info
+                    "GET:/agents/stats",                      // Get agent statistics
                     "PUT:/agents/",                           // Update own status
                     
                     // SLA
@@ -124,8 +131,10 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                     PERMISSION_GET_NOTIFICATIONS_USERS,       // View own notifications
                     PERMISSION_PATCH_NOTIFICATIONS,           // Mark as read
                     
-                    // Users
+                    // Users - UPDATED ↓
                     "GET:/users/agents",                      // View agents
+                    "GET:/users/profile",                     // View profile
+                    "PUT:/users/profile",                     // Update profile
                     PERMISSION_GET_USERS                      // View user info
             ),
             
@@ -161,8 +170,9 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                     // Activities
                     PERMISSION_GET_TICKETS,                   // View activities
                     
-                    // Assignment Management
-                    "POST:/assignments/manual",               //   Manually assign
+                    // Assignment Management - UPDATED ↓
+                    "GET:/assignments/my",                    // View my assignments
+                    "POST:/assignments/manual",               // Manually assign
                     "POST:/assignments/auto",                 // Trigger auto-assign
                     "PUT:/assignments/reassign",              // Reassign tickets
                     "GET:/assignments",                       // View all assignments
@@ -172,9 +182,10 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                     "GET:/assignments/agents/",               // View agent tickets
                     "GET:/assignments/agents/available",      // View available agents
                     
-                    // Agent Management
+                    // Agent Management - UPDATED ↓
                     "GET:/agents",                            // View all agents
                     "GET:/agents/",                           // View agent details
+                    "GET:/agents/stats",                      // Get agent statistics
                     "PUT:/agents/",                           // Update agent status
                     "POST:/agents/sync",                      // Sync agents
                     
@@ -190,9 +201,11 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                     PERMISSION_GET_NOTIFICATIONS_USERS,       // View notifications
                     PERMISSION_PATCH_NOTIFICATIONS,           // Mark as read
                     
-                    // Users
+                    // Users - UPDATED ↓
                     "GET:/users/agents",                      // View agents
                     "GET:/users/managers",                    // View managers
+                    "GET:/users/profile",                     // View profile
+                    "PUT:/users/profile",                     // Update profile
                     PERMISSION_GET_USERS                      // View user info
             ),
             
@@ -201,48 +214,7 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
             // =========================================
             "ADMIN", Arrays.asList(
                     // Universal Access
-                    "*",                                      // Full access to everything
-                    
-                    // Explicitly listed for clarity:
-                    // Admin Tickets
-                    PERMISSION_LOGOUT,
-                    "GET:/admin/tickets",
-                    "GET:/admin/tickets/",
-                    "PUT:/admin/tickets/",
-                    "PATCH:/admin/tickets/",
-                    "DELETE:/admin/tickets/",
-                    "GET:/admin/tickets/stats",
-                    "GET:/admin/tickets/user/",
-                    "GET:/admin/tickets/agent/",
-                    
-                    // Admin Assignments
-                    "GET:/admin/assignments",
-                    "GET:/admin/assignments/",
-                    "PUT:/admin/assignments/",
-                    "DELETE:/admin/assignments/",
-                    "POST:/admin/assignments/bulk-reassign",
-                    "GET:/admin/assignments/stats",
-                    "GET:/admin/assignments/agent/",
-                    "GET:/admin/assignments/unassigned",
-                    "GET:/admin/assignments/ticket/",
-                    
-                    // Admin Users
-                    "GET:/admin/users",
-                    "GET:/admin/users/",
-                    "POST:/admin/users",
-                    "PUT:/admin/users/",
-                    "DELETE:/admin/users/",
-                    "GET:/admin/users/stats",
-                    "GET:/admin/users/agents",
-                    "GET:/admin/users/managers",
-                    
-                    // Admin Analytics
-                    "GET:/admin/analytics/overview",
-                    "GET:/admin/analytics/tickets",
-                    "GET:/admin/analytics/agents",
-                    "GET:/admin/analytics/sla",
-                    "GET:/admin/analytics/categories",
-                    "GET:/admin/analytics/trends"
+                    "*"                                       // Full access to everything
             )
     );
     
@@ -299,7 +271,7 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                             log.info("Authenticated: user={}, role={}, path={}", 
                                     username, role, request.getPath());
                             
-                            //   Check role-based permissions
+                            // Check role-based permissions
                             String path = request.getPath().toString();
                             String method = request.getMethod().toString();
                             
@@ -410,15 +382,13 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
     }
     
     /**
-     * Add CORS headers to error responses
+     * Error response WITHOUT duplicate CORS headers (handled by CorsConfig)
      */
     private Mono<Void> onError(ServerWebExchange exchange, String error, HttpStatus httpStatus) {
         exchange.getResponse().setStatusCode(httpStatus);
         exchange.getResponse().getHeaders().add("Content-Type", "application/json");
         
-        // Add CORS headers
-        exchange.getResponse().getHeaders().add("Access-Control-Allow-Origin", "http://localhost:4200");
-        exchange.getResponse().getHeaders().add("Access-Control-Allow-Credentials", "true");
+        // REMOVED: Duplicate CORS headers (CorsConfig handles this globally)
         
         String errorResponse = String.format("{\"error\": \"%s\", \"status\": %d}", 
                 error, httpStatus.value());
@@ -426,7 +396,6 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                 Mono.just(exchange.getResponse().bufferFactory().wrap(errorResponse.getBytes()))
         );
     }
-
     
     public static class Config {
         // Marker interface for configuration

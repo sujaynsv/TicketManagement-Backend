@@ -16,6 +16,55 @@ public class AssignmentDTO {
     private String status;
     private LocalDateTime assignedAt;
     private LocalDateTime completedAt;
+
+    private String title;
+    private String description;
+    private String ticketStatus;
+    private String ticketPriority;
+    private String ticketCategory;
+    private String createdByUsername;
+
+    public String getTitle(){
+        return title;
+    }
+    public void setTitle(String title){
+        this.title=title;
+    }
+    public String getDescription(){
+        return description;
+    }
+    public void setDescription(String description){
+        this.description=description;
+    }
+    public String getTicketStatus(){
+        return ticketStatus;
+    }
+    public void setTicketStatus(String ticketStatus){
+        this.ticketStatus=ticketStatus;
+    }
+    public String getTicketPriority(){
+        return ticketPriority;
+    }
+    public void setTicketPriority(String ticketPriority){
+        this.ticketPriority=ticketPriority;
+    }
+    public String getTicketCategory(){
+        return ticketCategory;
+    }
+    public void setTicketCategory(String ticketCategory){
+        this.ticketCategory=ticketCategory;
+    }
+
+    public String getCreatedByUsername() {
+        return createdByUsername;
+    }
+
+    public void setCreatedByUsername(String createdByUsername) {
+        this.createdByUsername = createdByUsername;
+    }
+
+
+
     
     // Constructors
     public AssignmentDTO() {

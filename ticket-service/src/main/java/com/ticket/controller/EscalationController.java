@@ -26,7 +26,7 @@ public class EscalationController {
             @RequestHeader("X-User-Id") String userId,
             @RequestHeader("X-Username") String username,
             @RequestBody EscalateTicketRequest request) {
-        
+    
         log.info("Escalation request for ticket {} by user {}", ticketId, username);
         
         if (request.getReason() == null || request.getReason().trim().isEmpty()) {
