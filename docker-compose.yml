@@ -1,0 +1,283 @@
+version: "3.8"
+
+services:
+  # ========================================
+  # DATABASES
+  # ========================================
+  postgres:
+    image: postgres:15-alpine
+    container_name: postgres_db
+    restart: always
+    environment:
+      POSTGRES_USER: sujaynimmagadda
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: ticket_auth_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - ticket-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sujaynimmagadda"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  mongodb:
+    image: mongo:6.0
+    container_name: mongodb
+    restart: always
+    environment:
+      MONGO_INITDB_DATABASE: ticket_service_db
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - ticket-network
+    healthcheck:
+      # Changed localhost to 127.0.0.1 for internal container healthcheck
+      test: echo 'db.runCommand("ping").ok' | mongosh 127.0.0.1:27017/test --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  rabbitmq:
+    image: rabbitmq:3.12-management
+    container_name: rabbitmq
+    restart: always
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - ticket-network
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ========================================
+  # SERVICE DISCOVERY
+  # ========================================
+  eureka-server:
+    build: ./eureka-server
+    container_name: eureka-server
+    restart: on-failure
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      EUREKA_INSTANCE_HOSTNAME: eureka-server
+      EUREKA_CLIENT_REGISTERWITHREUREKA: "false"
+      EUREKA_CLIENT_FETHREGRISTRY: "false"
+    ports:
+      - "8761:8761"
+    networks:
+      - ticket-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mongodb:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:8761/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ========================================
+  # CONFIG SERVER
+  # ========================================
+  config-server:
+    build: ./config-server
+    container_name: config-server
+    restart: on-failure
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_CLOUD_CONFIG_SERVER_GIT_URI: https://github.com/sujaynsv/ticket-config-repo.git
+    ports:
+      - "8888:8888"
+    networks:
+      - ticket-network
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:8888/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ========================================
+  # MICROSERVICES
+  # ========================================
+  auth-service:
+    build: ./auth-service
+    container_name: auth-service
+    restart: on-failure
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/ticket_auth_db
+      SPRING_DATASOURCE_USERNAME: sujaynimmagadda
+      SPRING_DATASOURCE_PASSWORD: postgres
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+      SPRING_CLOUD_CONFIG_URI: http://config-server:8888
+      JWT_SECRET: your-super-secret-key-min-256-bits-change-this-in-production-environment
+    ports:
+      - "8081:8081"
+    networks:
+      - ticket-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+      eureka-server:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:8081/actuator/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
+  ticket-service:
+    build: ./ticket-service
+    container_name: ticket-service
+    restart: on-failure
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATA_MONGODB_URI: mongodb://mongodb:27017/ticket_service_db
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: guest
+      SPRING_RABBITMQ_PASSWORD: guest
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+      SPRING_CLOUD_CONFIG_URI: http://config-server:8888
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      AWS_REGION: ap-south-1
+      AWS_S3_BUCKET: ticket-attachements-2025
+    ports:
+      - "8082:8082"
+    networks:
+      - ticket-network
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      eureka-server:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:8082/actuator/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
+  assignment-service:
+    build: ./assignment-service
+    container_name: assignment-service
+    restart: on-failure
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/assignment_db
+      SPRING_DATASOURCE_USERNAME: sujaynimmagadda
+      SPRING_DATASOURCE_PASSWORD: postgres
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: guest
+      SPRING_RABBITMQ_PASSWORD: guest
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+      SPRING_CLOUD_CONFIG_URI: http://config-server:8888
+      AUTH_SERVICE_URL: http://auth-service:8081
+    ports:
+      - "8083:8083"
+    networks:
+      - ticket-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      eureka-server:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:8083/actuator/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
+  notification-service:
+    build: ./notification-service
+    container_name: notification-service
+    restart: on-failure
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/notification_db
+      SPRING_DATASOURCE_USERNAME: sujaynimmagadda
+      SPRING_DATASOURCE_PASSWORD: postgres
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: guest
+      SPRING_RABBITMQ_PASSWORD: guest
+      SPRING_MAIL_HOST: smtp.gmail.com
+      SPRING_MAIL_PORT: 587
+      SPRING_MAIL_USERNAME: ${MAIL_USERNAME}
+      SPRING_MAIL_PASSWORD: ${MAIL_PASSWORD}
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+      SPRING_CLOUD_CONFIG_URI: http://config-server:8888
+    ports:
+      - "8084:8084"
+    networks:
+      - ticket-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      eureka-server:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:8084/actuator/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
+  api-gateway:
+    build: ./api-gateway
+    container_name: api-gateway
+    restart: on-failure
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+      SPRING_CLOUD_CONFIG_URI: http://config-server:8888
+      JWT_SECRET: your-super-secret-key-min-256-bits-change-this-in-production-environment
+    ports:
+      - "8080:8080"
+    networks:
+      - ticket-network
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:8080/actuator/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
+networks:
+  ticket-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  mongo_data:
+  rabbitmq_data:

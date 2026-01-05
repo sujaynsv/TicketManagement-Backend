@@ -9,20 +9,14 @@ import com.ticket.entity.User;
 import com.ticket.enums.UserRole;
 import com.ticket.repository.UserRepository;
 import com.ticket.security.JwtUtil;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.ticket.exception.BadCredentialsException;
-
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.ticket.exception.AccountDeactivatedException;
-
 import java.time.LocalDateTime;
-import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -105,6 +99,13 @@ public LoginResponse login(LoginRequest request) {
         
         //   FIXED: Get UserRole enum from string
         UserRole role = UserRole.fromString(request.roleName()); // Returns END_USER if null
+
+        if(role==UserRole.ADMIN){
+            log.warn("Illegal registration attemtpt {}", request.username());
+            throw new IllegalArgumentException("Registration for this role is restricted");
+        }
+
+        log.info("recieved request: {}", request.roleName());
         
         // Create new user
         User newUser = new User();
