@@ -43,6 +43,8 @@ public class EventPublisherService {
      * Publish ticket created event
      */
     public void publishTicketCreated(TicketCreatedEvent event) {
+        log.info("Publishing TicketCreatedEvent: {} with priority: {}", 
+                event.getTicketNumber(), event.getPriority());
         log.info("=== PUBLISHING TICKET CREATED EVENT ===");
         log.info(EXCHANGE_LOG_MSG, ticketExchange);
         log.info(ROUTING_KEY_LOG_MSG, ticketCreatedRoutingKey);

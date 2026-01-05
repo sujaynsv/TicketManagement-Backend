@@ -116,7 +116,7 @@ public class AdminAssignmentController {
     }
     
     /**
-     * Get agent's active assignments
+     * Get agent's e assignments
      * GET /admin/assignments/agent/{agentId}/active
      */
     @GetMapping("/agent/{agentId}/active")

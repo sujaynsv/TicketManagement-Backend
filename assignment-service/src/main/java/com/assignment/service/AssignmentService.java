@@ -12,9 +12,12 @@ import com.assignment.exception.TicketAlreadyAssignedException;
 import com.assignment.exception.TicketAlreadyAssignedToAgentException;
 import com.assignment.exception.TicketNotAssignedException;
 import com.assignment.repository.AgentWorkloadRepository;
+import java.util.Comparator;
 import com.assignment.repository.AssignmentRepository;
 import com.assignment.repository.TicketCacheRepository;
 import com.ticket.event.TicketAssignedEvent;
+
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,8 +25,10 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class AssignmentService {
@@ -83,21 +88,64 @@ public class AssignmentService {
      * Get available agents with workload (for manager dashboard)
      */
     public List<AgentWorkloadDTO> getAvailableAgents() {
-        List<AgentWorkload> agents = agentWorkloadRepository
-                .findByStatusOrderByActiveTicketsAsc(AgentStatus.AVAILABLE);
-        
-        List<AgentWorkloadDTO> agentDTOs = agents.stream()
-                .map(this::convertToAgentWorkloadDTO)
-                .toList();
-        
-        // Mark recommended agent (least loaded)
-        if (!agentDTOs.isEmpty()) {
-            agentDTOs.get(0).setIsRecommended(true);
+
+        List<AgentWorkload> workloads =
+            agentWorkloadRepository.findAll();
+
+        List<AuthServiceClient.AgentDTO> authAgents =
+            authServiceClient.getAllAgents();
+
+        Map<String, AgentWorkload> workloadMap =
+            workloads.stream()
+                .collect(Collectors.toMap(
+                    AgentWorkload::getAgentId,
+                    w -> w
+                ));
+
+        List<AgentWorkloadDTO> result = new ArrayList<>();
+
+        for (AuthServiceClient.AgentDTO authAgent : authAgents) {
+
+            if (!"SUPPORT_AGENT".equals(authAgent.getRole())
+                || !Boolean.TRUE.equals(authAgent.getIsActive())) {
+                continue;
+            }
+
+            AgentWorkload workload =
+                workloadMap.get(authAgent.getUserId());
+
+            AgentWorkloadDTO dto = new AgentWorkloadDTO();
+            dto.setAgentId(authAgent.getUserId());
+            dto.setAgentUsername(authAgent.getUsername());
+
+            if (workload != null) {
+                dto.setActiveTickets(workload.getActiveTickets());
+                dto.setTotalAssignedTickets(workload.getTotalAssignedTickets());
+                dto.setCompletedTickets(workload.getCompletedTickets());
+                dto.setStatus(workload.getStatus().name());
+                dto.setLastAssignedAt(workload.getLastAssignedAt());
+            } else {
+                dto.setActiveTickets(0);
+                dto.setTotalAssignedTickets(0);
+                dto.setCompletedTickets(0);
+                dto.setStatus(AgentStatus.AVAILABLE.name());
+                dto.setLastAssignedAt(null);
+            }
+
+            dto.setIsRecommended(false);
+            result.add(dto);
         }
-        
-        return agentDTOs;
+
+        result.sort(Comparator.comparingInt(AgentWorkloadDTO::getActiveTickets));
+
+        result.stream()
+            .filter(a -> "AVAILABLE".equals(a.getStatus()))
+            .findFirst()
+            .ifPresent(a -> a.setIsRecommended(true));
+
+        return result;
     }
-    
+
     /**
      * Manager manually assigns ticket to agent
      */
@@ -157,7 +205,7 @@ public class AssignmentService {
 
         assignment.setTicketTitle(ticket.getTitle());
         assignment.setTicketDescription(ticket.getDescription());
-        assignment.setTicketPriority(request.getPriority());
+        assignment.setTicketPriority(ticket.getPriority());
         assignment.setTicketCategory(ticket.getCategory());
         assignment.setCreatedByUsername(ticket.getCreatedByUsername());
         assignment.setCommentCount(0);
@@ -393,19 +441,7 @@ public class AssignmentService {
         
         return dto;
     }
-    
-    private AgentWorkloadDTO convertToAgentWorkloadDTO(AgentWorkload agent) {
-        AgentWorkloadDTO dto = new AgentWorkloadDTO();
-        dto.setAgentId(agent.getAgentId());
-        dto.setAgentUsername(agent.getAgentUsername());
-        dto.setActiveTickets(agent.getActiveTickets());
-        dto.setTotalAssignedTickets(agent.getTotalAssignedTickets());
-        dto.setCompletedTickets(agent.getCompletedTickets());
-        dto.setStatus(agent.getStatus().name());
-        dto.setLastAssignedAt(agent.getLastAssignedAt());
-        dto.setIsRecommended(false);
-        return dto;
-    }
+
     
     private AssignmentDTO convertToAssignmentDTO(Assignment assignment) {
         AssignmentDTO dto = new AssignmentDTO();
@@ -430,26 +466,68 @@ public class AssignmentService {
     }
 
     @Transactional
-    public void syncAgentsFromAuthService(){
-        log.info("Getting Agents from auth service");
-        List<AuthServiceClient.AgentDTO> agents = authServiceClient.getAllAgents();
+    public void syncAgentsFromAuthService() {
 
-        for(AuthServiceClient.AgentDTO agentDTO : agents){
-            Optional<AgentWorkload> existingAgent = agentWorkloadRepository.findById(agentDTO.getUserId());
+        log.info("Syncing agents from Auth Service");
 
-            if(existingAgent.isEmpty()){
-                AgentWorkload newAgent = new AgentWorkload(
-                    agentDTO.getUserId(),
-                    agentDTO.getUsername()
-                );
-                newAgent.setStatus(AgentStatus.AVAILABLE);
-                agentWorkloadRepository.save(newAgent);
+        List<AuthServiceClient.AgentDTO> agents =
+                authServiceClient.getAllAgents();
 
-                log.info("Got new Agent: {} ({})", agentDTO.getUsername(), agentDTO.getUserId());
+        for (AuthServiceClient.AgentDTO agentDTO : agents) {
+
+            // ✅ Only sync real, active support agents
+            if (!"SUPPORT_AGENT".equals(agentDTO.getRole())) {
+                continue;
             }
+
+            if (!Boolean.TRUE.equals(agentDTO.getIsActive())) {
+                continue;
+            }
+
+            agentWorkloadRepository.findById(agentDTO.getUserId())
+                .ifPresentOrElse(
+                    existing -> {
+                        // 🔁 UPDATE username if changed
+                        if (!existing.getAgentUsername()
+                                .equals(agentDTO.getUsername())) {
+
+                            existing.setAgentUsername(agentDTO.getUsername());
+                            existing.setUpdatedAt(LocalDateTime.now());
+
+                            agentWorkloadRepository.save(existing);
+
+                            log.info(
+                                "Updated agent username: {} -> {}",
+                                existing.getAgentId(),
+                                agentDTO.getUsername()
+                            );
+                        }
+                    },
+                    () -> {
+                        // ➕ CREATE if missing
+                        AgentWorkload newAgent =
+                            new AgentWorkload(
+                                agentDTO.getUserId(),
+                                agentDTO.getUsername()
+                            );
+
+                        newAgent.setStatus(AgentStatus.AVAILABLE);
+                        newAgent.setUpdatedAt(LocalDateTime.now());
+
+                        agentWorkloadRepository.save(newAgent);
+
+                        log.info(
+                            "Added new agent: {} ({})",
+                            agentDTO.getUsername(),
+                            agentDTO.getUserId()
+                        );
+                    }
+                );
         }
-        log.info("Total Agents {} and they are: {}", agents.size(), agents);
+
+        log.info("Agent sync completed. Total agents processed: {}", agents.size());
     }
+
     
     /**
      * Reassign ticket to different agent
@@ -494,8 +572,13 @@ public class AssignmentService {
         // Update ticket
         ticket.setAssignedAgentId(newAgentId);
         ticket.setAssignedAgentUsername(newAgent.getAgentUsername());
+        ticket.setStatus("ASSIGNED");
         ticket.setUpdatedAt(LocalDateTime.now());
         ticketCacheRepository.save(ticket);
+
+        log.info("TicketCache updated: {} assigned to {}", 
+            ticket.getTicketNumber(), newAgent.getAgentUsername());
+
         
         // Update new agent workload
         newAgent.setActiveTickets(newAgent.getActiveTickets() + 1);
@@ -530,7 +613,7 @@ public class AssignmentService {
         );
         newAssignment.setAssignmentStrategy("MANUAL_REASSIGN");
         newAssignment.setStatus(AssignmentStatus.ASSIGNED);
-        newAssignment.setTicketStatus(STATUS_ASSIGNED);
+        newAssignment.setTicketStatus("ASSIGNED");
 
         newAssignment.setTicketTitle(ticket.getTitle());
         newAssignment.setTicketDescription(ticket.getDescription());

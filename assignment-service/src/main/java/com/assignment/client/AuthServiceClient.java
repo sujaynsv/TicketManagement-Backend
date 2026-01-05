@@ -34,7 +34,6 @@ public class AuthServiceClient {
      */
     @CircuitBreaker(name = "authServiceClient", fallbackMethod = "getAllAgentsFallback")
     @Retry(name = "authServiceClient")
-    @TimeLimiter(name = "authServiceClient")
     public List<AgentDTO> getAllAgents() {
         try {
             String url = authServiceUrl + "/users/agents";
@@ -59,8 +58,7 @@ public class AuthServiceClient {
     
     // ✅ Fallback method
     public List<AgentDTO> getAllAgentsFallback(Throwable throwable) {
-        log.warn("Circuit breaker activated for getAllAgents(). Using fallback. Error: {}", 
-                 throwable.getMessage());
+        log.warn("Circuit breaker activated for getAllAgents(). Using fallback. Error: {}");
         return new ArrayList<>(); // Return empty list when service is down
     }
     

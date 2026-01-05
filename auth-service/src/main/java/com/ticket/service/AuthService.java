@@ -13,6 +13,8 @@ import com.ticket.security.JwtUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.ticket.exception.BadCredentialsException;
+
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ticket.exception.AccountDeactivatedException;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -173,6 +176,12 @@ public LoginResponse login(LoginRequest request) {
             UUID userUuid = UUID.fromString(userId);
             User user = userRepository.findById(userUuid)
                     .orElseThrow(() -> new RuntimeException("User not found"));
+
+            if (!user.getIsActive()) {
+                log.warn("User account is deactivated: {}", user.getUsername());
+                return false;
+            }
+
             
             // Check if token version matches
             if (!tokenVersion.equals(user.getTokenVersion())) {

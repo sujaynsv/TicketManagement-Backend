@@ -9,7 +9,7 @@ public class AgentWorkload {
     
     @Id
     @Column(name = "agent_id", length = 50)
-    private String agentId;
+    private String agentUserId;
     
     @Column(name = "agent_username", nullable = false, length = 100)
     private String agentUsername;
@@ -38,19 +38,19 @@ public class AgentWorkload {
         this.updatedAt = LocalDateTime.now();
     }
     
-    public AgentWorkload(String agentId, String agentUsername) {
+    public AgentWorkload(String agentUserId, String agentUsername) {
         this();
-        this.agentId = agentId;
+        this.agentUserId = agentUserId;
         this.agentUsername = agentUsername;
     }
     
     // Getters and Setters
     public String getAgentId() {
-        return agentId;
+        return agentUserId;
     }
     
     public void setAgentId(String agentId) {
-        this.agentId = agentId;
+        this.agentUserId = agentId;
     }
     
     public String getAgentUsername() {

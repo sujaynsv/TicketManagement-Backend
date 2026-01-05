@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 public class AgentWorkloadDTO {
     
-    private String agentId;
+    private String agentUserId;
     private String agentUsername;
     private Integer activeTickets;
     private Integer totalAssignedTickets;
@@ -21,11 +21,11 @@ public class AgentWorkloadDTO {
     
     // Getters and Setters
     public String getAgentId() {
-        return agentId;
+        return agentUserId;
     }
     
     public void setAgentId(String agentId) {
-        this.agentId = agentId;
+        this.agentUserId = agentId;
     }
     
     public String getAgentUsername() {

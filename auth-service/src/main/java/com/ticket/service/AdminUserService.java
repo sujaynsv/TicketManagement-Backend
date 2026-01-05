@@ -7,6 +7,10 @@ import com.ticket.exception.EmailAlreadyExistsException;
 import com.ticket.exception.UsernameAlreadyExistsException;
 import com.ticket.exception.ManagerAssignmentException;
 import com.ticket.repository.UserRepository;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.cglib.core.Local;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -15,6 +19,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -27,6 +33,9 @@ public class AdminUserService {
     public AdminUserService(UserRepository userRepository){
         this.userRepository=userRepository;
     }
+
+    private static final Logger log = LoggerFactory.getLogger(AdminUserService.class);
+
     
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(12);
     
@@ -184,7 +193,9 @@ public class AdminUserService {
                 .orElseThrow(() -> new RuntimeException(USER_NOT_FOUND_MESSAGE));
         
         user.setIsActive(true);
+        user.setDeactivatedAt(null);
         userRepository.save(user);
+        log.info("User Deactivated: {}", user.getUsername());
         return convertToAdminDTO(user);
     }
     
@@ -198,7 +209,10 @@ public class AdminUserService {
                 .orElseThrow(() -> new RuntimeException(USER_NOT_FOUND_MESSAGE));
         
         user.setIsActive(false);
+        user.setDeactivatedAt(LocalDateTime.now());
+        user.setTokenVersion(user.getTokenVersion()+1);
         userRepository.save(user);
+        log.info("User Deactivated: {}", user.getUsername());
         return convertToAdminDTO(user);
     }
     

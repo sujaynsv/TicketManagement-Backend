@@ -46,6 +46,11 @@ public class User {
     @Column(name = "is_active")
     private Boolean isActive = true;
     
+    // NEW: Track when user was deactivated
+    @Column(name = "deactivated_at")
+    private LocalDateTime deactivatedAt;
+
+    
     @ManyToOne
     @JoinColumn(name = "manager_id")
     private User manager;
