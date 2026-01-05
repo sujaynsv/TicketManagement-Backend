@@ -28,6 +28,13 @@ pipeline {
             }
         }
 
+        stage('Build JARs') {
+            steps {
+                echo 'Building JAR files and compiling classes'
+                sh 'mvn clean package -DskipTests'
+            }
+        }
+
         stage('SonarCloud Analysis') {
             steps {
                 echo 'Performing Static Code Analysis'
@@ -36,22 +43,16 @@ pipeline {
                       -Dsonar.projectKey=${SONAR_ORG}_ticket-management-system \
                       -Dsonar.organization=${SONAR_ORG} \
                       -Dsonar.host.url=https://sonarcloud.io \
-                      -Dsonar.token=${SONAR_TOKEN}
+                      -Dsonar.token=${SONAR_TOKEN} \
+                      -Dsonar.java.binaries=**/target/classes
                 """
-            }
-        }
-        
-        stage('Build JARs') {
-            steps {
-                echo 'Building JAR files with Maven'
-                sh 'mvn clean package -DskipTests'
             }
         }
         
         stage('Clean Old Deployment') {
             steps {
                 echo 'Stopping and removing old containers'
-                // Using -v to ensure we get a clean DB state on every deploy
+                // Added -v to wipe old DB data so init.sql can run fresh
                 sh 'docker-compose down || true'
             }
         }
@@ -69,7 +70,6 @@ pipeline {
                 sleep 20
                 echo 'Verifying deployment status:'
                 sh 'docker-compose ps'
-                // Check if API Gateway is reachable
                 sh 'curl -f http://localhost:8080/actuator/health || echo "Gateway not ready yet"'
             }
         }
