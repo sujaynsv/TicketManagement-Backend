@@ -1,0 +1,89 @@
+pipeline {
+    agent any
+    
+    tools {
+        maven 'Maven 3.9.6'
+    }
+    
+    environment {
+        DOCKER_HUB_CREDENTIALS = credentials('docker-hub-credentials')
+        DOCKER_HUB_USERNAME = 'sujaynsv'
+        
+        // AWS and Mail Credentials (must be added in Jenkins Credentials)
+        AWS_ACCESS_KEY_ID = credentials('aws-access-key')
+        AWS_SECRET_ACCESS_KEY = credentials('aws-secret-key')
+        MAIL_USERNAME = credentials('gmail-username')
+        MAIL_PASSWORD = credentials('gmail-app-password')
+        
+        PATH = "/usr/local/bin:${env.PATH}"
+        SONAR_ORG = 'sujaynsv'
+        SONAR_TOKEN = '4084cc84bb3dcf9b38adc9446ddacb2148fcade9'
+    }
+    
+    stages {
+        stage('Checkout') {
+            steps {
+                echo 'Checking out code'
+                checkout scm
+            }
+        }
+
+        stage('SonarCloud Analysis') {
+            steps {
+                echo 'Performing Static Code Analysis'
+                sh """
+                    mvn sonar:sonar \
+                      -Dsonar.projectKey=${SONAR_ORG}_ticket-management-system \
+                      -Dsonar.organization=${SONAR_ORG} \
+                      -Dsonar.host.url=https://sonarcloud.io \
+                      -Dsonar.token=${SONAR_TOKEN}
+                """
+            }
+        }
+        
+        stage('Build JARs') {
+            steps {
+                echo 'Building JAR files with Maven'
+                sh 'mvn clean package -DskipTests'
+            }
+        }
+        
+        stage('Clean Old Deployment') {
+            steps {
+                echo 'Stopping and removing old containers'
+                // Using -v to ensure we get a clean DB state on every deploy
+                sh 'docker-compose down || true'
+            }
+        }
+        
+        stage('Deploy Microservices') {
+            steps {
+                echo 'Building Docker images and starting services...'
+                sh 'docker-compose up -d --build'
+            }
+        }
+        
+        stage('Smoke Test') {
+            steps {
+                echo 'Waiting for services to initialize...'
+                sleep 20
+                echo 'Verifying deployment status:'
+                sh 'docker-compose ps'
+                // Check if API Gateway is reachable
+                sh 'curl -f http://localhost:8080/actuator/health || echo "Gateway not ready yet"'
+            }
+        }
+    }
+    
+    post {
+        failure {
+            script {
+                echo 'Pipeline Failed - Dumping logs for troubleshooting'
+                sh 'docker-compose logs --tail=100'
+            }
+        }
+        success {
+            echo 'Deployment Successful! Dashboard available at http://localhost:8761'
+        }
+    }
+}
