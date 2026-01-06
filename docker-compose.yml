@@ -213,7 +213,7 @@ services:
       eureka-server:
         condition: service_healthy
       config-server:
-        condition: servie_healthy
+        condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://127.0.0.1:8083/actuator/health"]
       interval: 15s
