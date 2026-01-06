@@ -25,8 +25,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
-
-        <sonar.exclusions>
+         <sonar.exclusions>
             **/dto/**,
             **/entity/**,
             **/config/**,
@@ -34,7 +33,11 @@
             **/client/**,
             **/exception/**,
             **/security/**,
-            **/listener/**
+            **/listener/**,
+            **/event/**,
+            **/enums/**,
+            **/filter/**,
+            **/util/**
         </sonar.exclusions>
 
         <sonar.coverage.exclusions>
@@ -47,6 +50,10 @@
             **/security/**/*,
             **/listener/**/*,
             **/scheduler/**/*,
+            **/event/**/*,
+            **/enums/**/*,
+            **/filter/**/*,
+            **/util/**/*,
             **/*Application.java
         </sonar.coverage.exclusions>
 

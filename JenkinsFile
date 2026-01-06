@@ -51,7 +51,6 @@ pipeline {
         stage('Clean Old Deployment') {
             steps {
                 echo 'Stopping and removing old containers'
-                // Added -v to wipe old DB data so init.sql can run fresh
                 sh 'docker-compose down || true'
             }
         }
