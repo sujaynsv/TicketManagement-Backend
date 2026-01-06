@@ -12,4 +12,5 @@ public interface AttachmentRepository extends MongoRepository<Attachment, String
     List<Attachment> findByTicketIdOrderByUploadedAtDesc(String ticketId);
     
     Long countByTicketId(String ticketId);
+    
 }

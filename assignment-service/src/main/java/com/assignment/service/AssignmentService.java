@@ -176,6 +176,7 @@ public class AssignmentService {
                     oldPriority, request.getPriority(), ticket.getTicketNumber());
         }
         
+        self.syncAgentsFromAuthService();
         // Validate agent exists
         AgentWorkload agent = agentWorkloadRepository.findById(request.getAgentId())
                 .orElseThrow(() -> new RuntimeException("Agent not found"));
@@ -544,6 +545,7 @@ public class AssignmentService {
             throw new TicketNotAssignedException("Ticket is not assigned. Use manual assignment instead.");
         }
         
+
         if (oldAgentId.equals(newAgentId)) {
             throw new TicketAlreadyAssignedToAgentException("Ticket is already assigned to this agent");
         }

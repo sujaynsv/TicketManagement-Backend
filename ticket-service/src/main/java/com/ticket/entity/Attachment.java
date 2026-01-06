@@ -30,9 +30,38 @@ public class Attachment {
     private String uploadedByUsername;
     
     private LocalDateTime uploadedAt;
-    
+
+    private Integer downloadCount = 0;
+    private LocalDateTime lastDownloadedAt;
+    private String lastDownloadedBy;
+
+    public Integer getDownloadCount() {
+        return downloadCount;
+    }
+
+    public void setDownloadCount(Integer downloadCount) {
+        this.downloadCount = downloadCount;
+    }
+
+    public LocalDateTime getLastDownloadedAt() {
+        return lastDownloadedAt;
+    }
+
+    public void setLastDownloadedAt(LocalDateTime lastDownloadedAt) {
+        this.lastDownloadedAt = lastDownloadedAt;
+    }
+
+    public String getLastDownloadedBy() {
+        return lastDownloadedBy;
+    }
+
+    public void setLastDownloadedBy(String lastDownloadedBy) {
+        this.lastDownloadedBy = lastDownloadedBy;
+    }
     // Constructors
-    public Attachment() {}
+    public Attachment() {
+        //
+    }
     
     // Getters and Setters
     public String getAttachmentId() {

@@ -124,7 +124,8 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                     
                     // SLA
                     "GET:/sla/tickets/",                      // View SLA info
-                    "GET:/sla/active",                        // View active SLAs
+                    "GET:/sla/active", 
+                    "GET:/sla/breached",                             // View active SLAs
                     "GET:/sla/warnings",                      // View warnings
                     
                     // Notifications
@@ -133,8 +134,8 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                     
                     // Users - UPDATED ↓
                     "GET:/users/agents",                      // View agents
-                    "GET:/users/profile",                     // View profile
-                    "PUT:/users/profile",                     // Update profile
+                    "GET:/users/me",          // <-- add this if you use it
+                    "PUT:/users/me",                    // Update profile
                     PERMISSION_GET_USERS                      // View user info
             ),
             
@@ -204,8 +205,8 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                     // Users - UPDATED ↓
                     "GET:/users/agents",                      // View agents
                     "GET:/users/managers",                    // View managers
-                    "GET:/users/profile",                     // View profile
-                    "PUT:/users/profile",                     // Update profile
+                    "GET:/users/me",          // <-- add this if you use it
+                    "PUT:/users/me",                    // Update profile
                     PERMISSION_GET_USERS                      // View user info
             ),
             

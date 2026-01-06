@@ -255,6 +255,21 @@ public class TicketService {
         ticket.setAttachmentCount(ticket.getAttachmentCount() + 1);
         ticketRepository.save(ticket);
     }
+
+    /**
+     * Decrement attachment count
+     */
+    @Transactional
+    public void decrementAttachmentCount(String ticketId) {
+        Ticket ticket = ticketRepository.findById(ticketId)
+                .orElseThrow(() -> new RuntimeException(TICKET_NOT_FOUND_MESSAGE));
+        
+        if (ticket.getAttachmentCount() > 0) {
+            ticket.setAttachmentCount(ticket.getAttachmentCount() - 1);
+            ticketRepository.save(ticket);
+        }
+    }
+
     
     /**
      * Generate unique ticket number: TKT-YYYYMMDD-00001

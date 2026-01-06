@@ -57,7 +57,7 @@ class AnalyticsServiceTest {
             Method m = obj.getClass().getMethod(name);
             m.setAccessible(true);
             return m.invoke(obj);
-        } catch (Exception ignored) { }
+        } catch (Exception ignored) {  }
 
         // 2) normal getters: getName()/isName()
         String cap = name.substring(0, 1).toUpperCase() + name.substring(1);
