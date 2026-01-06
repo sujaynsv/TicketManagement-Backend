@@ -15,7 +15,7 @@ public class EmailService {
     
     private final JavaMailSender mailSender;
 
-    // ✅ REMOVE self-injection - just keep JavaMailSender
+    //   REMOVE self-injection - just keep JavaMailSender
     public EmailService(JavaMailSender mailSender) {
         this.mailSender = mailSender;
     }
@@ -54,13 +54,13 @@ public class EmailService {
     
     /**
      * Send email with retry logic
-     * ✅ REMOVE self reference - just call sendEmail() directly
+     *   REMOVE self reference - just call sendEmail() directly
      */
     public boolean sendEmailWithRetry(String to, String subject, String text, int maxRetries) {
         int attempt = 0;
         while (attempt < maxRetries) {
             try {
-                // ✅ Just call the method directly (no self.)
+                //   Just call the method directly (no self.)
                 sendEmail(to, subject, text);
                 return true;
             } catch (Exception e) {

@@ -475,12 +475,8 @@ public class AssignmentService {
 
         for (AuthServiceClient.AgentDTO agentDTO : agents) {
 
-            // ✅ Only sync real, active support agents
-            if (!"SUPPORT_AGENT".equals(agentDTO.getRole())) {
-                continue;
-            }
-
-            if (!Boolean.TRUE.equals(agentDTO.getIsActive())) {
+            //   Only sync real, active support agents
+            if (!"SUPPORT_AGENT".equals(agentDTO.getRole()) || !Boolean.TRUE.equals(agentDTO.getIsActive())) {
                 continue;
             }
 
@@ -504,7 +500,7 @@ public class AssignmentService {
                         }
                     },
                     () -> {
-                        // ➕ CREATE if missing
+                        //   CREATE if missing
                         AgentWorkload newAgent =
                             new AgentWorkload(
                                 agentDTO.getUserId(),
@@ -572,7 +568,7 @@ public class AssignmentService {
         // Update ticket
         ticket.setAssignedAgentId(newAgentId);
         ticket.setAssignedAgentUsername(newAgent.getAgentUsername());
-        ticket.setStatus("ASSIGNED");
+        ticket.setStatus(STATUS_ASSIGNED);
         ticket.setUpdatedAt(LocalDateTime.now());
         ticketCacheRepository.save(ticket);
 
@@ -613,7 +609,7 @@ public class AssignmentService {
         );
         newAssignment.setAssignmentStrategy("MANUAL_REASSIGN");
         newAssignment.setStatus(AssignmentStatus.ASSIGNED);
-        newAssignment.setTicketStatus("ASSIGNED");
+        newAssignment.setTicketStatus(STATUS_ASSIGNED);
 
         newAssignment.setTicketTitle(ticket.getTitle());
         newAssignment.setTicketDescription(ticket.getDescription());

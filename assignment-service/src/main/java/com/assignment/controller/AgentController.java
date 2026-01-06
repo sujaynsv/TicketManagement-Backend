@@ -100,7 +100,7 @@ public class AgentController {
         
         long totalAssigned = allAssignments.size();
         
-        // ✅ Count by LIVE ticket status from TicketCache
+        //   Count by LIVE ticket status from TicketCache
         long assigned = 0;
         long inProgress = 0;
         long resolved = 0;
@@ -122,8 +122,7 @@ public class AgentController {
                         case "IN_PROGRESS":
                             inProgress++;
                             break;
-                        case "RESOLVED":
-                        case "CLOSED":
+                        case "RESOLVED", "CLOSED":
                             resolved++;
                             break;
                         default:
@@ -140,7 +139,7 @@ public class AgentController {
         stats.put("assigned", assigned);
         stats.put("inProgress", inProgress);
         stats.put("resolved", resolved);
-        stats.put("avgResolutionTime", 0.0); // TODO: Calculate average
+
         
         return ResponseEntity.ok(stats);
     }

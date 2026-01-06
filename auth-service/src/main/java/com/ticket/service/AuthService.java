@@ -122,9 +122,7 @@ public LoginResponse login(LoginRequest request) {
         
         // Save user
         userRepository.save(newUser);
-        
-        //   FIXED: Changed from newUser.getRole().getRoleName() to newUser.getRole().name()
-        return new RegisterResponse(
+                return new RegisterResponse(
                 newUser.getUserId().toString(),
                 newUser.getUsername(),
                 newUser.getEmail(),
@@ -178,7 +176,7 @@ public LoginResponse login(LoginRequest request) {
             User user = userRepository.findById(userUuid)
                     .orElseThrow(() -> new RuntimeException("User not found"));
 
-            if (!user.getIsActive()) {
+            if (user.getIsActive() == null || !user.getIsActive().booleanValue()) {
                 log.warn("User account is deactivated: {}", user.getUsername());
                 return false;
             }

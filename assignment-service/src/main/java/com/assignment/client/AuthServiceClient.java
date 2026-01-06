@@ -2,7 +2,6 @@ package com.assignment.client;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
-import io.github.resilience4j.timelimiter.annotation.TimeLimiter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,6 +10,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+
+import com.assignment.exception.AuthServiceClientException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +33,7 @@ public class AuthServiceClient {
     /**
      * Get all agents from Auth Service with Circuit Breaker
      */
+    @SuppressWarnings("java:S2139")
     @CircuitBreaker(name = "authServiceClient", fallbackMethod = "getAllAgentsFallback")
     @Retry(name = "authServiceClient")
     public List<AgentDTO> getAllAgents() {
@@ -49,22 +51,23 @@ public class AuthServiceClient {
             log.info("Fetched {} agents from Auth Service", agents != null ? agents.size() : 0);
             
             return agents != null ? agents : new ArrayList<>();
-            
+         
         } catch (Exception e) {
-            log.error("Failed to fetch agents from Auth Service: {}", e.getMessage());
-            throw new RuntimeException("Failed to fetch agents from Auth Service", e);
+            log.error("Failed to fetch agents from Auth Service", e);
+            throw new AuthServiceClientException("Failed to fetch agents from Auth Service: " + e.getMessage(), e);
         }
     }
     
-    // ✅ Fallback method
+    //   Fallback method
     public List<AgentDTO> getAllAgentsFallback(Throwable throwable) {
-        log.warn("Circuit breaker activated for getAllAgents(). Using fallback. Error: {}");
+        log.warn("Circuit breaker activated for getAllAgents(). Using fallback. Error: {}", throwable.getMessage(), throwable);
         return new ArrayList<>(); // Return empty list when service is down
     }
     
     /**
      * Get user by ID from Auth Service with Circuit Breaker
      */
+    @SuppressWarnings("java:S2139")
     @CircuitBreaker(name = "authServiceClient", fallbackMethod = "getUserByIdFallback")
     @Retry(name = "authServiceClient")
     public AgentDTO getUserById(String userId) {
@@ -77,12 +80,11 @@ public class AuthServiceClient {
             return response.getBody();
             
         } catch (Exception e) {
-            log.error("Failed to fetch user {} from Auth Service: {}", userId, e.getMessage());
-            throw new RuntimeException("Failed to fetch user " + userId + " from Auth Service", e);
+            log.error("Failed to fetch user {} from Auth Service", userId, e);
+            throw new AuthServiceClientException("Failed to fetch user " + userId + " from Auth Service: " + e.getMessage(), e);
         }
     }
     
-    //  Fallback method
     public AgentDTO getUserByIdFallback(String userId, Throwable throwable) {
         log.warn("Circuit breaker activated for getUserById({}). Using fallback. Error: {}", 
                  userId, throwable.getMessage());
@@ -96,7 +98,6 @@ public class AuthServiceClient {
         return fallbackAgent;
     }
     
-    // ... rest of AgentDTO class stays the same
     public static class AgentDTO {
         private String userId;
         private String username;

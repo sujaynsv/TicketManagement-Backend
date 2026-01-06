@@ -26,6 +26,13 @@
             <version>1.0.0</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+
         <!-- Add this dependency to each service -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>

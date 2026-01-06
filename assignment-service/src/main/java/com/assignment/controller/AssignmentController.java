@@ -131,27 +131,5 @@ public class AssignmentController {
 
         return ResponseEntity.ok(assignments);
     }
-    private AssignmentDTO convertToDTO(Assignment assignment) {
-    AssignmentDTO dto = new AssignmentDTO();
-    dto.setAssignmentId(assignment.getAssignmentId());
-    dto.setTicketId(assignment.getTicketId());
-    dto.setTicketNumber(assignment.getTicketNumber());
-    dto.setAgentId(assignment.getAgentId());
-    dto.setAgentUsername(assignment.getAgentUsername());
-    dto.setAssignedBy(assignment.getAssignedBy());
-    dto.setAssignedByUsername(assignment.getAssignedByUsername());
-    dto.setAssignmentType(assignment.getAssignmentType().name());
-    dto.setAssignedAt(assignment.getAssignedAt());
-    dto.setStatus(assignment.getStatus().name());
-
-        dto.setTitle(assignment.getTicketTitle());
-    dto.setDescription(assignment.getTicketDescription());
-    dto.setTicketStatus(assignment.getTicketStatus());
-    dto.setTicketPriority(assignment.getTicketPriority());
-    dto.setTicketCategory(assignment.getTicketCategory());
-    dto.setCreatedByUsername(assignment.getCreatedByUsername());
-
-    return dto;
-    }
 
 }

@@ -60,6 +60,7 @@ public class UserController {
     /**
      * Get user by ID
      */
+    @SuppressWarnings("java:S4144")
     @GetMapping("/{userId}")
     public ResponseEntity<UserDTO> getUserById(@PathVariable String userId) {
         UserDTO user = userService.getUserById(userId);

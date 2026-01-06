@@ -13,7 +13,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 @Configuration
+@SuppressWarnings("java:S1845")
 public class RabbitMQConfig {
+    
     
     public static final String EXCHANGE = "ticket.exchange";
     

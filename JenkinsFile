@@ -10,15 +10,15 @@ pipeline {
         DOCKER_HUB_CREDENTIALS = credentials('docker-hub-credentials')
         DOCKER_HUB_USERNAME = 'sujaynsv'
         
-        // AWS and Mail Credentials (must be added in Jenkins Credentials)
         AWS_ACCESS_KEY_ID = credentials('aws-access-key')
         AWS_SECRET_ACCESS_KEY = credentials('aws-secret-key')
         MAIL_USERNAME = credentials('gmail-username')
         MAIL_PASSWORD = credentials('gmail-app-password')
+        SONAR_TOKEN = credentials('sonar-token')
+
         
         PATH = "/usr/local/bin:${env.PATH}"
         SONAR_ORG = 'sujaynsv'
-        SONAR_TOKEN = '4084cc84bb3dcf9b38adc9446ddacb2148fcade9'
     }
     
     stages {
