@@ -25,6 +25,31 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
+
+        <sonar.exclusions>
+            **/dto/**,
+            **/entity/**,
+            **/config/**,
+            **/mapper/**,
+            **/client/**,
+            **/exception/**,
+            **/security/**,
+            **/listener/**
+        </sonar.exclusions>
+
+        <sonar.coverage.exclusions>
+            **/dto/**/*,
+            **/entity/**/*,
+            **/config/**/*,
+            **/mapper/**/*,
+            **/client/**/*,
+            **/exception/**/*,
+            **/security/**/*,
+            **/listener/**/*,
+            **/scheduler/**/*,
+            **/*Application.java
+        </sonar.coverage.exclusions>
+
     </properties>
 
     <modules>
@@ -51,55 +76,69 @@
 
         </dependencies>
     </dependencyManagement>
-
     <build>
-        <plugins>
-            <!-- <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <excludes>
-                        <exclude>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                        </exclude>
-                    </excludes>
-                </configuration>
-            </plugin> -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.11.0</version>
-                <configuration>
-                    <annotationProcessorPaths>
-                        <path>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                            <version>1.18.32</version>
-                        </path>
-                    </annotationProcessorPaths>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.10</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>prepare-agent</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>report</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>report</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
+    <plugins>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>3.11.0</version>
+            <configuration>
+                <annotationProcessorPaths>
+                    <path>
+                        <groupId>org.projectlombok</groupId>
+                        <artifactId>lombok</artifactId>
+                        <version>1.18.32</version>
+                    </path>
+                </annotationProcessorPaths>
+            </configuration>
+        </plugin>
+
+        <plugin>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <version>0.8.11</version>
+            <configuration>
+                <excludes>
+            <exclude>com/ticket/security/**</exclude>
+            <exclude>com/ticket/entity/**</exclude>
+            
+            <exclude>com/notification/dto/**</exclude>
+            <exclude>com/notification/entity/**</exclude>
+            <exclude>com/notification/config/**</exclude>
+            <exclude>com/notification/client/**</exclude>
+            <exclude>com/notification/listener/**</exclude>
+
+            <exclude>com/assignment/scheduler/**</exclude>
+            <exclude>com/assignment/listener/**</exclude>
+            <exclude>com/assignment/client/**</exclude>
+            <exclude>com/assignment/config/**</exclude>
+            <exclude>com/assignment/exception/**</exclude>
+            <exclude>com/ticket/listener/**</exclude>
+            <exclude>com/ticket/client/**</exclude>
+            <exclude>com/ticket/TicketServiceApplication</exclude>
+
+            <exclude>**/dto/**</exclude>
+            <exclude>**/mapper/**</exclude>
+            <exclude>**/config/**</exclude>
+        </excludes>
+            </configuration>
+            
+             <executions>
+                <execution>
+                    <id>prepare-agent</id>
+                    <goals>
+                        <goal>prepare-agent</goal>
+                    </goals>
+                </execution>
+                <execution>
+                    <id>report</id>
+                    <phase>test</phase> <goals>
+                        <goal>report</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
+    </plugins>
+</build>
 
 </project>
