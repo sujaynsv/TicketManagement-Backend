@@ -21,6 +21,8 @@ public class RabbitMQConfig {
     
     // Separate queues for each event type
     public static final String TICKET_CREATED_QUEUE = "assignment.ticket.created";
+    public static final String TICKET_DELETED_QUEUE = "assignment.ticket.deleted";
+    public static final String TICKET_DELETED_KEY = "ticket.deleted";
     public static final String TICKET_ASSIGNED_QUEUE = "assignment.ticket.assigned";
     public static final String TICKET_STATUS_QUEUE = "assignment.ticket.status";
 
@@ -110,4 +112,17 @@ public class RabbitMQConfig {
                 .to(exchange)
                 .with(TICKET_ESCALATED_KEY);
     }
+
+    @Bean
+    public Queue ticketDeletedQueue() {
+        return QueueBuilder.durable(TICKET_DELETED_QUEUE).build();
+    }
+    @Bean
+    public Binding ticketDeletedBinding(Queue ticketDeletedQueue, TopicExchange exchange) {
+        return BindingBuilder.bind(ticketDeletedQueue)
+                .to(exchange)
+                .with(TICKET_DELETED_KEY);
+    }
+
+
 }

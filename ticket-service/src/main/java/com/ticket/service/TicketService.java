@@ -9,6 +9,7 @@ import com.ticket.enums.TicketCategory;
 import com.ticket.enums.TicketPriority;
 import com.ticket.enums.TicketStatus;
 import com.ticket.event.TicketCreatedEvent;
+import com.ticket.event.TicketDeletedEvent;
 import com.ticket.event.TicketStatusChangedEvent;
 import com.ticket.repository.CommentRepository;
 import com.ticket.repository.TicketActivityRepository;
@@ -233,9 +234,19 @@ public class TicketService {
      */
     @Transactional
     public void deleteTicket(String ticketId) {
-        ticketRepository.deleteById(ticketId);
+        Ticket ticket = ticketRepository.findById(ticketId)
+                .orElseThrow(() -> new RuntimeException("Ticket not found"));
+
+        ticketRepository.delete(ticket);
+
+        eventPublisher.publishTicketDeleted(
+            new TicketDeletedEvent(
+                ticket.getTicketId(),
+                ticket.getTicketNumber(),
+                LocalDateTime.now()
+            )
+        );
     }
-    
     /**
      * Increment comment count
      */
@@ -443,8 +454,5 @@ public class TicketService {
     
     return convertToDTO(updatedTicket);
 }
-
-
-
 
 }

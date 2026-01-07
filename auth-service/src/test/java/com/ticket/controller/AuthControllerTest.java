@@ -3,6 +3,9 @@ package com.ticket.controller;
 import com.ticket.dto.LoginRequest;
 import com.ticket.dto.RegisterRequest;
 import com.ticket.service.AuthService;
+
+import jakarta.servlet.http.HttpServletResponse;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.oauth2.client.servlet.OAuth2ClientAutoConfiguration;
@@ -35,6 +38,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
                 "spring.cloud.config.discovery.enabled=false"
         }
 )
+
 @AutoConfigureMockMvc(addFilters = false)
 class AuthControllerTest {
 
@@ -56,7 +60,7 @@ class AuthControllerTest {
 
     @Test
     void login_success_returns200() throws Exception {
-        when(authService.login(any(LoginRequest.class))).thenReturn(null);
+        when(authService.login(any(LoginRequest.class),any(HttpServletResponse.class))).thenReturn(null);
 
         mockMvc.perform(post("/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -64,12 +68,12 @@ class AuthControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        verify(authService).login(any(LoginRequest.class));
+        verify(authService).login(any(LoginRequest.class),any(HttpServletResponse.class));
     }
 
     @Test
     void login_serviceThrows_returns401() throws Exception {
-        when(authService.login(any(LoginRequest.class))).thenThrow(new RuntimeException("bad"));
+        when(authService.login(any(LoginRequest.class),any(HttpServletResponse.class))).thenThrow(new RuntimeException("bad"));
 
         mockMvc.perform(post("/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -77,7 +81,7 @@ class AuthControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized());
 
-        verify(authService).login(any(LoginRequest.class));
+        verify(authService).login(any(LoginRequest.class),any(HttpServletResponse.class));
     }
 
     @Test

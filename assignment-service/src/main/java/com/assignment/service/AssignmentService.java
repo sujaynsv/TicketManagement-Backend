@@ -77,13 +77,17 @@ public class AssignmentService {
      * Get unassigned tickets for manager dashboard
      */
     public List<UnassignedTicketDTO> getUnassignedTickets() {
-        List<TicketCache> tickets = ticketCacheRepository.findByStatusAndAssignedAgentIdIsNull("OPEN");
-        
+
+        List<TicketCache> tickets =
+            ticketCacheRepository.findByStatusInAndAssignedAgentIdIsNull(
+                List.of("OPEN")
+            );
+
         return tickets.stream()
                 .map(this::convertToUnassignedTicketDTO)
                 .toList();
     }
-    
+
     /**
      * Get available agents with workload (for manager dashboard)
      */

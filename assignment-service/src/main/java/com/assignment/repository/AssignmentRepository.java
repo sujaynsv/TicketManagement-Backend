@@ -3,8 +3,13 @@ package com.assignment.repository;
 import com.assignment.entity.Assignment;
 import com.assignment.entity.AssignmentStatus;
 import com.assignment.entity.AssignmentType;
+
+import jakarta.transaction.Transactional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -34,6 +39,12 @@ public interface AssignmentRepository extends JpaRepository<Assignment, String>,
     List<Assignment> findByAgentId(String agentId);
 
     List<Assignment> findByAgentIdOrderByAssignedAtDesc(String agentId);
+
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM Assignment a WHERE a.ticketId = :ticketId")
+    int deleteByTicketId(String ticketId);
+
 
 
 }

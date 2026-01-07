@@ -1,10 +1,12 @@
 package com.assignment.listener;
 
 import com.assignment.entity.TicketCache;
+import com.assignment.repository.AssignmentRepository;
 import com.assignment.repository.TicketCacheRepository;
 import com.assignment.service.SlaService;
 import com.ticket.event.TicketAssignedEvent;
 import com.ticket.event.TicketCreatedEvent;
+import com.ticket.event.TicketDeletedEvent;
 import com.ticket.event.TicketEscalatedEvent;
 import com.ticket.event.TicketStatusChangedEvent;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +26,7 @@ public class TicketEventListener {
 
     private final TicketCacheRepository ticketCacheRepository;
     private final SlaService slaService;
+    private final AssignmentRepository assignmentsRepository;
 
     @RabbitListener(queues = "assignment.ticket.created")
     @Transactional
@@ -185,5 +188,28 @@ public class TicketEventListener {
                     event.getTicketNumber(), e.getMessage(), e);
         }
     }
+    @RabbitListener(queues = "assignment.ticket.deleted")
+    @Transactional
+    public void handleTicketDeleted(TicketDeletedEvent event) {
+
+        String ticketId = event.getTicketId();
+
+        if (ticketId == null) {
+            log.error("TicketDeletedEvent received with NULL ticketId. Event={}", event);
+            return;
+        }
+
+        int cacheDeleted = ticketCacheRepository.deleteByTicketId(ticketId);
+        int assignmentsDeleted = assignmentsRepository.deleteByTicketId(ticketId);
+
+        log.info(
+            "Ticket delete cleanup completed. ticketId={}, cacheDeleted={}, assignmentsDeleted={}",
+            ticketId,
+            cacheDeleted,
+            assignmentsDeleted
+        );
+    }
+
+
 
 }

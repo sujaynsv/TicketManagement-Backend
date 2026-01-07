@@ -405,14 +405,37 @@ public class TicketServiceTest {
 
     // ==================== DELETE & COUNT TESTS ====================
 
-    @Test
-    void testDeleteTicket_Success() {
-        // Act
-        ticketService.deleteTicket("TKT-001");
+@Test
+void testDeleteTicket_Success() {
+    // Arrange
+    String ticketId = "TKT-001";
+    String ticketNumber = "TKT-001";
 
-        // Assert
-        verify(ticketRepository, times(1)).deleteById("TKT-001");
-    }
+    Ticket ticket = new Ticket();
+    ticket.setTicketId(ticketId);
+    ticket.setTicketNumber(ticketNumber);
+
+    when(ticketRepository.findById(ticketId))
+            .thenReturn(Optional.of(ticket));
+
+    doNothing().when(ticketRepository).delete(ticket);
+    doNothing().when(eventPublisher).publishTicketDeleted(any());
+
+    // Act
+    ticketService.deleteTicket(ticketId);
+
+    // Assert
+    verify(ticketRepository, times(1)).findById(ticketId);
+    verify(ticketRepository, times(1)).delete(ticket);
+
+    verify(eventPublisher, times(1))
+            .publishTicketDeleted(argThat(event ->
+                    event.getTicketId().equals(ticketId) &&
+                    event.getTicketNumber().equals(ticketNumber)
+            ));
+}
+
+
 
     @Test
     void testIncrementCommentCount_Success() {

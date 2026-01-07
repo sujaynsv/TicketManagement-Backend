@@ -1,4 +1,0 @@
--------------------------------------------------------------------------------
-Test set: com.notification.service.EmailServiceTest
--------------------------------------------------------------------------------
-Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 4.291 s -- in com.notification.service.EmailServiceTest

@@ -2,6 +2,7 @@ package com.ticket.service;
 
 import com.ticket.event.CommentAddedEvent;
 import com.ticket.event.TicketCreatedEvent;
+import com.ticket.event.TicketDeletedEvent;
 import com.ticket.event.TicketEscalatedEvent;
 import com.ticket.event.TicketStatusChangedEvent;
 import org.slf4j.Logger;
@@ -38,6 +39,12 @@ public class EventPublisherService {
     
     @Value("${rabbitmq.routing-key.comment-added}")
     private String commentAddedRoutingKey;
+
+    @Value("${rabbitmq.routing-key.ticket-deleted}")
+    private String ticketDeletedRoutingKey;
+
+
+
     
     /**
      * Publish ticket created event
@@ -91,6 +98,18 @@ public class EventPublisherService {
         } catch (Exception e) {
             log.error("Failed to publish TicketEscalatedEvent: {}", e.getMessage(), e);
         }
+    }
+
+    public void publishTicketDeleted(TicketDeletedEvent event) {
+        log.info("=== PUBLISHING TICKET DELETED EVENT ===");
+        log.info(EXCHANGE_LOG_MSG, ticketExchange);
+        log.info(ROUTING_KEY_LOG_MSG, ticketDeletedRoutingKey);
+        log.info(TICKET_NUMBER_LOG_MSG, event.getTicketNumber());
+        log.info("Event: {}", event);
+
+        rabbitTemplate.convertAndSend(ticketExchange, ticketDeletedRoutingKey, event);
+
+        log.info("TicketDeletedEvent published successfully for {}", event.getTicketNumber());
     }
 
 }

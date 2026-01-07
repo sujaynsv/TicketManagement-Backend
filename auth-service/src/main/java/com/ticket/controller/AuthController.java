@@ -7,6 +7,8 @@ import com.ticket.dto.LogoutResponse;
 import com.ticket.dto.RegisterRequest;
 import com.ticket.dto.RegisterResponse;
 import com.ticket.service.AuthService;
+
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,10 +28,10 @@ public class AuthController {
     }
     
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
+    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request, HttpServletResponse response) {
         try {
-            LoginResponse response = authService.login(request);
-            return ResponseEntity.ok(response);
+            LoginResponse loginResponse = authService.login(request,response);
+            return ResponseEntity.ok(loginResponse);
         } catch (Exception e) {
             // You may want to handle errors differently, but for now, return null or throw the exception
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);

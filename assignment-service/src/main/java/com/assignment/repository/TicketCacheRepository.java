@@ -1,7 +1,11 @@
 package com.assignment.repository;
 
 import com.assignment.entity.TicketCache;
+
+import jakarta.transaction.Transactional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -38,5 +42,16 @@ public interface TicketCacheRepository extends JpaRepository<TicketCache, String
     long countByStatusAndUpdatedAtAfter(String status, LocalDateTime after);
     long countByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
     long countByStatusAndUpdatedAtBetween(String status, LocalDateTime start, LocalDateTime end);
+
+
+    List<TicketCache> findByStatusInAndAssignedAgentIdIsNull(List<String> statuses);
+
+    @Modifying
+    @Transactional
+    int deleteByTicketNumber(String ticketNumber);
+
+    @Modifying
+    @jakarta.transaction.Transactional
+    int deleteByTicketId(String ticketId);
 
 }

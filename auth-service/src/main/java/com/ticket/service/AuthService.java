@@ -8,7 +8,12 @@ import com.ticket.dto.RegisterResponse;
 import com.ticket.entity.User;
 import com.ticket.enums.UserRole;
 import com.ticket.repository.UserRepository;
+import java.time.Duration;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import com.ticket.security.JwtUtil;
+import jakarta.servlet.http.HttpServletResponse;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.ticket.exception.BadCredentialsException;
@@ -39,47 +44,53 @@ public class AuthService {
      * Login - Authenticate existing user
      */
 
-@Transactional
-public LoginResponse login(LoginRequest request) {
-    // Find user
-    User user = userRepository.findByUsername(request.username())
-            .orElseThrow(() -> new BadCredentialsException("Invalid username or password"));
-    
-    // Check if user is active
-    if (Boolean.FALSE.equals(user.getIsActive())) {
-        throw new AccountDeactivatedException("Account is deactivated. Please contact administrator.");
+    @Transactional
+    public LoginResponse login(LoginRequest request, HttpServletResponse response) {
+
+        User user = userRepository.findByUsername(request.username())
+                .orElseThrow(() -> new BadCredentialsException("Invalid username or password"));
+
+        if (Boolean.FALSE.equals(user.getIsActive())) {
+            throw new AccountDeactivatedException("Account is deactivated. Please contact administrator.");
+        }
+
+        if (!passwordEncoder.matches(request.password(), user.getPasswordHash())) {
+            throw new BadCredentialsException("Invalid username or password");
+        }
+
+        user.setLastLogin(LocalDateTime.now());
+        userRepository.save(user);
+
+        String roleName = user.getRole().name();
+
+        String token = jwtUtil.generateToken(
+                user.getUserId().toString(),
+                user.getUsername(),
+                user.getEmail(),
+                roleName,
+                user.getTokenVersion()
+        );
+
+        // COOKIE SET HERE
+        ResponseCookie jwtCookie = ResponseCookie.from("AUTH_TOKEN", token)
+                .httpOnly(true)
+                .secure(false)
+                .sameSite("None") 
+                .path("/")
+                .maxAge(Duration.ofHours(24))
+                .build();
+
+        response.addHeader(HttpHeaders.SET_COOKIE, jwtCookie.toString());
+
+
+        return new LoginResponse(
+                token,
+                user.getUsername(),
+                user.getEmail(),
+                roleName,
+                user.getUserId().toString()
+        );
     }
-    
-    // Verify password
-    if (!passwordEncoder.matches(request.password(), user.getPasswordHash())) {
-        throw new BadCredentialsException("Invalid username or password");
-    }
-    
-    // Update last login
-    user.setLastLogin(LocalDateTime.now());
-    userRepository.save(user);
-    
-    //   Get role name from enum
-    String roleName = user.getRole().name();  // Returns "ADMIN", "SUPPORT_AGENT", etc.
-    
-    String token = jwtUtil.generateToken(
-            user.getUserId().toString(),
-            user.getUsername(),
-            user.getEmail(),
-            roleName,
-            user.getTokenVersion()
-    );
-    
-    log.info("User logged in successfully: {} (tokenVersion: {})", user.getUsername(), user.getTokenVersion());
-    
-    return new LoginResponse(
-            token,
-            user.getUsername(),
-            user.getEmail(),
-            roleName,
-            user.getUserId().toString()
-    );
-}
 
     
     /**

@@ -90,7 +90,7 @@ class AssignmentServiceTest {
         t.setCreatedByUsername("user1");
         t.setCreatedAt(LocalDateTime.now().minusDays(1));
 
-        when(ticketCacheRepository.findByStatusAndAssignedAgentIdIsNull("OPEN"))
+        when(ticketCacheRepository.findByStatusInAndAssignedAgentIdIsNull(List.of("OPEN")))
                 .thenReturn(List.of(t));
 
         SlaTracking sla = new SlaTracking();
@@ -109,14 +109,19 @@ class AssignmentServiceTest {
 
     @Test
     void getUnassignedTickets_mapsTickets_noSla() {
-        TicketCache t = new TicketCache();
-        t.setTicketId("TKT-1");
-        t.setTicketNumber("T-1");
-        t.setTitle("Title");
-        t.setStatus("OPEN");
+        TicketCache ticket = new TicketCache();
+        ticket.setTicketId("T-1");
+        ticket.setTicketNumber("T-1");
+        ticket.setStatus("OPEN");          // ⭐ REQUIRED
+        ticket.setAssignedAgentId(null);   // ⭐ REQUIRED
+        ticket.setCategory("CAT");
+        ticket.setPriority(null);          // no SLA case
+        ticket.setCreatedAt(LocalDateTime.now());
 
-        when(ticketCacheRepository.findByStatusAndAssignedAgentIdIsNull("OPEN"))
-                .thenReturn(List.of(t));
+        when(ticketCacheRepository
+                .findByStatusInAndAssignedAgentIdIsNull(List.of("OPEN")))
+            .thenReturn(List.of(ticket));
+
 
         when(slaService.getSlaTracking("TKT-1")).thenReturn(Optional.empty());
 

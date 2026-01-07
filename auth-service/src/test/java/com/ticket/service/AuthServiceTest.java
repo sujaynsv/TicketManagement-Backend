@@ -11,6 +11,9 @@ import com.ticket.exception.AccountDeactivatedException;
 import com.ticket.exception.BadCredentialsException;
 import com.ticket.repository.UserRepository;
 import com.ticket.security.JwtUtil;
+
+import jakarta.servlet.http.HttpServletResponse;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -56,13 +59,13 @@ class AuthServiceTest {
     @Test
     void login_success_returnsResponse_andSavesLastLogin() {
         User u = baseUser(UUID.randomUUID());
-
+        HttpServletResponse response = mock(HttpServletResponse.class);
         when(userRepository.findByUsername("john")).thenReturn(Optional.of(u));
         when(jwtUtil.generateToken(anyString(), anyString(), anyString(), anyString(), anyInt()))
                 .thenReturn("token-123");
         when(userRepository.save(any(User.class))).thenAnswer(inv -> inv.getArgument(0));
 
-        LoginResponse resp = authService.login(new LoginRequest("john", "pass123"));
+        LoginResponse resp = authService.login(new LoginRequest("john", "pass123"),response);
 
         assertNotNull(resp);
         verify(userRepository).findByUsername("john");
@@ -84,9 +87,9 @@ class AuthServiceTest {
     @Test
     void login_invalidUsername_throwsBadCredentials() {
         when(userRepository.findByUsername("john")).thenReturn(Optional.empty());
-
+        HttpServletResponse response = mock(HttpServletResponse.class);
         assertThrows(BadCredentialsException.class,
-                () -> authService.login(new LoginRequest("john", "pass123")));
+                () -> authService.login(new LoginRequest("john", "pass123"),response));
 
         verify(userRepository).findByUsername("john");
         verify(userRepository, never()).save(any());
@@ -97,11 +100,11 @@ class AuthServiceTest {
     void login_inactiveUser_throwsAccountDeactivated() {
         User u = baseUser(UUID.randomUUID());
         u.setIsActive(false);
-
+        HttpServletResponse response = mock(HttpServletResponse.class);
         when(userRepository.findByUsername("john")).thenReturn(Optional.of(u));
 
         assertThrows(AccountDeactivatedException.class,
-                () -> authService.login(new LoginRequest("john", "pass123")));
+                () -> authService.login(new LoginRequest("john", "pass123"),response));
 
         verify(userRepository).findByUsername("john");
         verify(userRepository, never()).save(any());
@@ -113,9 +116,9 @@ class AuthServiceTest {
         User u = baseUser(UUID.randomUUID());
 
         when(userRepository.findByUsername("john")).thenReturn(Optional.of(u));
-
+        HttpServletResponse response = mock(HttpServletResponse.class);
         assertThrows(BadCredentialsException.class,
-                () -> authService.login(new LoginRequest("john", "wrong")));
+                () -> authService.login(new LoginRequest("john", "wrong"),response));
 
         verify(userRepository).findByUsername("john");
         verify(userRepository, never()).save(any());
