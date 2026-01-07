@@ -40,7 +40,7 @@ public enum TicketStatus {
             case REOPENED:
                 return newStatus == IN_PROGRESS || newStatus == CLOSED;
             case ESCALATED:
-                return newStatus == IN_PROGRESS || newStatus==ASSIGNED;
+                return newStatus==CLOSED || newStatus==RESOLVED;
             default:
                 return false;
         }

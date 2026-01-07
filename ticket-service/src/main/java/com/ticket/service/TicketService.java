@@ -117,10 +117,16 @@ public class TicketService {
         TicketStatus oldStatus = ticket.getStatus();
         TicketStatus newStatus = TicketStatus.valueOf(request.status().toUpperCase());
         
-        // Validate status transition
-        if (!oldStatus.canTransitionTo(newStatus)) {
-            throw new InvalidTicketStatusTransitionException("Cannot transition from " + oldStatus + " to " + newStatus);
+        if (
+            !oldStatus.canTransitionTo(newStatus)
+            && !(oldStatus == TicketStatus.ESCALATED &&
+                (newStatus == TicketStatus.CLOSED || newStatus == TicketStatus.RESOLVED))
+        ) {
+            throw new InvalidTicketStatusTransitionException(
+                "Cannot transition from " + oldStatus + " to " + newStatus
+            );
         }
+
         
         // Update status
         ticket.setStatus(newStatus);
