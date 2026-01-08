@@ -32,7 +32,7 @@ pipeline {
         stage('Build JARs & Test') {
             steps {
                 echo 'Building JAR files and compiling classes'
-                sh 'mvn clean verify '
+                sh 'mvn verify '
             }
         }
 

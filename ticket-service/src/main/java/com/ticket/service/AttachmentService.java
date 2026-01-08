@@ -131,7 +131,7 @@ public class AttachmentService {
      */
     @Transactional(readOnly = true)
     public AttachmentDTO getAttachment(String attachmentId) {
-        log.debug("🔍 Fetching attachment - ID: {}", attachmentId);
+        log.debug("Fetching attachment - ID: {}", attachmentId);
 
         try {
             Attachment attachment = attachmentRepository.findById(attachmentId)
@@ -161,7 +161,7 @@ public class AttachmentService {
      */
     @Transactional
     public ResponseEntity<byte[]> downloadAttachment(String ticketId, String attachmentId, String userId) {
-        log.info("📥 Download request - Ticket: {}, Attachment: {}, User: {}", 
+        log.info("Download request - Ticket: {}, Attachment: {}, User: {}", 
                 ticketId, attachmentId, userId);
 
         try {
@@ -217,7 +217,7 @@ public class AttachmentService {
      */
     @Transactional
     public ResponseEntity<byte[]> downloadAllAttachments(String ticketId, String userId) {
-        log.info("📦 Download all attachments - Ticket: {}, User: {}", ticketId, userId);
+        log.info("Download all attachments - Ticket: {}, User: {}", ticketId, userId);
 
         try {
             // Step 1: Check user access
@@ -228,7 +228,7 @@ public class AttachmentService {
 
             // Step 2: Get all attachments
             List<Attachment> attachments = attachmentRepository.findByTicketIdOrderByUploadedAtDesc(ticketId);
-            log.info("📦 Preparing {} attachments for ZIP", attachments.size());
+            log.info("Preparing {} attachments for ZIP", attachments.size());
 
             if (attachments.isEmpty()) {
                 throw new RuntimeException("No attachments found for this ticket");
@@ -265,7 +265,7 @@ public class AttachmentService {
      */
     @Transactional
     public void deleteAttachment(String attachmentId, String ticketId) {
-        log.info("🗑️  Deleting attachment - ID: {}, Ticket: {}", attachmentId, ticketId);
+        log.info("Deleting attachment - ID: {}, Ticket: {}", attachmentId, ticketId);
 
         try {
             // Step 1: Get attachment
@@ -305,7 +305,7 @@ public class AttachmentService {
     @Transactional(readOnly = true)
     public boolean canUserAccessTicket(String ticketId, String userId) {
         try {
-            log.debug("🔐 Checking access - Ticket: {}, User: {}", ticketId, userId);
+            log.debug("Checking access - Ticket: {}, User: {}", ticketId, userId);
             
             // Placeholder implementation - update based on your Ticket entity
             return ticketRepository.existsById(ticketId);
@@ -387,7 +387,7 @@ public class AttachmentService {
     try (ZipOutputStream zipOut = new ZipOutputStream(baos)) {
         for (Attachment attachment : attachments) {
             try {
-                log.debug("📦 Adding to ZIP - File: {}", attachment.getFileName());
+                log.debug("Adding to ZIP - File: {}", attachment.getFileName());
 
                 String presignedUrl = s3StorageService.generatePresignedUrl(attachment.getS3Key());
                 byte[] fileData = downloadFromS3(presignedUrl);
@@ -449,7 +449,7 @@ public class AttachmentService {
      */
     @Transactional
     public void deleteAllAttachmentsByTicket(String ticketId) {
-        log.info("🗑️  Deleting all attachments - Ticket: {}", ticketId);
+        log.info("Deleting all attachments - Ticket: {}", ticketId);
 
         try {
             List<Attachment> attachments = attachmentRepository.findByTicketIdOrderByUploadedAtDesc(ticketId);
